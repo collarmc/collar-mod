@@ -7,7 +7,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import team.catgirl.collar.api.location.Dimension;
-import team.catgirl.collar.mod.commands.exceptions.CommandTargetNotFoundException;
+import team.catgirl.plastic.brigadier.CommandTargetNotFoundException;
 
 import java.util.Collection;
 import java.util.List;

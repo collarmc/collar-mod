@@ -1,4 +1,4 @@
-package team.catgirl.collar.mod.commands.exceptions;
+package team.catgirl.plastic.brigadier;
 
 import com.mojang.brigadier.LiteralMessage;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;

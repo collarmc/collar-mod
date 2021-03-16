@@ -29,7 +29,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import team.catgirl.collar.mod.commands.exceptions.CommandTargetNotFoundException;
+import team.catgirl.plastic.brigadier.CommandTargetNotFoundException;
 import team.catgirl.plastic.Plastic;
 import team.catgirl.plastic.player.Player;
 
