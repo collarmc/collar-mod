@@ -5,7 +5,7 @@ import com.google.common.cache.CacheBuilder;
 import team.catgirl.collar.client.Collar;
 import team.catgirl.collar.client.api.textures.Texture;
 import team.catgirl.collar.mod.service.events.CollarConnectedEvent;
-import team.catgirl.event.Subscribe;
+import team.catgirl.events.Subscribe;
 import team.catgirl.plastic.player.Player;
 import team.catgirl.plastic.ui.TextureProvider;
 import team.catgirl.plastic.ui.TextureType;

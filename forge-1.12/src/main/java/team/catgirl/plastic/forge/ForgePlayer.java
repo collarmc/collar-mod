@@ -113,14 +113,10 @@ public class ForgePlayer implements Player {
             String textureName = String.format("plastic-capes/%s.png", playerInfo.getGameProfile().getId());
             textureProvider.getTexture(this, TextureType.CAPE).thenAccept(textureOptional -> {
                 textureOptional.ifPresent(texture -> {
-                    texture.loadImage(imageOptional -> {
-                        imageOptional.ifPresent(bufferedImage -> {
-                            ResourceLocation resourceLocation = minecraft.getTextureManager().getDynamicTextureLocation(textureName, new DynamicTexture(bufferedImage));
+                    ResourceLocation resourceLocation = minecraft.getTextureManager().getDynamicTextureLocation(textureName, new DynamicTexture(texture));
 //                            minecraft.getTextureManager().bindTexture(resourceLocation);
-                            textures.put(MinecraftProfileTexture.Type.CAPE, resourceLocation);
-                            textures.put(MinecraftProfileTexture.Type.ELYTRA, resourceLocation);
-                        });
-                    });
+                    textures.put(MinecraftProfileTexture.Type.CAPE, resourceLocation);
+                    textures.put(MinecraftProfileTexture.Type.ELYTRA, resourceLocation);
                 });
             });
         }

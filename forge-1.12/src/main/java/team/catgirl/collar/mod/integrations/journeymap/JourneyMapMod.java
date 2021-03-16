@@ -13,7 +13,7 @@ import team.catgirl.collar.mod.features.events.WaypointDeletedEvent;
 import team.catgirl.collar.mod.forge.CollarMod;
 import team.catgirl.collar.mod.service.events.CollarConnectedEvent;
 import team.catgirl.collar.mod.service.events.CollarDisconnectedEvent;
-import team.catgirl.event.Subscribe;
+import team.catgirl.events.Subscribe;
 import team.catgirl.plastic.Plastic;
 import team.catgirl.plastic.player.Player;
 import team.catgirl.plastic.world.Dimension;

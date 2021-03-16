@@ -1,6 +1,6 @@
 package team.catgirl.collar.mod.features.events;
 
-import team.catgirl.event.Event;
+import team.catgirl.events.Event;
 import team.catgirl.plastic.player.Player;
 import team.catgirl.plastic.world.Dimension;
 import team.catgirl.plastic.world.Position;

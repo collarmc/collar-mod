@@ -14,7 +14,7 @@ import team.catgirl.collar.client.security.ClientIdentityStore;
 import team.catgirl.collar.mod.features.*;
 import team.catgirl.collar.mod.service.events.CollarConnectedEvent;
 import team.catgirl.collar.mod.service.events.CollarDisconnectedEvent;
-import team.catgirl.event.EventBus;
+import team.catgirl.events.EventBus;
 import team.catgirl.plastic.Plastic;
 import team.catgirl.plastic.player.Player;
 import team.catgirl.plastic.ui.TextAction;

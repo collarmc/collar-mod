@@ -2,7 +2,7 @@ package team.catgirl.plastic.forge;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ServerData;
-import team.catgirl.event.EventBus;
+import team.catgirl.events.EventBus;
 import team.catgirl.plastic.Plastic;
 import team.catgirl.plastic.ui.TextureProvider;
 

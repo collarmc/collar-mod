@@ -1,18 +1,3 @@
-
-pluginManagement {
-    repositories {
-        mavenLocal()
-        jcenter()
-        maven {
-            name = 'Fabric'
-            url = 'https://maven.fabricmc.net/'
-        }
-        maven { url = 'https://files.minecraftforge.net/maven' }
-        gradlePluginPortal()
-        mavenCentral()
-    }
-}
-
 rootProject.name = 'collar'
 include 'events'
 include 'plastic-api'
