@@ -12,6 +12,7 @@ import team.catgirl.collar.api.groups.GroupType;
 import team.catgirl.collar.api.location.Dimension;
 import team.catgirl.collar.api.location.Location;
 import team.catgirl.collar.api.waypoints.Waypoint;
+import team.catgirl.collar.mod.common.CollarService;
 import team.catgirl.collar.mod.common.commands.arguments.*;
 import team.catgirl.collar.mod.common.commands.arguments.IdentityArgumentType.IdentityArgument;
 import team.catgirl.collar.mod.common.commands.arguments.WaypointArgumentType.WaypointArgument;
@@ -19,7 +20,6 @@ import team.catgirl.plastic.Plastic;
 import team.catgirl.plastic.player.Player;
 import team.catgirl.plastic.ui.TextFormatting;
 import team.catgirl.plastic.world.Position;
-import team.catgirl.collar.mod.service.CollarService;
 import team.catgirl.collar.security.mojang.MinecraftPlayer;
 
 import java.util.*;

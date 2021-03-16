@@ -17,10 +17,10 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.Logger;
 import team.catgirl.collar.client.CollarListener;
 import team.catgirl.collar.client.minecraft.Ticks;
+import team.catgirl.collar.mod.common.CollarService;
 import team.catgirl.collar.mod.common.commands.Commands;
-import team.catgirl.plastic.fabric.plastic.CollarTextureProvider;
+import team.catgirl.collar.mod.common.plastic.CollarTextureProvider;
 import team.catgirl.collar.mod.common.plugins.Plugins;
-import team.catgirl.collar.mod.service.CollarService;
 import team.catgirl.events.EventBus;
 import team.catgirl.plastic.Plastic;
 import team.catgirl.plastic.forge.ForgePlastic;
@@ -56,7 +56,7 @@ public class CollarMod implements CollarListener
         CollarTextureProvider textureProvider = new CollarTextureProvider();
         EVENT_BUS.subscribe(textureProvider);
         PLASTIC = new ForgePlastic(textureProvider);
-        collarService = new CollarService(PLASTIC, EVENT_BUS, TICKS, PLUGINS, logger);
+        collarService = new CollarService(PLASTIC, EVENT_BUS, TICKS, PLUGINS);
         PLASTIC.commands.register("collar", collarService, new Commands(collarService, PLASTIC).create());
     }
 

@@ -2,15 +2,20 @@ plugins {
     id 'java'
 }
 
-group 'org.example'
+group 'team.catgirl.collar'
 version '1.0-SNAPSHOT'
 
 repositories {
     mavenLocal()
     mavenCentral()
+    maven {
+        url "https://libraries.minecraft.net"
+    }
 }
 
+
 dependencies {
+    implementation 'com.mojang:brigadier:1.0.17'
     implementation project(':events')
     implementation project(':plastic-api')
     compile group: 'team.catgirl.collar', name: 'client', version: '1.0-SNAPSHOT', classifier: 'full'
