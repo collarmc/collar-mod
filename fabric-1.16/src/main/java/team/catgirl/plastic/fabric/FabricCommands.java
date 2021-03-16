@@ -1,4 +1,4 @@
-package team.catgirl.plastic.fabric.plastic;
+package team.catgirl.plastic.fabric;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.StringReader;

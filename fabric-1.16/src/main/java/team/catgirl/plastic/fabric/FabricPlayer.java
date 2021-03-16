@@ -1,4 +1,4 @@
-package team.catgirl.plastic.fabric.plastic;
+package team.catgirl.plastic.fabric;
 
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.util.Identifier;
