@@ -1,16 +1,11 @@
 package team.catgirl.collar.mod.forge;
 
-import com.mojang.authlib.minecraft.MinecraftProfileTexture;
-import net.minecraft.client.entity.AbstractClientPlayer;
-import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -22,20 +17,15 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.Logger;
 import team.catgirl.collar.client.CollarListener;
 import team.catgirl.collar.client.minecraft.Ticks;
-import team.catgirl.collar.mod.commands.Commands;
-import team.catgirl.collar.mod.plastic.CollarTextureProvider;
-import team.catgirl.collar.mod.plugins.Plugins;
+import team.catgirl.collar.mod.common.commands.Commands;
+import team.catgirl.plastic.fabric.plastic.CollarTextureProvider;
+import team.catgirl.collar.mod.common.plugins.Plugins;
 import team.catgirl.collar.mod.service.CollarService;
 import team.catgirl.events.EventBus;
-import team.catgirl.events.Subscribe;
 import team.catgirl.plastic.Plastic;
-import team.catgirl.plastic.events.LoadPlayerTexturesEvent;
 import team.catgirl.plastic.forge.ForgePlastic;
-import team.catgirl.plastic.ui.TextureProvider;
 
-import java.util.Map;
 import java.util.UUID;
-import java.util.function.Supplier;
 
 @SideOnly(Side.CLIENT)
 @Mod(modid = CollarMod.MODID, name = CollarMod.NAME, version = CollarMod.VERSION)

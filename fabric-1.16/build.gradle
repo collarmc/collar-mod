@@ -36,6 +36,7 @@ dependencies {
     // You may need to force-disable transitiveness on them.
     implementation project(':events')
     implementation project(':plastic-api')
+    implementation project(':common')
 }
 
 processResources {

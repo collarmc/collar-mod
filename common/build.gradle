@@ -1,0 +1,22 @@
+plugins {
+    id 'java'
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    implementation project(':events')
+    implementation project(':plastic-api')
+    compile group: 'team.catgirl.collar', name: 'client', version: '1.0-SNAPSHOT', classifier: 'full'
+    compile group: 'team.catgirl.collar', name: 'plugin', version: '1.0-SNAPSHOT'
+}
+
+test {
+    useJUnitPlatform()
+}
