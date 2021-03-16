@@ -1,0 +1,57 @@
+buildscript {
+    repositories {
+        mavenLocal()
+        maven { url = 'https://files.minecraftforge.net/maven' }
+        jcenter()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+        classpath "com.github.jengelman.gradle.plugins:shadow:2.0.4"
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'com.github.johnrengelman.shadow'
+
+version = project.property('collar.forge.version')
+group = 'team.catgirl.collar.mod'
+archivesBaseName = 'collar-' + project.property('collar.mc.version')
+sourceCompatibility = targetCompatibility = '1.8'
+
+minecraft {
+    runDir = "run"
+    version = project.property('collar.forge.version')
+    mappings = "${project.property('collar.mcp.channel')}_${project.property('collar.mcp.mapping')}"
+    makeObfSourceJar = false
+}
+
+repositories {
+    mavenLocal()
+}
+
+dependencies {
+    compile group: 'team.catgirl.collar', name: 'client', version: '1.0-SNAPSHOT', classifier: 'full'
+    compile group: 'team.catgirl.collar', name: 'plugin', version: '1.0-SNAPSHOT'
+    compile 'com.mojang:brigadier:1.0.17'
+    implementation group: 'info.journeymap', name: 'journeymap-api', version: '1.12-1.4'
+}
+
+shadowJar {
+    dependencies {
+        include(dependency('team.catgirl.collar:client:.*'))
+        include(dependency('team.catgirl.collar:plugin:.*'))
+        include(dependency('com.mojang:brigadier:.*'))
+    }
+    relocate 'com.mojang.brigadier', 'team.catgirl.collar.libs.com.mojang.brigadier'
+    relocate 'team.catgirl.collar.shared', 'team.catgirl.collar.libs.team.catgirl.collar.shared'
+    relocate 'team.catgirl.collar.client', 'team.catgirl.collar.libs.team.catgirl.collar.client'
+    classifier ''
+}
+reobf {
+    shadowJar {}
+}
+
+jar.finalizedBy('reobfJar')
