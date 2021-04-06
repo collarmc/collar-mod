@@ -8,7 +8,7 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
-rootProject.name = 'collar'
+rootProject.name = 'collar-mod'
 include 'plastic-api'
 include 'common'
 include 'fabric-1.16'
