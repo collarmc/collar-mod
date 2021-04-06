@@ -5,10 +5,10 @@ import com.google.common.cache.CacheBuilder;
 import team.catgirl.collar.client.Collar;
 import team.catgirl.collar.client.api.textures.Texture;
 import team.catgirl.collar.mod.common.events.CollarConnectedEvent;
-import team.catgirl.events.Subscribe;
 import team.catgirl.plastic.player.Player;
 import team.catgirl.plastic.ui.TextureProvider;
 import team.catgirl.plastic.ui.TextureType;
+import team.catgirl.pounce.Subscribe;
 
 import java.awt.image.BufferedImage;
 import java.util.Objects;
@@ -33,18 +33,24 @@ public class CollarTextureProvider implements TextureProvider {
         }
         team.catgirl.collar.api.textures.TextureType textureType;
         switch (type) {
-            case TextureType.CAPE:
+            case CAPE:
                 textureType = team.catgirl.collar.api.textures.TextureType.CAPE;
                 break;
-            case TextureType.AVATAR:
+            case AVATAR:
                 textureType = team.catgirl.collar.api.textures.TextureType.AVATAR;
                 break;
             default:
                 throw new IllegalStateException("unknown type " + type);
         }
-        return collar.identities().resolvePlayer(player.id())
-                .thenComposeAsync(thePlayer -> collar.textures().playerTextureFuture(thePlayer, textureType)
-                        .getNow(Optional.empty()));
+//        return collar.identities().resolvePlayer(player.id())
+//                .thenComposeAsync(thePlayer -> {
+//                    if (thePlayer.isPresent()) {
+//                        return collar.textures().playerTextureFuture(thePlayer.get(), textureType);
+//                    } else {
+//                        return CompletableFuture.completedFuture(Optional.empty());
+//                    }
+//                });
+        throw new IllegalStateException("not implemented");
     }
 
     @Subscribe

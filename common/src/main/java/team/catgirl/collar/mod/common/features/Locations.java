@@ -10,10 +10,10 @@ import team.catgirl.collar.client.api.location.LocationListener;
 import team.catgirl.collar.mod.common.features.events.PlayerLocationUpdatedEvent;
 import team.catgirl.collar.mod.common.features.events.WaypointCreatedEvent;
 import team.catgirl.collar.mod.common.features.events.WaypointDeletedEvent;
-import team.catgirl.events.EventBus;
 import team.catgirl.plastic.Plastic;
 import team.catgirl.plastic.world.Dimension;
 import team.catgirl.plastic.world.Position;
+import team.catgirl.pounce.EventBus;
 
 import java.util.Set;
 

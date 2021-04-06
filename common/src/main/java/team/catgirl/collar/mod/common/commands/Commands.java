@@ -86,7 +86,7 @@ public class Commands {
                         collarService.with(collar -> {
                             IdentityArgument player = context.getArgument("name", IdentityArgument.class);
                             if (player.player != null) {
-                                collar.friends().addFriend(new MinecraftPlayer(player.player.id(), collar.player().minecraftPlayer.server));
+                                collar.friends().addFriend(new MinecraftPlayer(player.player.id(), collar.player().minecraftPlayer.server, collar.player().minecraftPlayer.networkId));
                             } else if (player.profile != null) {
                                 collar.friends().addFriend(player.profile.id);
                             }
@@ -102,7 +102,7 @@ public class Commands {
                     collarService.with(collar -> {
                         IdentityArgument player = context.getArgument("name", IdentityArgument.class);
                         if (player.player != null) {
-                            collar.friends().removeFriend(new MinecraftPlayer(player.player.id(), collar.player().minecraftPlayer.server));
+                            collar.friends().removeFriend(new MinecraftPlayer(player.player.id(), collar.player().minecraftPlayer.server, collar.player().minecraftPlayer.networkId));
                         } else if (player.profile != null) {
                             collar.friends().removeFriend(player.profile.id);
                         } else {

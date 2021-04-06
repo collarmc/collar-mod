@@ -30,16 +30,17 @@ minecraft {
 
 repositories {
     mavenLocal()
+    mavenCentral()
+    maven {
+        url "https://libraries.minecraft.net"
+    }
 }
 
 dependencies {
-    implementation project(':events')
     implementation project(':plastic-api')
     implementation project(':common')
-    compile group: 'team.catgirl.collar', name: 'client', version: '1.0-SNAPSHOT', classifier: 'full'
-    compile group: 'team.catgirl.collar', name: 'plugin', version: '1.0-SNAPSHOT'
-    compile 'com.mojang:brigadier:1.0.17'
-    implementation group: 'info.journeymap', name: 'journeymap-api', version: '1.12-1.4'
+    implementation group: 'team.catgirl', name: 'pounce', version: "${project.property('pounce.version')}"
+    implementation "com.mojang:brigadier:${project.property("brigadier.version")}"
 }
 
 shadowJar {

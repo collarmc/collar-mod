@@ -2,7 +2,7 @@ package team.catgirl.plastic.world;
 
 public interface Entity {
     /**
-     * @return network id of player
+     * @return network id of entity
      */
     int networkId();
 

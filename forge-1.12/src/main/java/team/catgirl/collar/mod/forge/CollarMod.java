@@ -21,9 +21,9 @@ import team.catgirl.collar.mod.common.CollarService;
 import team.catgirl.collar.mod.common.commands.Commands;
 import team.catgirl.collar.mod.common.plastic.CollarTextureProvider;
 import team.catgirl.collar.mod.common.plugins.Plugins;
-import team.catgirl.events.EventBus;
 import team.catgirl.plastic.Plastic;
 import team.catgirl.plastic.forge.ForgePlastic;
+import team.catgirl.pounce.EventBus;
 
 import java.util.UUID;
 
@@ -41,7 +41,7 @@ public class CollarMod implements CollarListener
     private static boolean isConnectedToServer = false;
     private static final Plugins PLUGINS = new ForgePlugins();
     private static Plastic PLASTIC;
-    public static final EventBus EVENT_BUS = new EventBus();
+    public static final EventBus EVENT_BUS = new EventBus(Runnable::run);
 
     private CollarService collarService;
 

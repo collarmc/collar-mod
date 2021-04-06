@@ -8,9 +8,9 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import team.catgirl.collar.api.groups.Member;
+import team.catgirl.collar.mod.common.CollarService;
 import team.catgirl.plastic.brigadier.CommandTargetNotFoundException;
 import team.catgirl.plastic.Plastic;
-import team.catgirl.collar.mod.service.CollarService;
 
 import java.util.Collection;
 import java.util.List;

@@ -16,6 +16,11 @@ public interface Player extends Entity {
     UUID id();
 
     /**
+     * @return network ID of player
+     */
+    int networkId();
+
+    /**
      * @return name of player
      */
     String name();

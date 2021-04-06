@@ -1,7 +1,15 @@
+pluginManagement {
+    repositories {
+        jcenter()
+        maven {
+            name = 'Fabric'
+            url = 'https://maven.fabricmc.net/'
+        }
+        gradlePluginPortal()
+    }
+}
 rootProject.name = 'collar'
-include 'events'
 include 'plastic-api'
 include 'common'
 include 'fabric-1.16'
 include 'forge-1.12'
-

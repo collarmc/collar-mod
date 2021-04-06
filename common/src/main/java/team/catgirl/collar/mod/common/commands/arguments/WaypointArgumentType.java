@@ -10,8 +10,8 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import team.catgirl.collar.api.groups.Group;
 import team.catgirl.collar.api.waypoints.Waypoint;
 import team.catgirl.collar.client.Collar;
+import team.catgirl.collar.mod.common.CollarService;
 import team.catgirl.plastic.brigadier.CommandTargetNotFoundException;
-import team.catgirl.collar.mod.service.CollarService;
 
 import java.util.ArrayList;
 import java.util.Collection;

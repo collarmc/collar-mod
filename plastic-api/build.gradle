@@ -4,6 +4,7 @@ group 'org.example'
 version '1.0-SNAPSHOT'
 
 repositories {
+    mavenLocal()
     mavenCentral()
     maven {
         url "https://libraries.minecraft.net"
@@ -11,8 +12,8 @@ repositories {
 }
 
 dependencies {
-    implementation project(':events')
-    implementation 'com.mojang:brigadier:1.0.17'
+    implementation group: 'team.catgirl', name: 'pounce', version: "${project.property('pounce.version')}"
+    implementation "com.mojang:brigadier:${project.property("brigadier.version")}"
 }
 
 test {

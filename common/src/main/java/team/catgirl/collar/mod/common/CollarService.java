@@ -13,7 +13,6 @@ import team.catgirl.collar.client.security.ClientIdentityStore;
 import team.catgirl.collar.mod.common.features.*;
 import team.catgirl.collar.mod.common.events.CollarConnectedEvent;
 import team.catgirl.collar.mod.common.events.CollarDisconnectedEvent;
-import team.catgirl.events.EventBus;
 import team.catgirl.plastic.Plastic;
 import team.catgirl.plastic.player.Player;
 import team.catgirl.plastic.ui.TextAction;
@@ -22,6 +21,7 @@ import team.catgirl.plastic.ui.TextFormatting;
 import team.catgirl.plastic.world.Position;
 import team.catgirl.collar.mod.common.plugins.Plugins;
 import team.catgirl.collar.security.mojang.MinecraftSession;
+import team.catgirl.pounce.EventBus;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -33,6 +33,8 @@ import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+
+import static team.catgirl.collar.client.Collar.State.*;
 
 public class CollarService implements CollarListener {
 
@@ -73,7 +75,7 @@ public class CollarService implements CollarListener {
     }
 
     public void with(Consumer<Collar> action, Runnable emptyAction) {
-        if (collar == null || !collar.getState().equals(Collar.State.CONNECTED)) {
+        if (collar == null || !collar.getState().equals(CONNECTED)) {
             emptyAction.run();
         } else {
             action.accept(collar);
@@ -112,11 +114,11 @@ public class CollarService implements CollarListener {
         backgroundJobs.submit(() -> {
             String formatted;
             switch (state) {
-                case State.CONNECTING:
+                case CONNECTING:
                     plastic.display.displayMessage(this.plastic.display.newTextBuilder().add("Collar connecting...", TextFormatting.GREEN));
                     eventBus.dispatch(new CollarConnectedEvent(collar));
                     break;
-                case State.CONNECTED:
+                case CONNECTED:
                     plastic.display.displayMessage(this.plastic.display.newTextBuilder().add("Collar connected", TextFormatting.GREEN));
                     collar.location().subscribe(locations);
                     collar.groups().subscribe(groups);
@@ -124,20 +126,20 @@ public class CollarService implements CollarListener {
                     collar.messaging().subscribe(messaging);
                     collar.textures().subscribe(textures);
                     break;
-                case State.DISCONNECTED:
+                case DISCONNECTED:
                     plastic.display.displayMessage(this.plastic.display.newTextBuilder().add("Collar disconnected", TextFormatting.GREEN));
                     eventBus.dispatch(new CollarDisconnectedEvent());
                     break;
             }
             plugins.find().forEach(plugin -> {
                 switch (state) {
-                    case State.CONNECTING:
+                    case CONNECTING:
                         plugin.onConnecting(collar);
                         break;
-                    case State.CONNECTED:
+                    case CONNECTED:
                         plugin.onConnected(collar);
                         break;
-                    case State.DISCONNECTED:
+                    case DISCONNECTED:
                         plugin.onDisconnected(collar);
                         break;
                 }
@@ -190,14 +192,15 @@ public class CollarService implements CollarListener {
 
     private MinecraftSession getMinecraftSession() {
         String serverIP = plastic.serverIp();
-        UUID playerId = plastic.world.currentPlayer().id();
-        String playerName = plastic.world.currentPlayer().name();
-        return MinecraftSession.noJang(playerId, playerName, serverIP);
+        Player player = plastic.world.currentPlayer();
+        UUID playerId = player.id();
+        String playerName = player.name();
+        return MinecraftSession.noJang(playerId, playerName, player.networkId(), serverIP);
     }
 
     private Set<Entity> nearbyPlayerEntities() {
         return plastic.world.allPlayers().stream()
-                .map(entityPlayer -> new Entity(entityPlayer.networkId(), entityPlayer.id(), EntityType.PLAYER))
+                .map(entityPlayer -> new Entity(entityPlayer.networkId(), EntityType.PLAYER))
                 .collect(Collectors.toSet());
     }
 
@@ -205,13 +208,13 @@ public class CollarService implements CollarListener {
         Player player = plastic.world.currentPlayer();
         Dimension result;
         switch (player.dimension()) {
-            case Dimension.NETHER:
+            case NETHER:
                 result = Dimension.NETHER;
                 break;
-            case Dimension.OVERWORLD:
+            case OVERWORLD:
                 result = Dimension.OVERWORLD;
                 break;
-            case Dimension.END:
+            case END:
                 result = Dimension.END;
                 break;
             default:
