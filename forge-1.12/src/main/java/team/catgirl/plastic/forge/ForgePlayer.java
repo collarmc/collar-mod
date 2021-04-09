@@ -15,7 +15,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.DimensionType;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
-import org.jetbrains.annotations.NotNull;
 import team.catgirl.plastic.ui.TextureProvider;
 import team.catgirl.plastic.ui.TextureType;
 import team.catgirl.plastic.world.Dimension;
@@ -122,7 +121,6 @@ public class ForgePlayer implements Player {
         }
     }
 
-    @NotNull
     private Optional<BufferedImage> defaultAvatar() {
         EntityPlayer playerEntityByName = minecraft.world.getPlayerEntityByName(player.getName());
         if (playerEntityByName == null) {

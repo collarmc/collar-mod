@@ -32,7 +32,6 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
-import org.jetbrains.annotations.Nullable;
 import team.catgirl.plastic.brigadier.CommandTargetNotFoundException;
 
 import java.util.Collections;
@@ -85,7 +84,7 @@ public final class ForgeCommand<T> extends CommandBase {
 	}
 
 	@Override
-	public final List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
+	public final List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos targetPos) {
 		String commandString = getCommandString(args);
 		Suggestions suggestions = this.commandDispatcher.getCompletionSuggestions(this.commandDispatcher.parse(commandString, source)).join();
 		return suggestions.getList().stream().map(Suggestion::getText).collect(Collectors.toList());
