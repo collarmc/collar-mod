@@ -62,11 +62,11 @@ public final class Commands<S> {
     }
 
     private LiteralArgumentBuilder<S> prefixed(String name, ArgumentBuilder<S, ?> argument) {
-        return this.prefixed ? literal("collar").then(literal(name)).then(argument) : literal(name).then(argument);
+        return this.prefixed ? literal("collar").then(literal(name).then(argument)) : literal(name).then(argument);
     }
 
     private LiteralArgumentBuilder<S> prefixed(String name, Command<S> command) {
-        return this.prefixed ? literal("collar").then(literal(name)).executes(command) : literal(name).executes(command);
+        return this.prefixed ? literal("collar").then(literal(name).executes(command)) : literal(name).executes(command);
     }
 
     private void registerServiceCommands(CommandDispatcher<S> dispatcher) {
