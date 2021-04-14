@@ -42,15 +42,26 @@ public class CollarTextureProvider implements TextureProvider {
             default:
                 throw new IllegalStateException("unknown type " + type);
         }
-//        return collar.identities().resolvePlayer(player.id())
-//                .thenComposeAsync(thePlayer -> {
-//                    if (thePlayer.isPresent()) {
-//                        return collar.textures().playerTextureFuture(thePlayer.get(), textureType);
-//                    } else {
-//                        return CompletableFuture.completedFuture(Optional.empty());
-//                    }
-//                });
-        throw new IllegalStateException("not implemented");
+
+        return collar.identities().resolvePlayer(player.id())
+                .thenComposeAsync(thePlayer -> {
+                    if (thePlayer.isPresent()) {
+                        return collar.textures().playerTextureFuture(thePlayer.get(), textureType)
+                                .thenComposeAsync(textureOptional -> {
+                                    if (textureOptional.isPresent()) {
+                                        CompletableFuture<Optional<BufferedImage>> result = new CompletableFuture<>();
+                                        textureOptional.ifPresent(texture -> {
+                                            texture.loadImage(result::complete);
+                                        });
+                                        return result;
+                                    } else {
+                                        return CompletableFuture.completedFuture(Optional.empty());
+                                    }
+                                });
+                    } else {
+                        return CompletableFuture.completedFuture(Optional.empty());
+                    }
+                });
     }
 
     @Subscribe
