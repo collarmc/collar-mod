@@ -1,6 +1,7 @@
 package team.catgirl.collar.mod.common.commands;
 
 import com.google.common.collect.ImmutableList;
+import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
@@ -64,21 +65,25 @@ public final class Commands<S> {
         return this.prefixed ? literal("collar").then(literal(name)).then(argument) : literal(name).then(argument);
     }
 
+    private LiteralArgumentBuilder<S> prefixed(String name, Command<S> command) {
+        return this.prefixed ? literal("collar").then(literal(name)).executes(command) : literal(name).executes(command);
+    }
+
     private void registerServiceCommands(CommandDispatcher<S> dispatcher) {
         // collar connect
-        dispatcher.register(literal("connect").executes(context -> {
+        dispatcher.register(prefixed("connect", context -> {
             collarService.connect();
             return 1;
         }));
 
         // collar disconnect
-        dispatcher.register(literal("disconnect").executes(context -> {
+        dispatcher.register(prefixed("disconnect", context -> {
             collarService.disconnect();
             return 1;
         }));
 
         // collar status
-        dispatcher.register(literal("status").executes(context -> {
+        dispatcher.register(prefixed("status", context -> {
             collarService.with(collar -> {
                 plastic.display.displayInfoMessage("Collar is " + collar.getState().name().toLowerCase());
             }, () -> plastic.display.displayMessage("Collar is disconnected"));
