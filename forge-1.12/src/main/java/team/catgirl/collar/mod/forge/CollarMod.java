@@ -1,6 +1,8 @@
 package team.catgirl.collar.mod.forge;
 
+import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
@@ -22,6 +24,7 @@ import team.catgirl.collar.mod.common.commands.Commands;
 import team.catgirl.collar.mod.common.plastic.CollarTextureProvider;
 import team.catgirl.collar.mod.common.plugins.Plugins;
 import team.catgirl.plastic.Plastic;
+import team.catgirl.plastic.forge.ForgeCommand;
 import team.catgirl.plastic.forge.ForgePlastic;
 import team.catgirl.pounce.EventBus;
 
@@ -57,7 +60,11 @@ public class CollarMod implements CollarListener
         EVENT_BUS.subscribe(textureProvider);
         PLASTIC = new ForgePlastic(textureProvider);
         collarService = new CollarService(PLASTIC, EVENT_BUS, TICKS, PLUGINS);
-        PLASTIC.commands.register("collar", collarService, new Commands(collarService, PLASTIC).create());
+        // Setup the command system
+        CommandDispatcher<CollarService> dispatcher = new CommandDispatcher<>();
+        Commands<CollarService> commands = new Commands<>(collarService, PLASTIC, false);
+        commands.register(dispatcher);
+        ClientCommandHandler.instance.registerCommand(new ForgeCommand<>("collar", collarService, dispatcher));
     }
 
     @SubscribeEvent

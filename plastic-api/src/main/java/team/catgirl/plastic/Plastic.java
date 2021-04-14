@@ -1,6 +1,5 @@
 package team.catgirl.plastic;
 
-import team.catgirl.plastic.ui.Commands;
 import team.catgirl.plastic.ui.Display;
 import team.catgirl.plastic.world.World;
 
@@ -23,15 +22,9 @@ public abstract class Plastic {
      */
     public final World world;
 
-    /**
-     * Command registration
-     */
-    public final Commands commands;
-
-    protected Plastic(Display display, World world, Commands commands) {
+    protected Plastic(Display display, World world) {
         this.display = display;
         this.world = world;
-        this.commands = commands;
         setPlastic(this);
     }
 

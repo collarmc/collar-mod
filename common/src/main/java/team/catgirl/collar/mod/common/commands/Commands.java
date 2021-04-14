@@ -34,28 +34,32 @@ import static team.catgirl.collar.mod.common.commands.arguments.GroupArgumentTyp
 import static team.catgirl.collar.mod.common.commands.arguments.InvitationArgumentType.getInvitation;
 import static team.catgirl.collar.mod.common.commands.arguments.PlayerArgumentType.getPlayer;
 
-public class Commands {
+public final class Commands<S> {
 
     private final CollarService collarService;
     private final Plastic plastic;
+    private final boolean prefixed;
 
-    public Commands(CollarService collarService, Plastic plastic) {
+    public Commands(CollarService collarService, Plastic plastic, boolean prefixed) {
         this.collarService = collarService;
         this.plastic = plastic;
+        this.prefixed = prefixed;
     }
 
-    public CommandDispatcher<CollarService> create() {
-        CommandDispatcher<CollarService> dispatcher = new CommandDispatcher<>();
+    public void register(CommandDispatcher<S> dispatcher) {
         registerServiceCommands(dispatcher);
         registerFriendCommands(dispatcher);
         registerLocationCommands(dispatcher);
         registerWaypointCommands(dispatcher);
         registerGroupCommands(GroupType.PARTY, dispatcher);
         registerGroupCommands(GroupType.GROUP, dispatcher);
-        return dispatcher;
     }
 
-    private void registerServiceCommands(CommandDispatcher<CollarService> dispatcher) {
+    private LiteralArgumentBuilder<S> prefixed(String name) {
+        return this.prefixed ? literal("collar").then(literal(name)) : literal(name);
+    }
+
+    private void registerServiceCommands(CommandDispatcher<S> dispatcher) {
         // collar connect
         dispatcher.register(literal("connect").executes(context -> {
             collarService.connect();
@@ -77,9 +81,9 @@ public class Commands {
         }));
     }
 
-    private void registerFriendCommands(CommandDispatcher<CollarService> dispatcher) {
+    private void registerFriendCommands(CommandDispatcher<S> dispatcher) {
         // collar friend add [user]
-        dispatcher.register(literal("friend")
+        dispatcher.register(prefixed("friend")
             .then(literal("add")
                 .then(argument("name", identity())
                     .executes(context -> {
@@ -95,7 +99,7 @@ public class Commands {
                     }))));
 
         // collar friend remove [user]
-        dispatcher.register(literal("friend")
+        dispatcher.register(prefixed("friend")
                 .then(literal("remove")
                 .then(argument("name", identity())
                 .executes(context -> {
@@ -113,7 +117,7 @@ public class Commands {
                 }))));
 
         // collar friend list
-        dispatcher.register(literal("friend")
+        dispatcher.register(prefixed("friend")
                 .then(literal("list")
                 .executes(context -> {
                     collarService.with(collar -> {
@@ -131,9 +135,9 @@ public class Commands {
                 })));
     }
 
-    private void registerGroupCommands(GroupType type, CommandDispatcher<CollarService> dispatcher) {
+    private void registerGroupCommands(GroupType type, CommandDispatcher<S> dispatcher) {
         // collar party create [name]
-        dispatcher.register(literal(type.name)
+        dispatcher.register(prefixed(type.name)
                 .then(literal("create")
                 .then(argument("name", string())
                 .executes(context -> {
@@ -144,7 +148,7 @@ public class Commands {
                 }))));
 
         // collar party delete [name]
-        dispatcher.register(literal(type.name)
+        dispatcher.register(prefixed(type.name)
                 .then(literal("delete")
                 .then(argument("name", group(type))
                 .executes(context -> {
@@ -155,7 +159,7 @@ public class Commands {
                 }))));
 
         // collar party leave [name]
-        dispatcher.register(literal(type.name)
+        dispatcher.register(prefixed(type.name)
                 .then(literal("leave")
                 .then(argument("name", group(type))
                 .executes(context -> {
@@ -166,7 +170,7 @@ public class Commands {
                 }))));
 
         // collar party accept [name]
-        dispatcher.register(literal(type.name)
+        dispatcher.register(prefixed(type.name)
                 .then(literal("accept")
                 .then(argument("groupName", invitation(type))
                 .executes(context -> {
@@ -177,7 +181,7 @@ public class Commands {
                 }))));
 
         // collar party list
-        dispatcher.register(literal(type.name)
+        dispatcher.register(prefixed(type.name)
                 .then(literal("list")
                 .executes(context -> {
                     collarService.with(collar -> {
@@ -195,7 +199,7 @@ public class Commands {
                 })));
 
         // collar party [name] add [player]
-        dispatcher.register(literal(type.name)
+        dispatcher.register(prefixed(type.name)
                 .then(argument("groupName", group(type))
                 .then(literal("add")
                 .then(argument("playerName", player())
@@ -209,7 +213,7 @@ public class Commands {
                 })))));
 
         // collar party [name] remove [player]
-        dispatcher.register(literal(type.name)
+        dispatcher.register(prefixed(type.name)
                 .then(argument("groupName", group(type))
                 .then(literal("remove")
                 .then(argument("playerName", identity())
@@ -225,9 +229,9 @@ public class Commands {
                 })))));
     }
 
-    private void registerLocationCommands(CommandDispatcher<CollarService> dispatcher) {
+    private void registerLocationCommands(CommandDispatcher<S> dispatcher) {
         // collar location share start [any group name]
-        dispatcher.register(literal("location")
+        dispatcher.register(prefixed("location")
                 .then(literal("share")
                 .then(literal("start")
                 .then(argument("groupName", groups())
@@ -240,7 +244,7 @@ public class Commands {
                 })))));
 
         // collar location share stop [any group name]
-        dispatcher.register(literal("location")
+        dispatcher.register(prefixed("location")
                 .then(literal("share")
                 .then(literal("stop")
                 .then(argument("groupName", groups())
@@ -253,7 +257,7 @@ public class Commands {
                 })))));
 
         // collar location share stop [any group name]
-        dispatcher.register(literal("location")
+        dispatcher.register(prefixed("location")
                 .then(literal("share")
                 .then(literal("list")
                 .executes(context -> {
@@ -272,10 +276,10 @@ public class Commands {
                 }))));
     }
 
-    private void registerWaypointCommands(CommandDispatcher<CollarService> dispatcher) {
+    private void registerWaypointCommands(CommandDispatcher<S> dispatcher) {
 
         // collar location waypoint add [name]
-        dispatcher.register(literal("waypoint")
+        dispatcher.register(prefixed("waypoint")
                 .then(literal("add")
                 .then(argument("name", string())
                 .executes(context -> {
@@ -289,7 +293,7 @@ public class Commands {
                 }))));
 
         // collar waypoint remove [name]
-        dispatcher.register(literal("waypoint")
+        dispatcher.register(prefixed("waypoint")
                 .then(literal("remove")
                 .then(argument("name", privateWaypoint())
                 .executes(context -> {
@@ -301,7 +305,7 @@ public class Commands {
                 }))));
 
         // collar location waypoint list
-        dispatcher.register(literal("waypoint")
+        dispatcher.register(prefixed("waypoint")
                 .then(literal("list")
                 .executes(context -> {
                     collarService.with(collar -> {
@@ -316,7 +320,7 @@ public class Commands {
                 })));
 
         // collar location waypoint list [any group name]
-        dispatcher.register(literal("waypoint")
+        dispatcher.register(prefixed("waypoint")
                 .then(literal("list")
                 .then(argument("group", groups())
                 .executes(context -> {
@@ -333,7 +337,7 @@ public class Commands {
                 }))));
 
         // collar location waypoint add [name] [x] [y] [z] to [group]
-        dispatcher.register(literal("waypoint")
+        dispatcher.register(prefixed("waypoint")
                 .then(literal("add")
                 .then(argument("name", string())
                 .then(argument("x", doubleArg())
@@ -358,7 +362,7 @@ public class Commands {
                 }))))))))));
 
         // collar location waypoint remove [name] from [group]
-        dispatcher.register(literal("waypoint")
+        dispatcher.register(prefixed("waypoint")
                 .then(literal("remove")
                 .then(argument("name", groupWaypoint())
                 .then(literal("from")
@@ -377,7 +381,7 @@ public class Commands {
                 }))))));
 
         // collar waypoint add [name] [x] [y] [z]
-        dispatcher.register(literal("waypoint")
+        dispatcher.register(prefixed("waypoint")
                 .then(literal("add")
                 .then(argument("name", string())
                 .then(argument("x", doubleArg())
@@ -417,11 +421,11 @@ public class Commands {
         return dimension;
     }
 
-    public static <T> RequiredArgumentBuilder<CollarService, T> argument(final String name, final ArgumentType<T> type) {
+    public <T> RequiredArgumentBuilder<S, T> argument(String name, ArgumentType<T> type) {
         return RequiredArgumentBuilder.argument(name, type);
     }
 
-    public static LiteralArgumentBuilder<CollarService> literal(final String name) {
+    private LiteralArgumentBuilder<S> literal(final String name) {
         return LiteralArgumentBuilder.literal(name);
     }
 

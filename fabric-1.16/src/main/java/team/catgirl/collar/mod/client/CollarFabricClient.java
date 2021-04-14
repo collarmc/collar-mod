@@ -3,12 +3,15 @@ package team.catgirl.collar.mod.client;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.ActionResult;
 import team.catgirl.collar.client.minecraft.Ticks;
 import team.catgirl.collar.mod.FabricPlugins;
 import team.catgirl.collar.mod.common.CollarService;
+import team.catgirl.collar.mod.common.commands.Commands;
 import team.catgirl.collar.mod.common.plastic.CollarTextureProvider;
 import team.catgirl.collar.mod.common.plugins.Plugins;
 import team.catgirl.collar.mod.events.ClientDisconnectCallback;
@@ -39,5 +42,7 @@ public class CollarFabricClient implements ClientModInitializer {
             }
             return ActionResult.PASS;
         });
+        Commands<FabricClientCommandSource> commands = new Commands<>(COLLAR_SERVICE, PLASTIC, true);
+        commands.register(ClientCommandManager.DISPATCHER);
     }
 }

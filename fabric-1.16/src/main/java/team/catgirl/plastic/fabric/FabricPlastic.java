@@ -10,7 +10,7 @@ import java.io.File;
 public final class FabricPlastic extends Plastic {
 
     public FabricPlastic(TextureProvider textureProvider) {
-        super(new FabricDisplay(), new FabricWorld(textureProvider), new FabricCommands());
+        super(new FabricDisplay(), new FabricWorld(textureProvider));
     }
 
     @Override
