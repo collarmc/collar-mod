@@ -1,5 +1,6 @@
 package team.catgirl.collar.mod.common.commands.arguments;
 
+import com.google.common.collect.ImmutableList;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.context.CommandContext;
@@ -8,9 +9,11 @@ import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import team.catgirl.collar.api.groups.Group;
 import team.catgirl.collar.api.groups.GroupType;
+import team.catgirl.collar.client.Collar;
 import team.catgirl.collar.mod.common.CollarService;
 import team.catgirl.plastic.brigadier.CommandTargetNotFoundException;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -61,10 +64,14 @@ public class GroupArgumentType implements ArgumentType<Group> {
         if (!collarService.getCollar().isPresent()) {
             return Collections.emptyList();
         }
+        Collar collar = collarService.getCollar().get();
+        if (collar.getState() != Collar.State.CONNECTED) {
+            return new ArrayList<>();
+        }
         if (type == null) {
-            return collarService.getCollar().get().groups().matching(GroupType.GROUP, GroupType.PARTY);
+            return collar.groups().matching(GroupType.GROUP, GroupType.PARTY);
         } else {
-            return collarService.getCollar().get().groups().matching(type);
+            return collar.groups().matching(type);
         }
     }
 }

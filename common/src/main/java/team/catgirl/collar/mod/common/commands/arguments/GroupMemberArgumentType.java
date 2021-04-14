@@ -8,10 +8,12 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import team.catgirl.collar.api.groups.Member;
+import team.catgirl.collar.client.Collar;
 import team.catgirl.collar.mod.common.CollarService;
 import team.catgirl.plastic.brigadier.CommandTargetNotFoundException;
 import team.catgirl.plastic.Plastic;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -66,7 +68,11 @@ public final class GroupMemberArgumentType implements ArgumentType<Member> {
         if (!collarService.getCollar().isPresent()) {
             return ImmutableList.of();
         }
-        Collection<Member> values = collarService.getCollar().get().groups().all().stream()
+        Collar collar = collarService.getCollar().get();
+        if (collar.getState() != Collar.State.CONNECTED) {
+            return new ArrayList<>();
+        }
+        Collection<Member> values = collar.groups().all().stream()
                 .flatMap(group -> group.members.stream())
                 .collect(Collectors.toMap(member -> member.player.profile, o -> o, (member, member2) -> member)).values();
         return ImmutableList.copyOf(values);

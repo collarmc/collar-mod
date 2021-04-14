@@ -15,6 +15,7 @@ import team.catgirl.plastic.brigadier.CommandTargetNotFoundException;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
@@ -55,6 +56,9 @@ public class WaypointArgumentType implements ArgumentType<WaypointArgumentType.W
             return ImmutableList.of();
         }
         Collar collar = collarService.getCollar().get();
+        if (collar.getState() != Collar.State.CONNECTED) {
+            return new ArrayList<>();
+        }
         if (privateWaypoints) {
             return collar.location().privateWaypoints().stream()
                     .map(waypoint -> new WaypointArgument(waypoint, null))

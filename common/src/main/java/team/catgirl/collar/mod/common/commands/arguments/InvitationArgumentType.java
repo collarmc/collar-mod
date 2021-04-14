@@ -7,12 +7,14 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import team.catgirl.collar.api.groups.GroupType;
+import team.catgirl.collar.client.Collar;
 import team.catgirl.collar.client.api.groups.GroupInvitation;
 import team.catgirl.collar.mod.common.CollarService;
 import team.catgirl.plastic.brigadier.CommandTargetNotFoundException;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
@@ -47,7 +49,11 @@ public class InvitationArgumentType implements ArgumentType<GroupInvitation> {
         if (!collarService.getCollar().isPresent()) {
             return builder.buildFuture();
         }
-        collarService.getCollar().get().groups().invitations().stream().filter(invitation -> invitation.type.equals(type))
+        Collar collar = collarService.getCollar().get();
+        if (collar.getState() != Collar.State.CONNECTED) {
+            return builder.buildFuture();
+        }
+        collar.groups().invitations().stream().filter(invitation -> invitation.type.equals(type))
                 .filter(invitation -> invitation.name.toLowerCase().startsWith(builder.getRemaining().toLowerCase()))
                 .forEach(group -> builder.suggest(group.name));
         return builder.buildFuture();
@@ -58,7 +64,11 @@ public class InvitationArgumentType implements ArgumentType<GroupInvitation> {
         if (!collarService.getCollar().isPresent()) {
             return Collections.emptyList();
         }
-        return collarService.getCollar().get().groups().invitations().stream()
+        Collar collar = collarService.getCollar().get();
+        if (collar.getState() != Collar.State.CONNECTED) {
+            return new HashSet<>();
+        }
+        return collar.groups().invitations().stream()
                 .filter(invitation -> invitation.type.equals(type))
                 .limit(3)
                 .map(invitation -> invitation.name)

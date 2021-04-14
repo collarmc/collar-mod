@@ -8,14 +8,13 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import team.catgirl.collar.api.profiles.PublicProfile;
+import team.catgirl.collar.client.Collar;
 import team.catgirl.collar.mod.common.CollarService;
 import team.catgirl.plastic.brigadier.CommandTargetNotFoundException;
 import team.catgirl.plastic.Plastic;
 import team.catgirl.plastic.player.Player;
 
-import java.util.Collection;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
@@ -55,10 +54,14 @@ public final class IdentityArgumentType implements ArgumentType<IdentityArgument
         if (!collarService.getCollar().isPresent()) {
             return ImmutableSet.of();
         }
+        Collar collar = collarService.getCollar().get();
+        if (collar.getState() != Collar.State.CONNECTED) {
+            return new HashSet<>();
+        }
         return ImmutableSet.<IdentityArgument>builder()
                 .addAll(plastic.world.allPlayers().stream().map(player -> new IdentityArgument(player, null)).collect(Collectors.toList()))
-                .addAll(collarService.getCollar().get().friends().list().stream().map(friend -> new IdentityArgument(null, friend.friend)).collect(Collectors.toList()))
-                .addAll(collarService.getCollar().get().groups().all().stream().flatMap(group -> group.members.stream()).map(member -> new IdentityArgument(null, member.profile)).collect(Collectors.toList()))
+                .addAll(collar.friends().list().stream().map(friend -> new IdentityArgument(null, friend.friend)).collect(Collectors.toList()))
+                .addAll(collar.groups().all().stream().flatMap(group -> group.members.stream()).map(member -> new IdentityArgument(null, member.profile)).collect(Collectors.toList()))
                 .build();
     }
 
