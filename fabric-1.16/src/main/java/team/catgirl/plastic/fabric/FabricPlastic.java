@@ -3,13 +3,14 @@ package team.catgirl.plastic.fabric;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ServerInfo;
 import team.catgirl.plastic.Plastic;
+import team.catgirl.plastic.ui.TextureProvider;
 
 import java.io.File;
 
 public final class FabricPlastic extends Plastic {
 
-    public FabricPlastic() {
-        super(new FabricDisplay(), new FabricWorld(), new FabricCommands());
+    public FabricPlastic(TextureProvider textureProvider) {
+        super(new FabricDisplay(), new FabricWorld(textureProvider), new FabricCommands());
     }
 
     @Override
