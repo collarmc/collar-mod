@@ -11,7 +11,7 @@ public class FabricPlugins implements Plugins {
     @Override
     public Stream<CollarPlugin> find() {
         return FabricLoader.getInstance().getEntrypoints("client", ClientModInitializer.class).stream()
-                .filter(clientModInitializer -> clientModInitializer instanceof CollarPlugin)
-                .map(clientModInitializer -> (CollarPlugin)clientModInitializer);
+                .filter(CollarPlugin.class::isInstance)
+                .map(CollarPlugin.class::cast);
     }
 }

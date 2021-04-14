@@ -5,12 +5,12 @@ import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.util.ActionResult;
 
 @FunctionalInterface
-public interface ClientConnectCallback {
+public interface ClientLoginCallback {
 
-	Event<ClientConnectCallback> EVENT = EventFactory.createArrayBacked(ClientConnectCallback.class,
+	Event<ClientLoginCallback> EVENT = EventFactory.createArrayBacked(ClientLoginCallback.class,
 			(listeners) -> () -> {
-				for (final ClientConnectCallback listener : listeners) {
-					ActionResult result = listener.onConnected();
+				for (final ClientLoginCallback listener : listeners) {
+					ActionResult result = listener.onLogin();
 					
 					if (result != ActionResult.PASS) {
 						return result;
@@ -20,6 +20,6 @@ public interface ClientConnectCallback {
 				return ActionResult.PASS;
 			});
 
-	ActionResult onConnected();
+	ActionResult onLogin();
 
 }

@@ -11,7 +11,7 @@ import team.catgirl.collar.mod.FabricPlugins;
 import team.catgirl.collar.mod.common.CollarService;
 import team.catgirl.collar.mod.common.plugins.Plugins;
 import team.catgirl.collar.mod.events.ClientDisconnectCallback;
-import team.catgirl.collar.mod.events.ClientConnectCallback;
+import team.catgirl.collar.mod.events.ClientLoginCallback;
 import team.catgirl.collar.mod.events.WorldLoadedCallback;
 import team.catgirl.plastic.Plastic;
 import team.catgirl.plastic.fabric.FabricPlastic;
@@ -29,10 +29,6 @@ public class CollarFabricClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         ClientTickEvents.START_CLIENT_TICK.register(client -> TICKS.onTick());
-        ClientConnectCallback.EVENT.register(() -> {
-            COLLAR_SERVICE.connect();
-            return ActionResult.PASS;
-        });
         ClientDisconnectCallback.EVENT.register(() -> {
             COLLAR_SERVICE.disconnect();
             return ActionResult.PASS;

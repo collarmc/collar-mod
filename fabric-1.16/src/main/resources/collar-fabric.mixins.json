@@ -5,8 +5,7 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "ClientWorldMixin",
-    "ConnectionThreadMixin",
-    "MinecraftClientMixin"
+    "ClientConnectionMixin"
   ],
   "client": [
   ],
