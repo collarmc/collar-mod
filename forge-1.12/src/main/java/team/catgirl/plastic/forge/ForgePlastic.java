@@ -11,7 +11,7 @@ public class ForgePlastic extends Plastic {
 
 
     public ForgePlastic(TextureProvider textureProvider) {
-        super(new ForgeDisplay(), new ForgeWorld(textureProvider), new ForgeCommands());
+        super(new ForgeDisplay(), new ForgeWorld(textureProvider));
     }
 
     @Override
