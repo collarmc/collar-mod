@@ -94,7 +94,7 @@ public class CollarService implements CollarListener {
             } catch (CollarException e) {
                 plastic.display.displayMessage(plastic.display.newTextBuilder().add(e.getMessage(), TextFormatting.RED));
                 LOGGER.log(Level.SEVERE, e.getMessage(), e);
-            } catch (IOException e) {
+            } catch (Throwable e) {
                 plastic.display.displayMessage(plastic.display.newTextBuilder().add("Failed to connect to Collar", TextFormatting.RED));
                 LOGGER.log(Level.SEVERE, e.getMessage(), e);
             }
