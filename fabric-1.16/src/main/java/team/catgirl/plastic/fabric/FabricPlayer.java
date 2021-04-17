@@ -9,12 +9,12 @@ import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.texture.NativeImageBackedTexture;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import team.catgirl.collar.api.location.Dimension;
+import team.catgirl.collar.api.location.Location;
 import team.catgirl.collar.mod.mixin.PlayerListEntryMixin;
 import team.catgirl.plastic.player.Player;
 import team.catgirl.plastic.ui.TextureProvider;
 import team.catgirl.plastic.ui.TextureType;
-import team.catgirl.plastic.world.Dimension;
-import team.catgirl.plastic.world.Position;
 
 import java.awt.image.BufferedImage;
 import java.util.Map;
@@ -83,13 +83,7 @@ public class FabricPlayer implements Player {
     }
 
     @Override
-    public Position position() {
-        BlockPos blockPos = playerEntity.getBlockPos();
-        return new Position(blockPos.getX(), blockPos.getY(), blockPos.getZ());
-    }
-
-    @Override
-    public Dimension dimension() {
+    public Location location() {
         Dimension dimension;
         Identifier skyProperties = playerEntity.getEntityWorld().getDimension().getSkyProperties();
         if (OVERWORLD_ID.equals(skyProperties)) {
@@ -101,7 +95,8 @@ public class FabricPlayer implements Player {
         } else {
             dimension = Dimension.UNKNOWN;
         }
-        return dimension;
+        BlockPos blockPos = playerEntity.getBlockPos();
+        return new Location((double)blockPos.getX(), (double)blockPos.getY(), (double)blockPos.getZ(), dimension);
     }
 
     private static NativeImage nativeImageFrom(BufferedImage img) {

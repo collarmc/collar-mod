@@ -14,19 +14,22 @@ import team.catgirl.collar.mod.common.features.*;
 import team.catgirl.collar.mod.common.events.CollarConnectedEvent;
 import team.catgirl.collar.mod.common.events.CollarDisconnectedEvent;
 import team.catgirl.plastic.Plastic;
+import team.catgirl.plastic.events.client.ClientConnectedEvent;
+import team.catgirl.plastic.events.client.ClientDisconnectedEvent;
+import team.catgirl.plastic.events.client.OnTickEvent;
+import team.catgirl.plastic.events.world.WorldLoadedEvent;
 import team.catgirl.plastic.player.Player;
 import team.catgirl.plastic.ui.TextAction;
 import team.catgirl.plastic.ui.TextBuilder;
 import team.catgirl.plastic.ui.TextFormatting;
-import team.catgirl.plastic.world.Position;
 import team.catgirl.collar.mod.common.plugins.Plugins;
 import team.catgirl.collar.security.mojang.MinecraftSession;
 import team.catgirl.pounce.EventBus;
+import team.catgirl.pounce.Preference;
+import team.catgirl.pounce.Subscribe;
 
 import java.io.IOException;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
@@ -41,6 +44,7 @@ public class CollarService implements CollarListener {
     private static final Logger LOGGER = Logger.getLogger(CollarService.class.getName());
 
     private final ExecutorService backgroundJobs;
+    private final ConnectionState connectionState = new ConnectionState(this);
     private Collar collar;
     private final Plastic plastic;
     private final EventBus eventBus;
@@ -53,10 +57,10 @@ public class CollarService implements CollarListener {
     public final Textures textures;
     public final Groups groups;
 
-    public CollarService(Plastic plastic, EventBus eventBus, Ticks ticks, Plugins plugins) {
+    public CollarService(Plastic plastic, EventBus eventBus, Plugins plugins) {
         this.plastic = plastic;
         this.eventBus = eventBus;
-        this.ticks = ticks;
+        this.ticks = new Ticks();
         this.plugins = plugins;
         this.locations = new Locations(plastic, eventBus);
         this.friends = new Friends(plastic);
@@ -68,6 +72,7 @@ public class CollarService implements CollarListener {
             thread.setName("Collar Worker");
             return thread;
         });
+        eventBus.subscribe(connectionState);
     }
 
     public Optional<Collar> getCollar() {
@@ -150,7 +155,9 @@ public class CollarService implements CollarListener {
     @Override
     public void onConfirmDeviceRegistration(Collar collar, String token, String approvalUrl) {
         plastic.display.displayStatusMessage("Collar registration required");
-        TextBuilder text = plastic.display.newTextBuilder().add("New Collar installation detected. You can register this installation with your Collar account at ")
+        plastic.display.displayMessage(rainbowText("Welcome to Collar!"));
+        TextBuilder text = plastic.display.newTextBuilder()
+                .add("You'll need to associate this computer with your Collar account at ")
                 .add(approvalUrl, TextFormatting.GOLD, new TextAction.OpenLinkAction(approvalUrl));
         plastic.display.displayMessage(text);
     }
@@ -184,7 +191,7 @@ public class CollarService implements CollarListener {
                 .withListener(this)
                 .withTicks(ticks)
                 .withHomeDirectory(plastic.home())
-                .withPlayerLocation(this::currentLocation)
+                .withPlayerLocation(() -> plastic.world.currentPlayer().location())
                 .withEntitiesSupplier(this::nearbyPlayerEntities)
                 .withSession(this::getMinecraftSession).build();
         return Collar.create(configuration);
@@ -204,24 +211,57 @@ public class CollarService implements CollarListener {
                 .collect(Collectors.toSet());
     }
 
-    private Location currentLocation() {
-        Player player = plastic.world.currentPlayer();
-        Dimension result;
-        switch (player.dimension()) {
-            case NETHER:
-                result = Dimension.NETHER;
-                break;
-            case OVERWORLD:
-                result = Dimension.OVERWORLD;
-                break;
-            case END:
-                result = Dimension.END;
-                break;
-            default:
-                result = Dimension.UNKNOWN;
-                break;
+    @Subscribe(Preference.POOL)
+    private void onTick(OnTickEvent event) {
+        ticks.onTick();
+    }
+
+    private TextBuilder rainbowText(String text) {
+        TextBuilder builder = plastic.display.newTextBuilder();
+        List<TextFormatting> colors = TextFormatting.colors();
+        Random random = new Random();
+        for (char c : text.toCharArray()) {
+            TextFormatting value = colors.get(random.nextInt(colors.size()));
+            builder = builder.add(Character.toString(c), value);
         }
-        Position position = player.position();
-        return new Location(position.x, position.y, position.z, result);
+        return builder;
+    }
+
+    /**
+     * Manages connection state of Collar client
+     */
+    public static final class ConnectionState {
+        private final CollarService service;
+
+        private boolean connected = false;
+        private boolean loaded = false;
+
+        public ConnectionState(CollarService service) {
+            this.service = service;
+        }
+
+        @Subscribe(Preference.CALLER)
+        public void connected(ClientConnectedEvent e) {
+            this.connected = true;
+            attemptToConnect();
+        }
+
+        @Subscribe(Preference.CALLER)
+        public void disconnected(ClientDisconnectedEvent e) {
+            this.connected = false;
+            this.loaded = false;
+        }
+
+        @Subscribe(Preference.CALLER)
+        public void worldLoaded(WorldLoadedEvent event) {
+            this.loaded = true;
+            attemptToConnect();
+        }
+
+        private void attemptToConnect() {
+            if (connected && loaded) {
+                service.connect();
+            }
+        }
     }
 }

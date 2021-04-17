@@ -1,7 +1,12 @@
 package team.catgirl.plastic;
 
+import team.catgirl.plastic.events.client.ClientConnectedEvent;
+import team.catgirl.plastic.events.client.ClientDisconnectedEvent;
+import team.catgirl.plastic.events.client.OnTickEvent;
+import team.catgirl.plastic.events.render.RenderOverlaysEvent;
 import team.catgirl.plastic.ui.Display;
 import team.catgirl.plastic.world.World;
+import team.catgirl.pounce.EventBus;
 
 import java.io.File;
 
@@ -22,9 +27,15 @@ public abstract class Plastic {
      */
     public final World world;
 
-    protected Plastic(Display display, World world) {
+    /**
+     * The event bus
+     */
+    public final EventBus eventBus;
+
+    protected Plastic(Display display, World world, EventBus eventBus) {
         this.display = display;
         this.world = world;
+        this.eventBus = eventBus;
         setPlastic(this);
     }
 
@@ -55,5 +66,33 @@ public abstract class Plastic {
             throw new IllegalStateException("plastic instance is already set");
         }
         Plastic.INSTANCE = plastic;
+    }
+
+    /**
+     * Fires {@link ClientConnectedEvent}
+     */
+    public final void onClientConnected() {
+        eventBus.dispatch(new ClientConnectedEvent());
+    }
+
+    /**
+     * Fires {@link ClientDisconnectedEvent}
+     */
+    public final void onClientDisconnected() {
+        eventBus.dispatch(new ClientDisconnectedEvent());
+    }
+
+    /**
+     * Fires {@link OnTickEvent}
+     */
+    public final void onTick() {
+        eventBus.dispatch(new OnTickEvent());
+    }
+
+    /**
+     * Fires {@link RenderOverlaysEvent}
+     */
+    public final void onRenderOverlays() {
+        eventBus.dispatch(new RenderOverlaysEvent());
     }
 }

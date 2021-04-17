@@ -1,11 +1,9 @@
 package team.catgirl.plastic.player;
 
+import team.catgirl.plastic.events.render.PlayerRenderEvent;
 import team.catgirl.plastic.world.Entity;
-import team.catgirl.plastic.world.Position;
-import team.catgirl.plastic.world.Dimension;
 
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -30,5 +28,8 @@ public interface Player extends Entity {
      */
     Optional<BufferedImage> avatar();
 
+    /**
+     * Run when {@link PlayerRenderEvent} fired
+     */
     void onRender();
 }

@@ -1,17 +1,55 @@
 package team.catgirl.plastic.world;
 
+import team.catgirl.plastic.events.world.WorldLoadedEvent;
 import team.catgirl.plastic.player.Player;
+import team.catgirl.plastic.ui.TextureProvider;
+import team.catgirl.pounce.EventBus;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
-public interface World {
+public abstract class World {
+
+    protected TextureProvider textureProvider;
+    protected final EventBus eventBus;
+
+    public World(TextureProvider textureProvider, EventBus eventBus) {
+        this.textureProvider = textureProvider;
+        this.eventBus = eventBus;
+    }
+
     /**
      * @return the current player
      */
-    Player currentPlayer();
+    public abstract Player currentPlayer();
 
     /**
      * @return all players on the server
      */
-    List<Player> allPlayers();
+    public abstract List<Player> allPlayers();
+
+    /**
+     * Find player by their ID
+     * @param id of player
+     * @return player
+     */
+    public Optional<Player> findPlayerById(UUID id) {
+        return allPlayers().stream().filter(candidate -> candidate.id().equals(id)).findFirst();
+    }
+
+    /**
+     * Fires the {@link WorldLoadedEvent}
+     */
+    public final void onWorldLoaded() {
+        eventBus.dispatch(new WorldLoadedEvent());
+    }
+
+    /**
+     * Calls {@link Player#onRender()}
+     * @param id player id
+     */
+    public final void onPlayerRender(UUID id) {
+        findPlayerById(id).ifPresent(Player::onRender);
+    }
 }

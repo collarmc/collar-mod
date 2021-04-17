@@ -1,5 +1,11 @@
 package team.catgirl.plastic.world;
 
+import team.catgirl.collar.api.location.Location;
+
+/**
+ * TODO: replace with {@link team.catgirl.collar.api.entities.Entity}
+ */
+@Deprecated
 public interface Entity {
     /**
      * @return network id of entity
@@ -9,10 +15,5 @@ public interface Entity {
     /**
      * @return current position
      */
-    Position position();
-
-    /**
-     * @return current dimension
-     */
-    Dimension dimension();
+    Location location();
 }

@@ -4,13 +4,14 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ServerInfo;
 import team.catgirl.plastic.Plastic;
 import team.catgirl.plastic.ui.TextureProvider;
+import team.catgirl.pounce.EventBus;
 
 import java.io.File;
 
 public final class FabricPlastic extends Plastic {
 
-    public FabricPlastic(TextureProvider textureProvider) {
-        super(new FabricDisplay(), new FabricWorld(textureProvider));
+    public FabricPlastic(TextureProvider textureProvider, EventBus eventBus) {
+        super(new FabricDisplay(), new FabricWorld(textureProvider, eventBus), eventBus);
     }
 
     @Override

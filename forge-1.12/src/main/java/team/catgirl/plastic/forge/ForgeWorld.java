@@ -5,16 +5,15 @@ import net.minecraft.entity.player.EntityPlayer;
 import team.catgirl.plastic.player.Player;
 import team.catgirl.plastic.ui.TextureProvider;
 import team.catgirl.plastic.world.World;
+import team.catgirl.pounce.EventBus;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ForgeWorld implements World {
+public class ForgeWorld extends World {
 
-    private final TextureProvider textureProvider;
-
-    public ForgeWorld(TextureProvider textureProvider) {
-        this.textureProvider = textureProvider;
+    public ForgeWorld(TextureProvider textureProvider, EventBus eventBus) {
+        super(textureProvider, eventBus);
     }
 
     @Override

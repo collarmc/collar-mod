@@ -15,11 +15,11 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.DimensionType;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import team.catgirl.collar.api.location.Dimension;
+import team.catgirl.collar.api.location.Location;
 import team.catgirl.plastic.ui.TextureProvider;
 import team.catgirl.plastic.ui.TextureType;
-import team.catgirl.plastic.world.Dimension;
 import team.catgirl.plastic.player.Player;
-import team.catgirl.plastic.world.Position;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -67,23 +67,23 @@ public class ForgePlayer implements Player {
     }
 
     @Override
-    public Position position() {
-        BlockPos pos = player.getPosition();
-        return new Position(pos.getX(), pos.getY(), pos.getZ());
-    }
-
-    @Override
-    public Dimension dimension() {
+    public Location location() {
+        Dimension dimension;
         switch (DimensionType.getById(player.dimension)) {
             case NETHER:
-                return Dimension.NETHER;
+                dimension = Dimension.NETHER;
+                break;
             case OVERWORLD:
-                return Dimension.OVERWORLD;
+                dimension = Dimension.OVERWORLD;
+                break;
             case THE_END:
-                return Dimension.END;
+                dimension = Dimension.END;
+                break;
             default:
-                return Dimension.UNKNOWN;
+                dimension = Dimension.UNKNOWN;
         }
+        BlockPos pos = player.getPosition();
+        return new Location((double)pos.getX(), (double)pos.getY(), (double)pos.getZ(), dimension);
     }
 
     @Override

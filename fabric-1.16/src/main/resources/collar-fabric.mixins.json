@@ -6,7 +6,10 @@
   "mixins": [
     "ClientWorldMixin",
     "ClientConnectionMixin",
-    "PlayerListEntryMixin"
+    "PlayerListEntryMixin",
+    "PlayerEntityRendererMixin",
+    "InGameOverlayRendererMixin",
+    "MinecraftClientMixin"
   ],
   "client": [
   ],

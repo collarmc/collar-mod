@@ -21,7 +21,6 @@ import team.catgirl.collar.mod.common.commands.arguments.WaypointArgumentType.Wa
 import team.catgirl.plastic.Plastic;
 import team.catgirl.plastic.player.Player;
 import team.catgirl.plastic.ui.TextFormatting;
-import team.catgirl.plastic.world.Position;
 import team.catgirl.collar.security.mojang.MinecraftPlayer;
 
 import java.util.*;
@@ -280,9 +279,7 @@ public final class Commands<S> {
                 .then(argument("name", string())
                         .executes(context -> {
                             collarService.with(collar -> {
-                                Position pos = plastic.world.currentPlayer().position();
-                                Dimension dimension = mapDimension();
-                                Location location = new Location(pos.x, pos.y, pos.z, dimension);
+                                Location location = plastic.world.currentPlayer().location();
                                 collar.location().addWaypoint(getString(context, "name"), location);
                             });
                             return 1;
@@ -391,24 +388,6 @@ public final class Commands<S> {
                                                             });
                                                             return 1;
                                                         }))))))));
-    }
-
-    private Dimension mapDimension() {
-        Dimension dimension;
-        switch (plastic.world.currentPlayer().dimension()) {
-            case NETHER:
-                dimension = Dimension.NETHER;
-                break;
-            case END:
-                dimension = Dimension.END;
-                break;
-            case OVERWORLD:
-                dimension = Dimension.OVERWORLD;
-                break;
-            default:
-                dimension = Dimension.UNKNOWN;
-        }
-        return dimension;
     }
 
     public <T> RequiredArgumentBuilder<S, T> argument(String name, ArgumentType<T> type) {

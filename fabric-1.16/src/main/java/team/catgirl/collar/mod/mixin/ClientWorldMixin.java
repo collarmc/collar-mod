@@ -5,12 +5,12 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import team.catgirl.collar.mod.events.WorldLoadedCallback;
+import team.catgirl.plastic.Plastic;
 
 @Mixin(ClientWorld.class)
 public class ClientWorldMixin {
     @Inject(method = "<init>", at = @At("TAIL"))
     public void init(CallbackInfo callbackInfo) {
-        WorldLoadedCallback.EVENT.invoker().onLoaded();
+        Plastic.getPlastic().world.onWorldLoaded();
     }
 }

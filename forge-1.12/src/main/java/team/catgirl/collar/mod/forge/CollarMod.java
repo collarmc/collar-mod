@@ -16,7 +16,6 @@ import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientConnectedToSe
 import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientDisconnectionFromServerEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.apache.logging.log4j.Logger;
 import team.catgirl.collar.client.CollarListener;
 import team.catgirl.collar.client.minecraft.Ticks;
 import team.catgirl.collar.mod.common.CollarService;
@@ -28,8 +27,6 @@ import team.catgirl.plastic.forge.ForgeCommand;
 import team.catgirl.plastic.forge.ForgePlastic;
 import team.catgirl.pounce.EventBus;
 
-import java.util.UUID;
-
 @SideOnly(Side.CLIENT)
 @Mod(modid = CollarMod.MODID, name = CollarMod.NAME, version = CollarMod.VERSION)
 public class CollarMod implements CollarListener
@@ -38,10 +35,6 @@ public class CollarMod implements CollarListener
     public static final String NAME = "Collar";
     public static final String VERSION = "0.1";
 
-    private static Logger logger;
-    private static final Ticks TICKS = new Ticks();
-    private static boolean isWorldLoaded = true;
-    private static boolean isConnectedToServer = false;
     private static final Plugins PLUGINS = new ForgePlugins();
     private static Plastic PLASTIC;
     public static final EventBus EVENT_BUS = new EventBus(Runnable::run);
@@ -50,7 +43,6 @@ public class CollarMod implements CollarListener
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-        logger = event.getModLog();
         MinecraftForge.EVENT_BUS.register(this);
     }
 
@@ -58,8 +50,8 @@ public class CollarMod implements CollarListener
     public void init(FMLInitializationEvent event) {
         CollarTextureProvider textureProvider = new CollarTextureProvider();
         EVENT_BUS.subscribe(textureProvider);
-        PLASTIC = new ForgePlastic(textureProvider);
-        collarService = new CollarService(PLASTIC, EVENT_BUS, TICKS, PLUGINS);
+        PLASTIC = new ForgePlastic(textureProvider, EVENT_BUS);
+        collarService = new CollarService(PLASTIC, EVENT_BUS, PLUGINS);
         // Setup the command system
         CommandDispatcher<CollarService> dispatcher = new CommandDispatcher<>();
         Commands<CollarService> commands = new Commands<>(collarService, PLASTIC, false);
@@ -69,39 +61,27 @@ public class CollarMod implements CollarListener
 
     @SubscribeEvent
     public void onTick(ClientTickEvent event) {
-        TICKS.onTick();
+        PLASTIC.onTick();
     }
 
     @SubscribeEvent
     public void onWorldLoaded(WorldEvent.Load load) {
-        // Only start collar when the world is loaded and the server is connected
-        if (!isWorldLoaded && isConnectedToServer) {
-            collarService.connect();
-        }
-        isWorldLoaded = true;
+        PLASTIC.world.onWorldLoaded();
     }
 
     @SubscribeEvent
     public void connected(ClientConnectedToServerEvent connected) {
-        isConnectedToServer = true;
+        PLASTIC.onClientConnected();
     }
 
     @SubscribeEvent
     public void disconnected(ClientDisconnectionFromServerEvent disconnection) {
-        isConnectedToServer = false;
-        isWorldLoaded = false;
-        // Stop collar and reset state
-        if (collarService != null) {
-            collarService.disconnect();
-        }
+        PLASTIC.onClientDisconnected();
     }
 
     @SubscribeEvent
     public void renderPlayer(RenderPlayerEvent.Post event) {
         EntityPlayer player = event.getEntityPlayer();
-        UUID uuid = player.getUniqueID();
-        PLASTIC.world.allPlayers().stream()
-                .filter(candidate -> candidate.id().equals(uuid)).findFirst()
-                .ifPresent(team.catgirl.plastic.player.Player::onRender);
+        PLASTIC.world.onPlayerRender(player.getGameProfile().getId());
     }
 }

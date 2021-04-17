@@ -7,16 +7,15 @@ import org.jetbrains.annotations.NotNull;
 import team.catgirl.plastic.player.Player;
 import team.catgirl.plastic.ui.TextureProvider;
 import team.catgirl.plastic.world.World;
+import team.catgirl.pounce.EventBus;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class FabricWorld implements World {
+public class FabricWorld extends World {
 
-    private final TextureProvider textureProvider;
-
-    public FabricWorld(TextureProvider textureProvider) {
-        this.textureProvider = textureProvider;
+    public FabricWorld(TextureProvider textureProvider, EventBus eventBus) {
+        super(textureProvider, eventBus);
     }
 
     @Override
