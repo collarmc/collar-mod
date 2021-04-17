@@ -9,7 +9,9 @@
     "PlayerListEntryMixin",
     "PlayerEntityRendererMixin",
     "InGameOverlayRendererMixin",
-    "MinecraftClientMixin"
+    "MinecraftClientMixin",
+    "MinecraftClientFieldMixin",
+    "WorldRendererMixin"
   ],
   "client": [
   ],

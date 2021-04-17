@@ -23,6 +23,8 @@ public interface Player extends Entity {
      */
     String name();
 
+    float yaw();
+
     /**
      * @return player's avatar
      */

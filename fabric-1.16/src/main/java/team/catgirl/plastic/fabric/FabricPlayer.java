@@ -43,6 +43,11 @@ public class FabricPlayer implements Player {
     }
 
     @Override
+    public float yaw() {
+        return playerEntity.yaw;
+    }
+
+    @Override
     public Optional<BufferedImage> avatar() {
         return Optional.empty();
     }

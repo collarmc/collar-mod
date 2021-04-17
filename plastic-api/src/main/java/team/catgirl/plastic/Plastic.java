@@ -3,7 +3,6 @@ package team.catgirl.plastic;
 import team.catgirl.plastic.events.client.ClientConnectedEvent;
 import team.catgirl.plastic.events.client.ClientDisconnectedEvent;
 import team.catgirl.plastic.events.client.OnTickEvent;
-import team.catgirl.plastic.events.render.RenderOverlaysEvent;
 import team.catgirl.plastic.ui.Display;
 import team.catgirl.plastic.world.World;
 import team.catgirl.pounce.EventBus;
@@ -89,10 +88,10 @@ public abstract class Plastic {
         eventBus.dispatch(new OnTickEvent());
     }
 
-    /**
-     * Fires {@link RenderOverlaysEvent}
-     */
-    public final void onRenderOverlays() {
-        eventBus.dispatch(new RenderOverlaysEvent());
-    }
+//    /**
+//     * Fires {@link RenderOverlaysEvent}
+//     */
+//    public final void onRenderOverlays() {
+//        eventBus.dispatch(new RenderOverlaysEvent());
+//    }
 }
