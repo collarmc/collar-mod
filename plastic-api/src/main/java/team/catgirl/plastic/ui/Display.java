@@ -50,7 +50,7 @@ public interface Display {
      * @param message to send
      */
     default void displayMessage(String message) {
-        displayMessage(Plastic.getPlastic().display.newTextBuilder().add(message, TextFormatting.RED));
+        displayMessage(Plastic.getPlastic().display.newTextBuilder().add(message, TextFormatting.GRAY));
     }
 
     /**
