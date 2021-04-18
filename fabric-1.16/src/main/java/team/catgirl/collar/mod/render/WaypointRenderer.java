@@ -53,6 +53,9 @@ public class WaypointRenderer {
                 return;
             }
             collar.location().privateWaypoints().forEach(waypoint -> renderWaypointBeacon(event.matrixStack, waypoint, plastic.world.currentPlayer()));
+            collar.groups().groups().forEach(group -> {
+                collar.location().groupWaypoints(group).forEach(waypoint -> renderWaypointBeacon(event.matrixStack, waypoint, plastic.world.currentPlayer()));
+            });
         });
     }
 
