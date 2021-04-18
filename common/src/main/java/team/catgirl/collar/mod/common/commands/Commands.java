@@ -147,7 +147,7 @@ public final class Commands<S> {
                 .then(argument("name", string())
                         .executes(context -> {
                             collarService.with(collar -> {
-                                collar.groups().create(getString(context, "name"), GroupType.PARTY, ImmutableList.of());
+                                collar.groups().create(getString(context, "name"), type, ImmutableList.of());
                             });
                             return 1;
                         }))));
