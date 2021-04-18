@@ -199,9 +199,9 @@ public final class Commands<S> {
                     return 1;
                 })));
 
-        // collar party [name] add [player]
-        dispatcher.register(prefixed(type.name, argument("groupName", group(type))
-                .then(literal("add")
+        // collar party add [name] [player]
+        dispatcher.register(prefixed(type.name, literal("add")
+                .then(argument("groupName", group(type))
                         .then(argument("playerName", player())
                                 .executes(context -> {
                                     collarService.with(collar -> {
@@ -212,9 +212,9 @@ public final class Commands<S> {
                                     return 1;
                                 })))));
 
-        // collar party [name] remove [player]
-        dispatcher.register(prefixed(type.name, argument("groupName", group(type))
-                .then(literal("remove")
+        // collar party remove [name] [player]
+        dispatcher.register(prefixed(type.name, literal("remove")
+                .then(argument("groupName", group(type))
                         .then(argument("playerName", identity())
                                 .executes(context -> {
                                     collarService.with(collar -> {
