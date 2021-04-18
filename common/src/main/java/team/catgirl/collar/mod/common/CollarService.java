@@ -72,6 +72,7 @@ public class CollarService implements CollarListener {
             thread.setName("Collar Worker");
             return thread;
         });
+        eventBus.subscribe(this);
         eventBus.subscribe(connectionState);
     }
 
