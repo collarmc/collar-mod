@@ -17,7 +17,7 @@ public class Friends implements FriendsListener {
 
     @Override
     public void onFriendChanged(Collar collar, FriendsApi friendsApi, Friend friend) {
-        plastic.display.displayStatusMessage(plastic.display.newTextBuilder().add(String.format("%s is %s", friend.friend.name, friend.status.name().toLowerCase()), TextFormatting.GREEN));
+        plastic.display.displayStatusMessage(plastic.display.newTextBuilder().add(String.format("%s is %s", friend.friend.name, friend.status.name().toLowerCase())));
     }
 
     @Override

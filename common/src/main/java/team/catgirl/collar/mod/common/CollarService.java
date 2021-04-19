@@ -32,6 +32,9 @@ import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -43,6 +46,7 @@ public class CollarService implements CollarListener {
 
     private static final Logger LOGGER = Logger.getLogger(CollarService.class.getName());
 
+    private final Lock connectionLock = new ReentrantLock();
     private final ExecutorService backgroundJobs;
     private final ConnectionState connectionState = new ConnectionState(this);
     private Collar collar;
@@ -93,6 +97,9 @@ public class CollarService implements CollarListener {
     }
 
     public void connect() {
+        if (!connectionLock.tryLock()) {
+            return;
+        }
         backgroundJobs.submit(() -> {
             try {
                 collar = createCollar();
@@ -103,14 +110,24 @@ public class CollarService implements CollarListener {
             } catch (Throwable e) {
                 plastic.display.displayMessage(plastic.display.newTextBuilder().add("Failed to connect to Collar", TextFormatting.RED));
                 LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            } finally {
+                connectionLock.unlock();
             }
         });
     }
 
     public void disconnect() {
+        if (!connectionLock.tryLock()) {
+            return;
+        }
         backgroundJobs.submit(() -> {
-            if (collar != null) {
-                collar.disconnect();
+            try {
+                if (collar != null) {
+                    collar.disconnect();
+                    collar = null;
+                }
+            } finally {
+                connectionLock.unlock();
             }
         });
     }
