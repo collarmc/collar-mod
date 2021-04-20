@@ -100,6 +100,7 @@ public class CollarService implements CollarListener {
         if (!connectionLock.tryLock()) {
             return;
         }
+        connectionState.setAttempted(true);
         backgroundJobs.submit(() -> {
             try {
                 collar = createCollar();
@@ -120,6 +121,7 @@ public class CollarService implements CollarListener {
         if (!connectionLock.tryLock()) {
             return;
         }
+        connectionState.setAttempted(false);
         backgroundJobs.submit(() -> {
             try {
                 if (collar != null) {
@@ -135,7 +137,6 @@ public class CollarService implements CollarListener {
     @Override
     public void onStateChanged(Collar collar, Collar.State state) {
         backgroundJobs.submit(() -> {
-            String formatted;
             switch (state) {
                 case CONNECTING:
                     plastic.display.displayMessage(this.plastic.display.newTextBuilder().add("Collar connecting...", TextFormatting.GREEN));
@@ -150,6 +151,7 @@ public class CollarService implements CollarListener {
                     collar.textures().subscribe(textures);
                     break;
                 case DISCONNECTED:
+                    connectionState.setAttempted(false);
                     plastic.display.displayMessage(this.plastic.display.newTextBuilder().add("Collar disconnected", TextFormatting.GREEN));
                     eventBus.dispatch(new CollarDisconnectedEvent());
                     break;
@@ -253,6 +255,7 @@ public class CollarService implements CollarListener {
 
         private boolean connected = false;
         private boolean loaded = false;
+        private boolean collarConnectionAttempted = false;
 
         public ConnectionState(CollarService service) {
             this.service = service;
@@ -277,9 +280,13 @@ public class CollarService implements CollarListener {
         }
 
         private void attemptToConnect() {
-            if (connected && loaded) {
+            if (!collarConnectionAttempted && connected && loaded) {
                 service.connect();
             }
+        }
+
+        public void setAttempted(boolean collarConnectionAttempted) {
+            this.collarConnectionAttempted = collarConnectionAttempted;
         }
     }
 }
