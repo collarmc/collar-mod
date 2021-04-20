@@ -1,15 +1,10 @@
 package team.catgirl.collar.mod.render;
 
-import net.minecraft.block.entity.BeaconBlockEntity;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BeaconBlockEntityRenderer;
-import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
 import net.minecraft.util.DyeColor;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import team.catgirl.collar.api.waypoints.Waypoint;
 import team.catgirl.collar.client.Collar;
@@ -52,11 +47,19 @@ public class WaypointRenderer {
             if (collar.getState() != Collar.State.CONNECTED) {
                 return;
             }
-            collar.location().privateWaypoints().forEach(waypoint -> renderWaypointBeacon(event.matrixStack, waypoint, plastic.world.currentPlayer()));
+            collar.location().privateWaypoints().stream()
+                    .filter(this::currentDimension)
+                    .forEach(waypoint -> renderWaypointBeacon(event.matrixStack, waypoint, plastic.world.currentPlayer()));
             collar.groups().groups().forEach(group -> {
-                collar.location().groupWaypoints(group).forEach(waypoint -> renderWaypointBeacon(event.matrixStack, waypoint, plastic.world.currentPlayer()));
+                collar.location().groupWaypoints(group).stream()
+                        .filter(this::currentDimension)
+                        .forEach(waypoint -> renderWaypointBeacon(event.matrixStack, waypoint, plastic.world.currentPlayer()));
             });
         });
+    }
+
+    boolean currentDimension(Waypoint waypoint) {
+        return plastic.world.currentPlayer().location().dimension.equals(waypoint.location.dimension);
     }
 
     private void renderWaypointBeacon(MatrixStack matrix, Waypoint waypoint, Player player) {

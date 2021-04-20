@@ -24,7 +24,7 @@ public class CollarFabricClient implements ClientModInitializer {
     private static final Plastic PLASTIC = new FabricPlastic(new CollarTextureProvider(), EVENT_BUS);
     private static final CollarService COLLAR_SERVICE = new CollarService(PLASTIC, EVENT_BUS, PLUGINS);
     private static final WaypointRenderer WAYPOINT_RENDERER = new WaypointRenderer(PLASTIC, COLLAR_SERVICE);
-    private static final TracerRenderer TRACER_RENDERER = new TracerRenderer(COLLAR_SERVICE);
+    private static final TracerRenderer TRACER_RENDERER = new TracerRenderer(plastic, COLLAR_SERVICE);
 
     @Override
     public void onInitializeClient() {

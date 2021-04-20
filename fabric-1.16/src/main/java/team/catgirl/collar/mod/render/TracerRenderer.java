@@ -1,32 +1,31 @@
 package team.catgirl.collar.mod.render;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.block.StainedGlassBlock;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.Window;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Matrix4f;
-import net.minecraft.util.math.Vec3d;
-import org.joml.Vector3d;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
 import team.catgirl.collar.api.location.Location;
 import team.catgirl.collar.client.Collar;
 import team.catgirl.collar.mod.common.CollarService;
+import team.catgirl.plastic.Plastic;
 import team.catgirl.pounce.Preference;
 import team.catgirl.pounce.Subscribe;
 
 public final class TracerRenderer {
 
+    private final Plastic plastic;
     private final CollarService service;
 
-    public TracerRenderer(CollarService service) {
+    public TracerRenderer(Plastic plastic, CollarService service) {
+        this.plastic = plastic;
         this.service = service;
     }
 
@@ -44,6 +43,10 @@ public final class TracerRenderer {
             float a = 0;
 
             collar.location().playerLocations().forEach((player, location) -> {
+                // Don't show where other players are if they are not in the same dimension
+                if (!location.dimension.equals(plastic.world.currentPlayer().location().dimension)) {
+                    return;
+                }
                 Vector3f feetPosition = lerpPos(location, event.deltaTime);
                 int screenWidth = window.getScaledWidth();
                 int screenHeight = window.getHeight();
