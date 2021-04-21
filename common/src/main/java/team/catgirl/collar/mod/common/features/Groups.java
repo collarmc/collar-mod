@@ -43,7 +43,9 @@ public class Groups implements GroupsListener {
 
     @Override
     public void onGroupInvited(Collar collar, GroupsApi groupsApi, GroupInvitation invitation) {
-        if (invitation.type == GroupType.NEARBY) {
+        // Don't print out in console if the invitation was from a nearby group
+        // Or if sender == null, the server is just resending invitiation state
+        if (invitation.type == GroupType.NEARBY || invitation.sender == null) {
             return;
         }
         team.catgirl.plastic.player.Player player = plastic.world.allPlayers()

@@ -14,6 +14,7 @@ import team.catgirl.collar.api.groups.GroupType;
 import team.catgirl.collar.api.location.Dimension;
 import team.catgirl.collar.api.location.Location;
 import team.catgirl.collar.api.waypoints.Waypoint;
+import team.catgirl.collar.client.api.groups.GroupInvitation;
 import team.catgirl.collar.mod.common.CollarService;
 import team.catgirl.collar.mod.common.commands.arguments.*;
 import team.catgirl.collar.mod.common.commands.arguments.IdentityArgumentType.IdentityArgument;
@@ -179,6 +180,24 @@ public final class Commands<S> {
                                     });
                                     return 1;
                                 }))));
+
+        // collar party invites
+        dispatcher.register(prefixed(type.name, literal("accept")
+                        .executes(context -> {
+                            collarService.with(collar -> {
+                                List<GroupInvitation> invitations = collar.groups().invitations().stream()
+                                        .filter(invitation -> invitation.type == type)
+                                        .collect(Collectors.toList());
+                                if (invitations.isEmpty()) {
+                                    plastic.display.displayInfoMessage("You have no invites to any " + type.plural);
+                                } else {
+                                    plastic.display.displayInfoMessage("You have invites to:");
+                                    invitations.forEach(invitation -> plastic.display.displayInfoMessage(invitation.name));
+                                    plastic.display.displayInfoMessage("To accept type '/collar " + type.name  + " accept [name]");
+                                }
+                            });
+                            return 1;
+                        })));
 
         // collar party accept [name]
         dispatcher.register(prefixed(type.name, literal("accept")
