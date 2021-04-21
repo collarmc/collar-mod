@@ -88,6 +88,14 @@ public final class Commands<S> {
             }, () -> plastic.display.displayMessage("Collar is disconnected"));
             return 1;
         }));
+
+        // collar me
+        dispatcher.register(prefixed("me", context -> {
+            collarService.with(collar -> {
+                plastic.display.displayInfoMessage("You are connected as " + collar.player().profile);
+            });
+            return 1;
+        }));
     }
 
     private void registerFriendCommands(CommandDispatcher<S> dispatcher) {
