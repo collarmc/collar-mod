@@ -32,7 +32,7 @@ public final class TracerRenderer {
     @Subscribe(Preference.CALLER)
     public void onRender(RenderOverlaysEvent event) {
         service.getCollar().ifPresent(collar -> {
-            if (collar.getState() != Collar.State.CONNECTED) {
+            if (collar.getState() != Collar.State.CONNECTED || !collar.isDebug()) {
                 return;
             }
             Window window = MinecraftClient.getInstance().getWindow();
