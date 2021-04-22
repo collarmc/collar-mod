@@ -253,6 +253,27 @@ public final class Commands<S> {
                                     });
                                     return 1;
                                 })))));
+
+        // collar party members [name]
+        dispatcher.register(prefixed(type.name, literal("members")
+                .then(argument("groupName", group(type)))
+                .executes(context -> {
+                    collarService.with(collar -> {
+                        Group group = getGroup(context, "groupName");
+                        plastic.display.displayMessage("Members:");
+                        group.members.forEach(member -> {
+                            Optional<Player> thePlayer = plastic.world.allPlayers().stream().filter(player -> member.player.minecraftPlayer.id.equals(player.id())).findFirst();
+                            String message;
+                            if (thePlayer.isPresent()) {
+                                message = member.profile.name + " playing as " + member.player.minecraftPlayer.id + " (" + member.membershipRole.name() + ")";
+                            } else {
+                                message = member.profile.name;
+                            }
+                            plastic.display.displayMessage(message + "(" + member.membershipRole.name() + ")");
+                        });
+                    });
+                    return 1;
+                })));
     }
 
     private void registerLocationCommands(CommandDispatcher<S> dispatcher) {
