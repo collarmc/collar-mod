@@ -182,7 +182,7 @@ public final class Commands<S> {
                                 }))));
 
         // collar party invites
-        dispatcher.register(prefixed(type.name, literal("accept")
+        dispatcher.register(prefixed(type.name, literal("invites")
                         .executes(context -> {
                             collarService.with(collar -> {
                                 List<GroupInvitation> invitations = collar.groups().invitations().stream()
