@@ -2,12 +2,14 @@ package team.catgirl.collar.mod.common.features;
 
 import team.catgirl.collar.api.groups.Group;
 import team.catgirl.collar.api.messaging.Message;
+import team.catgirl.collar.api.messaging.TextMessage;
 import team.catgirl.collar.api.session.Player;
 import team.catgirl.collar.client.Collar;
 import team.catgirl.collar.client.api.messaging.MessagingApi;
 import team.catgirl.collar.client.api.messaging.MessagingListener;
 import team.catgirl.plastic.Plastic;
 import team.catgirl.collar.security.mojang.MinecraftPlayer;
+import team.catgirl.plastic.ui.TextFormatting;
 
 public class Messaging implements MessagingListener {
 
@@ -42,11 +44,25 @@ public class Messaging implements MessagingListener {
 
     @Override
     public void onGroupMessageSent(Collar collar, MessagingApi messagingApi, Group group, Message message) {
-
+        if (message instanceof TextMessage) {
+            TextMessage textMessage = (TextMessage) message;
+            plastic.display.displayMessage(plastic.display.newTextBuilder()
+                    .add("[" + group.name + "] ", TextFormatting.LIGHT_PURPLE)
+                    .add("<" + plastic.world.currentPlayer().name() + "> ", TextFormatting.GREEN)
+                    .add(textMessage.content, TextFormatting.GREEN)
+            );
+        }
     }
 
     @Override
     public void onGroupMessageReceived(Collar collar, MessagingApi messagingApi, Group group, Player sender, Message message) {
-
+        if (message instanceof TextMessage) {
+            TextMessage textMessage = (TextMessage) message;
+            plastic.display.displayMessage(plastic.display.newTextBuilder()
+                    .add("[" + group.name + "] ", TextFormatting.LIGHT_PURPLE)
+                    .add("<" + plastic.world.currentPlayer().name() + "> ", TextFormatting.WHITE)
+                    .add(textMessage.content, TextFormatting.WHITE)
+            );
+        }
     }
 }

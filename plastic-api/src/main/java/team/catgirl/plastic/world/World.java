@@ -1,5 +1,6 @@
 package team.catgirl.plastic.world;
 
+import team.catgirl.plastic.chat.ChatService;
 import team.catgirl.plastic.events.world.WorldLoadedEvent;
 import team.catgirl.plastic.player.Player;
 import team.catgirl.plastic.ui.TextureProvider;
@@ -11,6 +12,7 @@ import java.util.UUID;
 
 public abstract class World {
 
+    public final ChatService chatService = new ChatService();
     protected TextureProvider textureProvider;
     protected final EventBus eventBus;
 

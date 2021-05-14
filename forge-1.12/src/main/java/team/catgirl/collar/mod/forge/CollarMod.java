@@ -19,6 +19,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import team.catgirl.collar.client.CollarListener;
 import team.catgirl.collar.client.minecraft.Ticks;
 import team.catgirl.collar.mod.common.CollarService;
+import team.catgirl.collar.mod.common.chat.GroupChatService;
 import team.catgirl.collar.mod.common.commands.Commands;
 import team.catgirl.collar.mod.common.plastic.CollarTextureProvider;
 import team.catgirl.collar.mod.common.plugins.Plugins;
@@ -54,7 +55,8 @@ public class CollarMod implements CollarListener
         collarService = new CollarService(PLASTIC, EVENT_BUS, PLUGINS);
         // Setup the command system
         CommandDispatcher<CollarService> dispatcher = new CommandDispatcher<>();
-        Commands<CollarService> commands = new Commands<>(collarService, PLASTIC, false);
+        GroupChatService groupChatService = new GroupChatService(Plastic.getPlastic(), collarService);
+        Commands<CollarService> commands = new Commands<>(collarService, groupChatService, PLASTIC, false);
         commands.register(dispatcher);
         ClientCommandHandler.instance.registerCommand(new ForgeCommand<>("collar", collarService, dispatcher));
     }
