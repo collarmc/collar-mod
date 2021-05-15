@@ -271,6 +271,7 @@ public class CollarService implements CollarListener {
         public void disconnected(ClientDisconnectedEvent e) {
             this.connected = false;
             this.loaded = false;
+            service.disconnect();
         }
 
         @Subscribe(Preference.CALLER)
