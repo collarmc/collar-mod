@@ -28,6 +28,7 @@ import team.catgirl.pounce.EventBus;
 import team.catgirl.pounce.Preference;
 import team.catgirl.pounce.Subscribe;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
@@ -207,14 +208,23 @@ public class CollarService implements CollarListener {
 
     private Collar createCollar() throws IOException {
         CollarConfiguration configuration = new CollarConfiguration.Builder()
-                .withCollarDevelopmentServer()
+                .withCollarServer("http://localhost:4000")
                 .withListener(this)
                 .withTicks(ticks)
-                .withHomeDirectory(plastic.home())
+                .withHomeDirectory(collarHome())
                 .withPlayerLocation(() -> plastic.world.currentPlayer().location())
                 .withEntitiesSupplier(this::nearbyPlayerEntities)
                 .withSession(this::getMinecraftSession).build();
         return Collar.create(configuration);
+    }
+
+    /**
+     * Override the collar home directory with COLLAR_PLAYER so that you can test multiple players in the same IDE session
+     * @return home
+     */
+    private File collarHome() {
+        String player = System.getenv("COLLAR_PLAYER");
+        return player != null ? new File(plastic.home(), "collar-" + player) : plastic.home();
     }
 
     private MinecraftSession getMinecraftSession() {

@@ -11,7 +11,8 @@
     "InGameOverlayRendererMixin",
     "MinecraftClientMixin",
     "MinecraftClientFieldMixin",
-    "WorldRendererMixin"
+    "WorldRendererMixin",
+    "ClientPlayerEntityMixin"
   ],
   "client": [
   ],
