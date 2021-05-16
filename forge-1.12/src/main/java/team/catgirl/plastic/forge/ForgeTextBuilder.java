@@ -6,7 +6,8 @@ import net.minecraft.util.text.event.ClickEvent;
 import team.catgirl.plastic.ui.TextAction;
 import team.catgirl.plastic.ui.TextAction.OpenLinkAction;
 import team.catgirl.plastic.ui.TextBuilder;
-import team.catgirl.plastic.ui.TextFormatting;
+import team.catgirl.plastic.ui.TextColor;
+import team.catgirl.plastic.ui.TextStyle;
 
 public final class ForgeTextBuilder extends TextBuilder {
 
@@ -21,11 +22,15 @@ public final class ForgeTextBuilder extends TextBuilder {
     }
 
     @Override
-    public TextBuilder add(String text, TextFormatting formatting, TextAction action) {
+    public TextBuilder add(String text, TextColor color, TextStyle style, TextAction action) {
         TextComponentString component = new TextComponentString(text);
-        net.minecraft.util.text.TextFormatting textFormatting = from(formatting);
+        net.minecraft.util.text.TextFormatting textFormatting = from(style);
         if (textFormatting != null) {
             component.getStyle().setColor(textFormatting);
+        }
+        net.minecraft.util.text.TextFormatting textColor = from(color);
+        if (textColor != null) {
+            component.getStyle().setColor(textColor);
         }
         if (action != null) {
             if (action instanceof OpenLinkAction) {
@@ -39,17 +44,27 @@ public final class ForgeTextBuilder extends TextBuilder {
 
     @Override
     public TextBuilder add(String text) {
-        return add(text, null, null);
+        return add(text, null, null, null);
     }
 
     @Override
-    public TextBuilder add(String text, TextFormatting textFormatting) {
-        return add(text, textFormatting, null);
+    public TextBuilder add(String text, TextStyle textStyle) {
+        return add(text, null, textStyle, null);
     }
 
     @Override
     public TextBuilder add(String text, TextAction action) {
-        return add(text, null, action);
+        return add(text, null, null, action);
+    }
+
+    @Override
+    public TextBuilder add(String text, TextColor color) {
+        return add(text, color, null, null);
+    }
+
+    @Override
+    public TextBuilder add(String text, TextColor color, TextStyle textStyle) {
+        return add(text, color, textStyle, null);
     }
 
     @Override
@@ -62,11 +77,11 @@ public final class ForgeTextBuilder extends TextBuilder {
         return ITextComponent.Serializer.componentToJson(componentString);
     }
 
-    net.minecraft.util.text.TextFormatting from(TextFormatting textFormatting) {
-        if (textFormatting == null) {
+    net.minecraft.util.text.TextFormatting from(TextColor color) {
+        if (color == null) {
             return null;
         }
-        switch (textFormatting) {
+        switch (color) {
             case RED:
                 return net.minecraft.util.text.TextFormatting.RED;
             case AQUA:
@@ -99,6 +114,16 @@ public final class ForgeTextBuilder extends TextBuilder {
                 return net.minecraft.util.text.TextFormatting.DARK_RED;
             case LIGHT_PURPLE:
                 return net.minecraft.util.text.TextFormatting.LIGHT_PURPLE;
+            default:
+                throw new IllegalStateException("unknown color " + color);
+        }
+    }
+
+    net.minecraft.util.text.TextFormatting from(TextStyle style) {
+        if (style == null) {
+            return null;
+        }
+        switch (style) {
             case BOLD:
                 return net.minecraft.util.text.TextFormatting.BOLD;
             case ITALIC:
@@ -112,7 +137,7 @@ public final class ForgeTextBuilder extends TextBuilder {
             case RESET:
                 return net.minecraft.util.text.TextFormatting.RESET;
             default:
-                throw new IllegalStateException("unknown formatting " + textFormatting);
+                throw new IllegalStateException("unknown formatting " + style);
         }
     }
 }

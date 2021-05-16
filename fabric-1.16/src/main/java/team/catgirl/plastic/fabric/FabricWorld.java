@@ -4,6 +4,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.world.ClientWorld;
 import org.jetbrains.annotations.NotNull;
+import team.catgirl.plastic.chat.ChatService;
 import team.catgirl.plastic.player.Player;
 import team.catgirl.plastic.ui.TextureProvider;
 import team.catgirl.plastic.world.World;
@@ -14,8 +15,8 @@ import java.util.stream.Collectors;
 
 public class FabricWorld extends World {
 
-    public FabricWorld(TextureProvider textureProvider, EventBus eventBus) {
-        super(textureProvider, eventBus);
+    public FabricWorld(TextureProvider textureProvider, ChatService chatService, EventBus eventBus) {
+        super(textureProvider, chatService, eventBus);
     }
 
     @Override

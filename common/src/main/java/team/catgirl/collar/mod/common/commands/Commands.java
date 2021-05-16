@@ -16,14 +16,13 @@ import team.catgirl.collar.api.location.Location;
 import team.catgirl.collar.api.waypoints.Waypoint;
 import team.catgirl.collar.client.api.groups.GroupInvitation;
 import team.catgirl.collar.mod.common.CollarService;
-import team.catgirl.collar.mod.common.chat.GroupChatInterceptor;
-import team.catgirl.collar.mod.common.chat.GroupChatService;
+import team.catgirl.collar.mod.common.features.messaging.Messages;
 import team.catgirl.collar.mod.common.commands.arguments.*;
 import team.catgirl.collar.mod.common.commands.arguments.IdentityArgumentType.IdentityArgument;
 import team.catgirl.collar.mod.common.commands.arguments.WaypointArgumentType.WaypointArgument;
 import team.catgirl.plastic.Plastic;
 import team.catgirl.plastic.player.Player;
-import team.catgirl.plastic.ui.TextFormatting;
+import team.catgirl.plastic.ui.TextStyle;
 import team.catgirl.collar.security.mojang.MinecraftPlayer;
 
 import java.util.*;
@@ -41,13 +40,13 @@ import static team.catgirl.collar.mod.common.commands.arguments.PlayerArgumentTy
 public final class Commands<S> {
 
     private final CollarService collarService;
-    private final GroupChatService groupChatService;
+    private final Messages messages;
     private final Plastic plastic;
     private final boolean prefixed;
 
-    public Commands(CollarService collarService, GroupChatService groupChatService, Plastic plastic, boolean prefixed) {
+    public Commands(CollarService collarService, Messages messages, Plastic plastic, boolean prefixed) {
         this.collarService = collarService;
-        this.groupChatService = groupChatService;
+        this.messages = messages;
         this.plastic = plastic;
         this.prefixed = prefixed;
     }
@@ -146,7 +145,7 @@ public final class Commands<S> {
                             plastic.display.displayInfoMessage("You don't have any friends");
                         } else {
                             friends.stream().sorted(Comparator.comparing(o -> o.status)).forEach(friend -> {
-                                TextFormatting color = friend.status.equals(Status.ONLINE) ? TextFormatting.GREEN : TextFormatting.GRAY;
+                                TextStyle color = friend.status.equals(Status.ONLINE) ? TextStyle.GREEN : TextStyle.GRAY;
                                 plastic.display.displayMessage(plastic.display.newTextBuilder().add(friend.friend.name, color));
                             });
                         }
@@ -444,18 +443,29 @@ public final class Commands<S> {
     }
 
     private void registerChatCommands(CommandDispatcher<S> dispatcher) {
-        dispatcher.register(prefixed("chat", literal("on").then(argument("group", groups()).executes(context -> {
-            collarService.with(collar -> {
-                Group group = getGroup(context, "group");
-                groupChatService.switchToGroup(group);
-            });
+        // /msg player2 OwO
+        dispatcher.register(literal("msg")
+                .then(argument("recipient", player())
+                .then(argument("rawMessage", string())))
+                .executes(context -> {
+                    Player recipient = getPlayer(context, "recipient");
+                    String message = getString(context, "rawMessage");
+                    messages.sendMessage(recipient, message);
+                    return 1;
+        }));
+
+        // collar chat with coolkids
+        dispatcher.register(prefixed("chat", literal("with")
+                .then(argument("group", groups())
+                .executes(context -> {
+                    Group group = getGroup(context, "group");
+                    messages.switchToGroup(group);
             return 1;
         }))));
 
+        // collar chat off
         dispatcher.register(prefixed("chat", literal("off").executes(context -> {
-            collarService.with(collar -> {
-                groupChatService.switchToGeneralChat();
-            });
+            messages.switchToGeneralChat();
             return 1;
         })));
     }

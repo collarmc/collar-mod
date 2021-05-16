@@ -1,4 +1,4 @@
-package team.catgirl.collar.mod.common.chat;
+package team.catgirl.collar.mod.common.features.messaging;
 
 import team.catgirl.collar.api.groups.Group;
 import team.catgirl.collar.api.messaging.TextMessage;

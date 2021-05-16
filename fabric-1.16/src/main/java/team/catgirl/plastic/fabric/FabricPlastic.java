@@ -11,7 +11,7 @@ import java.io.File;
 public final class FabricPlastic extends Plastic {
 
     public FabricPlastic(TextureProvider textureProvider, EventBus eventBus) {
-        super(new FabricDisplay(), new FabricWorld(textureProvider, eventBus), eventBus);
+        super(new FabricDisplay(), new FabricWorld(textureProvider, new FabricChatService(), eventBus), eventBus);
     }
 
     @Override

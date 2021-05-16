@@ -12,12 +12,13 @@ import java.util.UUID;
 
 public abstract class World {
 
-    public final ChatService chatService = new ChatService();
+    public final ChatService chatService;
     protected TextureProvider textureProvider;
     protected final EventBus eventBus;
 
-    public World(TextureProvider textureProvider, EventBus eventBus) {
+    public World(TextureProvider textureProvider, ChatService chatService, EventBus eventBus) {
         this.textureProvider = textureProvider;
+        this.chatService = chatService;
         this.eventBus = eventBus;
     }
 

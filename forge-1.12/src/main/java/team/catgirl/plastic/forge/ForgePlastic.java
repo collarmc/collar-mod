@@ -11,7 +11,7 @@ import java.io.File;
 public class ForgePlastic extends Plastic {
 
     public ForgePlastic(TextureProvider textureProvider, EventBus eventBus) {
-        super(new ForgeDisplay(), new ForgeWorld(textureProvider, eventBus), eventBus);
+        super(new ForgeDisplay(), new ForgeWorld(textureProvider, new ForgeChatService(), eventBus), eventBus);
     }
 
     @Override
