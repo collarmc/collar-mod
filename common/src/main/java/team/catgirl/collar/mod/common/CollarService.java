@@ -249,7 +249,7 @@ public class CollarService implements CollarListener {
         TextBuilder builder = plastic.display.newTextBuilder();
         Random random = new Random();
         for (char c : text.toCharArray()) {
-            TextStyle value = TextStyle.values()[random.nextInt(TextStyle.values().length)];
+            TextColor value = TextColor.values()[random.nextInt(TextColor.values().length)];
             builder = builder.add(Character.toString(c), value);
         }
         return builder;
