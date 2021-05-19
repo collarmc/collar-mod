@@ -22,6 +22,7 @@ import team.catgirl.collar.mod.common.commands.arguments.IdentityArgumentType.Id
 import team.catgirl.collar.mod.common.commands.arguments.WaypointArgumentType.WaypointArgument;
 import team.catgirl.plastic.Plastic;
 import team.catgirl.plastic.player.Player;
+import team.catgirl.plastic.ui.TextColor;
 import team.catgirl.plastic.ui.TextStyle;
 import team.catgirl.collar.security.mojang.MinecraftPlayer;
 
@@ -145,7 +146,7 @@ public final class Commands<S> {
                             plastic.display.displayInfoMessage("You don't have any friends");
                         } else {
                             friends.stream().sorted(Comparator.comparing(o -> o.status)).forEach(friend -> {
-                                TextStyle color = friend.status.equals(Status.ONLINE) ? TextStyle.GREEN : TextStyle.GRAY;
+                                TextColor color = friend.status.equals(Status.ONLINE) ? TextColor.GREEN : TextColor.GRAY;
                                 plastic.display.displayMessage(plastic.display.newTextBuilder().add(friend.friend.name, color));
                             });
                         }
