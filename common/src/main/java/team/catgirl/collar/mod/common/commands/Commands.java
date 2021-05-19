@@ -447,13 +447,13 @@ public final class Commands<S> {
         // /msg player2 OwO
         dispatcher.register(literal("msg")
                 .then(argument("recipient", player())
-                .then(argument("rawMessage", string())))
+                .then(argument("rawMessage", string())
                 .executes(context -> {
                     Player recipient = getPlayer(context, "recipient");
                     String message = getString(context, "rawMessage");
                     messages.sendMessage(recipient, message);
                     return 1;
-        }));
+        }))));
 
         // collar chat with coolkids
         dispatcher.register(prefixed("chat", literal("with")
