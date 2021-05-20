@@ -1,12 +1,21 @@
 package team.catgirl.plastic.chat;
 
+import team.catgirl.plastic.Plastic;
+import team.catgirl.plastic.ui.Display;
+
 import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
  * Chat
  */
 public abstract class ChatService {
+
     private final CopyOnWriteArraySet<ChatInterceptor> interceptors = new CopyOnWriteArraySet<>();
+    protected final Display display;
+
+    public ChatService(Display display) {
+        this.display = display;
+    }
 
     /**
      * @param message sent

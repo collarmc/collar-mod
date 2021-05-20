@@ -34,6 +34,7 @@ import team.catgirl.plastic.Plastic;
 import team.catgirl.plastic.player.Player;
 
 import java.util.Collection;
+import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
@@ -59,7 +60,7 @@ public class PlayerArgumentType implements ArgumentType<Player> {
 	public Player parse(StringReader reader) throws CommandSyntaxException {
 		String input = reader.readUnquotedString();
 		return plastic.world.allPlayers().stream()
-				.filter(thePlayer -> thePlayer.name().equals(input))
+				.filter(thePlayer -> thePlayer.name().equalsIgnoreCase(input))
 				.findFirst().orElseThrow(() -> new CommandTargetNotFoundException("player '" + input +  "' not found"));
 	}
 

@@ -11,7 +11,7 @@ import team.catgirl.plastic.chat.ChatService;
 @Mixin(ClientPlayerEntity.class)
 public abstract class ClientPlayerEntityMixin {
     @Inject(method = "sendChatMessage", at = @At(value = "HEAD"), cancellable = true)
-    public void onDisconnect(String message, CallbackInfo cb) {
+    public void sendChatMessage(String message, CallbackInfo cb) {
         // if it looks like a command, don't intercept it
         if (message.startsWith("/")) {
             return;
