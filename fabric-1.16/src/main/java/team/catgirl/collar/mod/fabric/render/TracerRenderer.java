@@ -1,17 +1,10 @@
-package team.catgirl.collar.mod.render;
+package team.catgirl.collar.mod.fabric.render;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
-import net.minecraft.client.util.Window;
-import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Matrix4f;
 import net.minecraft.util.math.Vec3d;
 import org.joml.Vector3d;
-import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
 import team.catgirl.collar.api.location.Location;
 import team.catgirl.collar.client.Collar;

@@ -1,4 +1,4 @@
-package team.catgirl.collar.mod.render;
+package team.catgirl.collar.mod.fabric.render;
 
 public class Projection {
     private final double x;

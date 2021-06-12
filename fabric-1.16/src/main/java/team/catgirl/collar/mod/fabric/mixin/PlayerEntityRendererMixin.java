@@ -1,4 +1,4 @@
-package team.catgirl.collar.mod.mixin;
+package team.catgirl.collar.mod.fabric.mixin;
 
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.VertexConsumerProvider;

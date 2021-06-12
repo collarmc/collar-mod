@@ -1,8 +1,5 @@
-package team.catgirl.collar.mod.render;
+package team.catgirl.collar.mod.fabric.render;
 
-import net.minecraft.util.math.Vec3d;
-
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.math.Vec3d;
 
 import org.joml.Matrix4f;

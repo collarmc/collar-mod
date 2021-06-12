@@ -1,4 +1,4 @@
-package team.catgirl.collar.mod.render;
+package team.catgirl.collar.mod.fabric.render;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -9,7 +9,7 @@ import net.minecraft.util.math.Vec3d;
 import team.catgirl.collar.api.waypoints.Waypoint;
 import team.catgirl.collar.client.Collar;
 import team.catgirl.collar.mod.common.CollarService;
-import team.catgirl.collar.mod.mixin.MinecraftClientFieldMixin;
+import team.catgirl.collar.mod.fabric.mixin.MinecraftClientFieldMixin;
 import team.catgirl.plastic.Plastic;
 import team.catgirl.plastic.player.Player;
 import team.catgirl.pounce.Preference;

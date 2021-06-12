@@ -1,4 +1,4 @@
-package team.catgirl.collar.mod.mixin;
+package team.catgirl.collar.mod.fabric.mixin;
 
 import net.minecraft.client.network.ClientPlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;

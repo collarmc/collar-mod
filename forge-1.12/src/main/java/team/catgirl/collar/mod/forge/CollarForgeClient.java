@@ -22,14 +22,15 @@ import team.catgirl.collar.mod.common.features.messaging.Messages;
 import team.catgirl.collar.mod.common.commands.Commands;
 import team.catgirl.collar.mod.common.plastic.CollarTextureProvider;
 import team.catgirl.collar.mod.common.plugins.Plugins;
+import team.catgirl.collar.mod.forge.client.ForgePlugins;
 import team.catgirl.plastic.Plastic;
 import team.catgirl.plastic.forge.ForgeCommand;
 import team.catgirl.plastic.forge.ForgePlastic;
 import team.catgirl.pounce.EventBus;
 
 @SideOnly(Side.CLIENT)
-@Mod(modid = CollarMod.MODID, name = CollarMod.NAME, version = CollarMod.VERSION)
-public class CollarMod implements CollarListener
+@Mod(modid = CollarForgeClient.MODID, name = CollarForgeClient.NAME, version = CollarForgeClient.VERSION)
+public class CollarForgeClient implements CollarListener
 {
     public static final String MODID = "team.catgirl.collar";
     public static final String NAME = "Collar";

@@ -1,18 +1,17 @@
-package team.catgirl.collar.mod.client;
+package team.catgirl.collar.mod.fabric.client;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
-import team.catgirl.collar.mod.FabricPlugins;
 import team.catgirl.collar.mod.common.CollarService;
 import team.catgirl.collar.mod.common.features.messaging.Messages;
 import team.catgirl.collar.mod.common.commands.Commands;
 import team.catgirl.collar.mod.common.plastic.CollarTextureProvider;
 import team.catgirl.collar.mod.common.plugins.Plugins;
-import team.catgirl.collar.mod.render.TracerRenderer;
-import team.catgirl.collar.mod.render.WaypointRenderer;
+import team.catgirl.collar.mod.fabric.render.TracerRenderer;
+import team.catgirl.collar.mod.fabric.render.WaypointRenderer;
 import team.catgirl.plastic.Plastic;
 import team.catgirl.plastic.fabric.FabricPlastic;
 import team.catgirl.pounce.EventBus;
