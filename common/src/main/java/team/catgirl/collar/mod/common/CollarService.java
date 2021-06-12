@@ -21,7 +21,6 @@ import team.catgirl.plastic.player.Player;
 import team.catgirl.plastic.ui.TextAction;
 import team.catgirl.plastic.ui.TextBuilder;
 import team.catgirl.plastic.ui.TextColor;
-import team.catgirl.plastic.ui.TextStyle;
 import team.catgirl.collar.mod.common.plugins.Plugins;
 import team.catgirl.collar.security.mojang.MinecraftSession;
 import team.catgirl.pounce.EventBus;
@@ -86,9 +85,13 @@ public class CollarService implements CollarListener {
 
     public void with(Consumer<Collar> action, Runnable emptyAction) {
         if (collar == null || !collar.getState().equals(CONNECTED)) {
-            emptyAction.run();
+            if (emptyAction != null) {
+                emptyAction.run();
+            }
         } else {
-            action.accept(collar);
+            if (action != null) {
+                action.accept(collar);
+            }
         }
     }
 
@@ -242,7 +245,7 @@ public class CollarService implements CollarListener {
 
     @Subscribe(Preference.POOL)
     private void onTick(OnTickEvent event) {
-        ticks.onTick();
+        with(i -> ticks.onTick(), null);
     }
 
     private TextBuilder rainbowText(String text) {
@@ -263,7 +266,7 @@ public class CollarService implements CollarListener {
 
         private boolean connected = false;
         private boolean loaded = false;
-        private boolean collarConnectionAttempted = false;
+        private boolean attempted = false;
 
         public ConnectionState(CollarService service) {
             this.service = service;
@@ -279,6 +282,7 @@ public class CollarService implements CollarListener {
         public void disconnected(ClientDisconnectedEvent e) {
             this.connected = false;
             this.loaded = false;
+            this.attempted = false;
             service.disconnect();
         }
 
@@ -289,13 +293,13 @@ public class CollarService implements CollarListener {
         }
 
         private void attemptToConnect() {
-            if (!collarConnectionAttempted && connected && loaded) {
+            if (!attempted && connected && loaded) {
                 service.connect();
             }
         }
 
         public void setAttempted(boolean collarConnectionAttempted) {
-            this.collarConnectionAttempted = collarConnectionAttempted;
+            this.attempted = collarConnectionAttempted;
         }
     }
 }
