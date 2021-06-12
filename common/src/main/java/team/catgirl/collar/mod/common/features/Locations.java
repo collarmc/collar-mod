@@ -27,9 +27,12 @@ public class Locations implements LocationListener {
 
     @Override
     public void onLocationUpdated(Collar collar, LocationApi locationApi, Player player, Location location) {
-        team.catgirl.plastic.player.Player thePlayer = plastic.world.allPlayers().stream().filter(candidate -> candidate.id().equals(player.minecraftPlayer.id)).findFirst()
-                .orElseThrow(() -> new IllegalStateException("could not find player " + player.minecraftPlayer.id));
-        events.dispatch(new PlayerLocationUpdatedEvent(thePlayer, thePlayer.location()));
+        plastic.world.allPlayers().stream()
+                .filter(candidate -> candidate.id().equals(player.minecraftPlayer.id))
+                .findFirst()
+                .ifPresent(thePlayer -> {
+                    events.dispatch(new PlayerLocationUpdatedEvent(thePlayer, thePlayer.location()));
+                });
     }
 
     @Override
