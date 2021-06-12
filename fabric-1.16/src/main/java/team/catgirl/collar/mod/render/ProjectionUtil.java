@@ -13,7 +13,7 @@ import org.lwjgl.system.MemoryStack;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
-// Created by Meckimp
+// Created by green lizard
 public enum ProjectionUtil {
 
     INSTANCE;
