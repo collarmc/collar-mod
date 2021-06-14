@@ -45,10 +45,15 @@ public abstract class Plastic {
     public abstract File home();
 
     /**
-     * Server IP
+     * Server address
      * @return serverIP or null if not connected
      */
-    public abstract String serverIp();
+    public abstract String serverAddress();
+
+    /**
+     * @return session id
+     */
+    public abstract String sessionId();
 
     /**
      * @return plastic instance

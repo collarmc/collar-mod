@@ -18,7 +18,7 @@ apply plugin: 'com.github.johnrengelman.shadow'
 
 version = project.property('collar.forge.version')
 group = 'team.catgirl.collar.mod'
-archivesBaseName = 'collar-' + project.property('collar.mc.version')
+archivesBaseName = 'collar-forge-' + project.property('collar.mc.version')
 sourceCompatibility = targetCompatibility = '1.8'
 
 minecraft {

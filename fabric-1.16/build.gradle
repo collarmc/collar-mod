@@ -19,7 +19,7 @@ apply plugin: 'fabric-loom'
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
-archivesBaseName = project.archives_base_name
+archivesBaseName = project.archives_base_name + "-fabric"
 version = project.mod_version
 group = project.maven_group
 

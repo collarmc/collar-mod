@@ -2,10 +2,7 @@ package team.catgirl.collar.mod.common;
 
 import team.catgirl.collar.api.entities.Entity;
 import team.catgirl.collar.api.entities.EntityType;
-import team.catgirl.collar.client.Collar;
-import team.catgirl.collar.client.CollarConfiguration;
-import team.catgirl.collar.client.CollarException;
-import team.catgirl.collar.client.CollarListener;
+import team.catgirl.collar.client.*;
 import team.catgirl.collar.client.minecraft.Ticks;
 import team.catgirl.collar.client.security.ClientIdentityStore;
 import team.catgirl.collar.mod.common.features.*;
@@ -19,6 +16,7 @@ import team.catgirl.plastic.events.client.OnTickEvent;
 import team.catgirl.plastic.events.world.WorldLoadedEvent;
 import team.catgirl.plastic.player.Player;
 import team.catgirl.plastic.ui.TextAction;
+import team.catgirl.plastic.ui.TextAction.OpenLinkAction;
 import team.catgirl.plastic.ui.TextBuilder;
 import team.catgirl.plastic.ui.TextColor;
 import team.catgirl.collar.mod.common.plugins.Plugins;
@@ -113,6 +111,7 @@ public class CollarService implements CollarListener {
                 LOGGER.log(Level.SEVERE, e.getMessage(), e);
             } catch (Throwable e) {
                 plastic.display.displayMessage(plastic.display.newTextBuilder().add("Failed to connect to Collar", TextColor.RED));
+                e.printStackTrace();
                 LOGGER.log(Level.SEVERE, e.getMessage(), e);
             } finally {
                 connectionLock.unlock();
@@ -181,7 +180,7 @@ public class CollarService implements CollarListener {
         plastic.display.displayMessage(rainbowText("Welcome to Collar!"));
         TextBuilder text = plastic.display.newTextBuilder()
                 .add("You'll need to associate this computer with your Collar account at ")
-                .add(approvalUrl, TextColor.GOLD, null, new TextAction.OpenLinkAction(approvalUrl));
+                .add(approvalUrl, TextColor.GOLD, null, new OpenLinkAction(approvalUrl));
         plastic.display.displayMessage(text);
     }
 
@@ -204,13 +203,14 @@ public class CollarService implements CollarListener {
     public void onPrivateIdentityMismatch(Collar collar, String url) {
         plastic.display.displayStatusMessage("Collar encountered a problem");
         TextBuilder builder = plastic.display.newTextBuilder().add("Your private identity did not match. We cannot decrypt your private data. To resolve please visit ")
-                .add(url, TextColor.RED, null, new TextAction.OpenLinkAction(url));
+                .add(url, TextColor.RED, null, new OpenLinkAction(url));
         plastic.display.displayMessage(builder);
     }
 
     private Collar createCollar() throws IOException {
         CollarConfiguration configuration = new CollarConfiguration.Builder()
-                .withCollarServer("http://localhost:4000")
+//                .withCollarServer("http://localhost:4000")
+                .withCollarServer()
                 .withListener(this)
                 .withTicks(ticks)
                 .withHomeDirectory(collarHome())
@@ -230,11 +230,11 @@ public class CollarService implements CollarListener {
     }
 
     private MinecraftSession getMinecraftSession() {
-        String serverIP = plastic.serverIp();
+        String serverIP = plastic.serverAddress();
         Player player = plastic.world.currentPlayer();
         UUID playerId = player.id();
         String playerName = player.name();
-        return MinecraftSession.noJang(playerId, playerName, player.networkId(), serverIP);
+        return MinecraftSession.mojang(playerId, playerName, player.networkId(), serverIP, plastic.sessionId());
     }
 
     private Set<Entity> nearbyPlayerEntities() {

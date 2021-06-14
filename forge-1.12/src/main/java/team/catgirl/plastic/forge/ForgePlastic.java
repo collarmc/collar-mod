@@ -20,8 +20,13 @@ public class ForgePlastic extends Plastic {
     }
 
     @Override
-    public String serverIp() {
+    public String serverAddress() {
         ServerData serverData = Minecraft.getMinecraft().getCurrentServerData();
         return serverData == null ? null : serverData.serverIP;
+    }
+
+    @Override
+    public String sessionId() {
+        return Minecraft.getMinecraft().getSession().getSessionID();
     }
 }

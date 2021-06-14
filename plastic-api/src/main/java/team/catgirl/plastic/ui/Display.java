@@ -57,17 +57,4 @@ public interface Display {
      * @return new text builder
      */
     TextBuilder newTextBuilder();
-
-    /**
-     * @param json representing the text
-     * @return new text builder from JSON
-     */
-    TextBuilder textBuilderFromJSON(String json);
-
-    /**
-     * Create a text builder from formatted string
-     * @param text
-     * @return new text builder
-     */
-    TextBuilder textBuilderFromFormattedString(String text);
 }

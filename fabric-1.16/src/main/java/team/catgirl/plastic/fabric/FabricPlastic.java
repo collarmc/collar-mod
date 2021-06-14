@@ -20,11 +20,16 @@ public final class FabricPlastic extends Plastic {
     }
 
     @Override
-    public String serverIp() {
+    public String serverAddress() {
         ServerInfo currentServerEntry = MinecraftClient.getInstance().getCurrentServerEntry();
         if (currentServerEntry == null) {
             throw new IllegalStateException("not connected to a server");
         }
         return currentServerEntry.address;
+    }
+
+    @Override
+    public String sessionId() {
+        return MinecraftClient.getInstance().getSession().getSessionId();
     }
 }

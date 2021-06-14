@@ -11,7 +11,7 @@ import team.catgirl.plastic.ui.TextStyle;
 
 public final class ForgeTextBuilder extends TextBuilder {
 
-    private final ITextComponent componentString;
+    final ITextComponent componentString;
 
     public ForgeTextBuilder(ITextComponent componentString) {
         this.componentString = componentString;
