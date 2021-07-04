@@ -207,6 +207,11 @@ public class CollarService implements CollarListener {
         plastic.display.displayMessage(builder);
     }
 
+    @Override
+    public void onError(Collar collar, Throwable throwable) {
+        plastic.display.displayErrorMessage(throwable.getMessage());
+    }
+
     private Collar createCollar() throws IOException {
         CollarConfiguration configuration = new CollarConfiguration.Builder()
 //                .withCollarServer("http://localhost:4000")
@@ -234,7 +239,7 @@ public class CollarService implements CollarListener {
         Player player = plastic.world.currentPlayer();
         UUID playerId = player.id();
         String playerName = player.name();
-        return MinecraftSession.mojang(playerId, playerName, player.networkId(), serverIP, plastic.sessionId());
+        return MinecraftSession.mojang(playerId, playerName, player.networkId(), serverIP, plastic.accessToken());
     }
 
     private Set<Entity> nearbyPlayerEntities() {
