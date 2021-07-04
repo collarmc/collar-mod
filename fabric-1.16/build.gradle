@@ -1,13 +1,13 @@
 buildscript {
     repositories {
-        mavenLocal()
-        maven { url = 'https://files.minecraftforge.net/maven' }
-        jcenter()
-        mavenCentral()
         maven {
             name = 'Fabric'
             url = 'https://maven.fabricmc.net/'
         }
+        mavenLocal()
+        maven { url = 'https://files.minecraftforge.net/maven' }
+        jcenter()
+        mavenCentral()
     }
     dependencies {
         classpath "net.fabricmc:fabric-loom:0.7-SNAPSHOT"
