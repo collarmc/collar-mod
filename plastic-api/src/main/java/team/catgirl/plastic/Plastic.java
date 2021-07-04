@@ -56,6 +56,11 @@ public abstract class Plastic {
     public abstract String sessionId();
 
     /**
+     * @return access token
+     */
+    public abstract String accessToken();
+
+    /**
      * @return plastic instance
      */
     public static Plastic getPlastic() {

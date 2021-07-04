@@ -29,4 +29,9 @@ public class ForgePlastic extends Plastic {
     public String sessionId() {
         return Minecraft.getMinecraft().getSession().getSessionID();
     }
+
+    @Override
+    public String accessToken() {
+        return Minecraft.getMinecraft().getSession().getToken();
+    }
 }

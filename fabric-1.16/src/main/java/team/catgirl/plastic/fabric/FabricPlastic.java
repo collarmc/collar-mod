@@ -32,4 +32,9 @@ public final class FabricPlastic extends Plastic {
     public String sessionId() {
         return MinecraftClient.getInstance().getSession().getSessionId();
     }
+
+    @Override
+    public String accessToken() {
+        return MinecraftClient.getInstance().getSession().getAccessToken();
+    }
 }
