@@ -16,7 +16,7 @@ apply plugin: 'idea'
 apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'com.github.johnrengelman.shadow'
 
-version = project.property('collar.version')
+version = project.property('collar.mod.version') + '-' + getCheckedOutGitCommitHash()
 group = 'team.catgirl.collar.mod'
 archivesBaseName = 'collar-forge-' + project.property('collar.mc.version')
 sourceCompatibility = targetCompatibility = '1.8'

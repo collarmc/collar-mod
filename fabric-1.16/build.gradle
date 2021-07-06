@@ -19,8 +19,10 @@ apply plugin: 'fabric-loom'
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
-archivesBaseName = project.archives_base_name + "-fabric"
-version = project.mod_version
+project.setProperty('mod_version', project.property('collar.mod.version'))
+
+archivesBaseName = project.archives_base_name + '-' + project.property('minecraft_version')
+version = project.mod_version + '-' + getCheckedOutGitCommitHash()
 group = project.maven_group
 
 repositories {
