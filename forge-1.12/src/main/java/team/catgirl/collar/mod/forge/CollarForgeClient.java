@@ -3,6 +3,7 @@ package team.catgirl.collar.mod.forge;
 import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.client.ClientCommandHandler;
+import net.minecraftforge.client.event.ClientChatEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
@@ -24,6 +25,7 @@ import team.catgirl.collar.mod.common.plastic.CollarTextureProvider;
 import team.catgirl.collar.mod.common.plugins.Plugins;
 import team.catgirl.collar.mod.forge.client.ForgePlugins;
 import team.catgirl.plastic.Plastic;
+import team.catgirl.plastic.chat.ChatService;
 import team.catgirl.plastic.forge.ForgeCommand;
 import team.catgirl.plastic.forge.ForgePlastic;
 import team.catgirl.pounce.EventBus;
@@ -85,5 +87,17 @@ public class CollarForgeClient implements CollarListener
     public void renderPlayer(RenderPlayerEvent.Post event) {
         EntityPlayer player = event.getEntityPlayer();
         PLASTIC.world.onPlayerRender(player.getGameProfile().getId());
+    }
+
+    @SubscribeEvent
+    public void onChatMessage(ClientChatEvent event) {
+        // if it looks like a command, don't intercept it
+        if (event.getMessage().startsWith("/")) {
+            return;
+        }
+        ChatService chatService = Plastic.getPlastic().world.chatService;
+        if (chatService.onChatMessageSent(event.getMessage())) {
+            event.setCanceled(true);
+        }
     }
 }
