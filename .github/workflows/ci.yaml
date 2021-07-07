@@ -20,16 +20,24 @@ jobs:
       with:
         image-version: latest
         port: 27017
-    - name: Checkout Collar API
-      uses: actions/checkout@v2
-      with:
-        repository: collarmc/collar
-        path: collar
     - name: Set up JDK 16 for Collar API
       uses: actions/setup-java@v2
       with:
         java-version: '16'
         distribution: 'adopt'
+    - name: Checkout Pounce
+      uses: actions/checkout@v2
+      with:
+        repository: collarmc/pounce
+        path: pounce
+    - name: Build Pounce
+      working-directory: pounce
+      run: mvn -B install --file pom.xml -Dmaven.test.skip=true
+    - name: Checkout Collar API
+      uses: actions/checkout@v2
+      with:
+        repository: collarmc/collar
+        path: collar
     - name: Build Collar API
       working-directory: collar
       run: mvn -B install --file pom.xml -Dmaven.test.skip=true
