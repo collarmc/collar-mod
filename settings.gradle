@@ -1,16 +1,26 @@
 pluginManagement {
     repositories {
+        gradlePluginPortal()
         maven {
             name = 'Fabric'
             url = 'https://maven.fabricmc.net/'
         }
-        jcenter()
-        gradlePluginPortal()
+        maven {
+            name = 'Architectury maven'
+            url = 'https://maven.architectury.dev/'
+        }
+        maven {
+            name = 'Forge maven'
+            url = 'https://maven.minecraftforge.net/'
+            content{
+                excludeGroupByRegex "org\\.eclipse\\.?.*"
+            }
+        }
     }
 }
 rootProject.name = 'collar-mod'
 include 'plastic-api'
 include 'common'
-include 'fabric-1.16'
-include 'fabric-1.17'
+//include 'fabric-1.16'
+//include 'fabric-1.17'
 include 'forge-1.12'

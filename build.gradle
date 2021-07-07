@@ -1,15 +1,41 @@
 plugins {
     id 'java'
+    id 'dev.architectury.loom' version '0.8.0-SNAPSHOT' apply false //For forge 1.16, 1.17. It can be used to build Fabric too, we won't use both, only arch
+    //id "architectury-plugin" version "3.2-SNAPSHOT" apply false //We don't need @ExpectPlatform from Arch plugin, we only need the loom
+    id "com.github.johnrengelman.shadow" version "7.0.0" apply false
+
+    //id "com.github.breadmoirai.github-release" version "2.2.12" //TODO automate GitHub releases
 }
 
-group 'org.example'
-version '1.0-SNAPSHOT'
+group project.maven_group
+version "${project.collar_mod_version}-${getCheckedOutGitCommitHash()}"
 
-repositories {
-    mavenLocal()
-    mavenCentral()
-    maven {
-        url "https://libraries.minecraft.net"
+allprojects {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven {
+            url "https://libraries.minecraft.net"
+        }
+    }
+    tasks.withType(JavaCompile).configureEach {
+
+        //apply plugin: "architectury-plugin"
+
+        def targetVersion = project.java_version
+        sourceCompatibility = JavaVersion.toVersion(targetVersion)
+        targetCompatibility = JavaVersion.toVersion(targetVersion)
+
+        //options.compilerArgs << '-Xlint:unchecked'//do all warnings
+        //options.deprecation = true	//deprecated warning on compile
+
+        //We implement these in every submodule...
+        dependencies {
+            implementation "com.mojang:brigadier:${project.brigadier_version}"
+            implementation group: 'team.catgirl', name: 'pounce', version: "${project.pounce_version}"
+            implementation group: 'team.catgirl.collar', name: 'client', version: "${project.collar_version}", classifier: 'full'
+            implementation group: 'team.catgirl.collar', name: 'plugin', version: "${project.collar_version}"
+        }
     }
 }
 
@@ -17,3 +43,25 @@ def getCheckedOutGitCommitHash() {
     'git rev-parse --verify --short HEAD'.execute().text.trim()
 }
 
+//A list, we can use for auto-publishing and for some other based automations
+List<File> releaseArtifacts
+
+task cleanupArtifacts{
+    doLast {
+        delete "${project.projectDir}/artifacts"
+    }
+}
+
+//A fancy task to collect every implementation into root_project/artifacts
+//Can be VERY useful :D
+task collectArtifacts{
+    dependsOn('cleanupArtifacts')
+    dependsOn(':forge-1.12:copyArtifacts')
+    dependsOn(':16:copyArtifacts', ':17:copyArtifacts')
+    doLast {
+        releaseArtifacts = project.getProjectDir().toPath().resolve("artifacts").toFile().listFiles()
+    }
+}
+clean{
+    delete "${project.projectDir}/artifacts"
+}
