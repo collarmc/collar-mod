@@ -41,7 +41,7 @@ jobs:
     - name: Checkout Collar mod
       uses: actions/checkout@v2
       with:
-        repository: collarmc/collar
+        repository: collarmc/collar-mod
         path: collar
     - name: Build Collar Mod
       run: ./gradlew clean build
