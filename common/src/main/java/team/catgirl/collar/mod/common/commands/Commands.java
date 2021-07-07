@@ -14,13 +14,16 @@ import team.catgirl.collar.api.groups.GroupType;
 import team.catgirl.collar.api.location.Dimension;
 import team.catgirl.collar.api.location.Location;
 import team.catgirl.collar.api.waypoints.Waypoint;
+import team.catgirl.collar.client.api.groups.GroupInvitation;
 import team.catgirl.collar.mod.common.CollarService;
+import team.catgirl.collar.mod.common.features.messaging.Messages;
 import team.catgirl.collar.mod.common.commands.arguments.*;
 import team.catgirl.collar.mod.common.commands.arguments.IdentityArgumentType.IdentityArgument;
 import team.catgirl.collar.mod.common.commands.arguments.WaypointArgumentType.WaypointArgument;
 import team.catgirl.plastic.Plastic;
 import team.catgirl.plastic.player.Player;
-import team.catgirl.plastic.ui.TextFormatting;
+import team.catgirl.plastic.ui.TextColor;
+import team.catgirl.plastic.ui.TextStyle;
 import team.catgirl.collar.security.mojang.MinecraftPlayer;
 
 import java.util.*;
@@ -38,11 +41,13 @@ import static team.catgirl.collar.mod.common.commands.arguments.PlayerArgumentTy
 public final class Commands<S> {
 
     private final CollarService collarService;
+    private final Messages messages;
     private final Plastic plastic;
     private final boolean prefixed;
 
-    public Commands(CollarService collarService, Plastic plastic, boolean prefixed) {
+    public Commands(CollarService collarService, Messages messages, Plastic plastic, boolean prefixed) {
         this.collarService = collarService;
+        this.messages = messages;
         this.plastic = plastic;
         this.prefixed = prefixed;
     }
@@ -54,6 +59,7 @@ public final class Commands<S> {
         registerWaypointCommands(dispatcher);
         registerGroupCommands(GroupType.PARTY, dispatcher);
         registerGroupCommands(GroupType.GROUP, dispatcher);
+        registerChatCommands(dispatcher);
     }
 
     private LiteralArgumentBuilder<S> prefixed(String name, LiteralArgumentBuilder<S> argumentBuilder) {
@@ -86,6 +92,14 @@ public final class Commands<S> {
             collarService.with(collar -> {
                 plastic.display.displayInfoMessage("Collar is " + collar.getState().name().toLowerCase());
             }, () -> plastic.display.displayMessage("Collar is disconnected"));
+            return 1;
+        }));
+
+        // collar me
+        dispatcher.register(prefixed("me", context -> {
+            collarService.with(collar -> {
+                plastic.display.displayInfoMessage("You are connected as " + collar.player().profile);
+            });
             return 1;
         }));
     }
@@ -132,7 +146,7 @@ public final class Commands<S> {
                             plastic.display.displayInfoMessage("You don't have any friends");
                         } else {
                             friends.stream().sorted(Comparator.comparing(o -> o.status)).forEach(friend -> {
-                                TextFormatting color = friend.status.equals(Status.ONLINE) ? TextFormatting.GREEN : TextFormatting.GRAY;
+                                TextColor color = friend.status.equals(Status.ONLINE) ? TextColor.GREEN : TextColor.GRAY;
                                 plastic.display.displayMessage(plastic.display.newTextBuilder().add(friend.friend.name, color));
                             });
                         }
@@ -147,7 +161,7 @@ public final class Commands<S> {
                 .then(argument("name", string())
                         .executes(context -> {
                             collarService.with(collar -> {
-                                collar.groups().create(getString(context, "name"), GroupType.PARTY, ImmutableList.of());
+                                collar.groups().create(getString(context, "name"), type, ImmutableList.of());
                             });
                             return 1;
                         }))));
@@ -171,6 +185,24 @@ public final class Commands<S> {
                                     });
                                     return 1;
                                 }))));
+
+        // collar party invites
+        dispatcher.register(prefixed(type.name, literal("invites")
+                        .executes(context -> {
+                            collarService.with(collar -> {
+                                List<GroupInvitation> invitations = collar.groups().invitations().stream()
+                                        .filter(invitation -> invitation.type == type)
+                                        .collect(Collectors.toList());
+                                if (invitations.isEmpty()) {
+                                    plastic.display.displayInfoMessage("You have no invites to any " + type.plural);
+                                } else {
+                                    plastic.display.displayInfoMessage("You have invites to:");
+                                    invitations.forEach(invitation -> plastic.display.displayInfoMessage(invitation.name));
+                                    plastic.display.displayInfoMessage("To accept type '/collar " + type.name  + " accept [name]");
+                                }
+                            });
+                            return 1;
+                        })));
 
         // collar party accept [name]
         dispatcher.register(prefixed(type.name, literal("accept")
@@ -199,9 +231,9 @@ public final class Commands<S> {
                     return 1;
                 })));
 
-        // collar party [name] add [player]
-        dispatcher.register(prefixed(type.name, argument("groupName", group(type))
-                .then(literal("add")
+        // collar party add [name] [player]
+        dispatcher.register(prefixed(type.name, literal("add")
+                .then(argument("groupName", group(type))
                         .then(argument("playerName", player())
                                 .executes(context -> {
                                     collarService.with(collar -> {
@@ -212,9 +244,9 @@ public final class Commands<S> {
                                     return 1;
                                 })))));
 
-        // collar party [name] remove [player]
-        dispatcher.register(prefixed(type.name, argument("groupName", group(type))
-                .then(literal("remove")
+        // collar party remove [name] [player]
+        dispatcher.register(prefixed(type.name, literal("remove")
+                .then(argument("groupName", group(type))
                         .then(argument("playerName", identity())
                                 .executes(context -> {
                                     collarService.with(collar -> {
@@ -226,6 +258,27 @@ public final class Commands<S> {
                                     });
                                     return 1;
                                 })))));
+
+        // collar party members [name]
+        dispatcher.register(prefixed(type.name, literal("members")
+                .then(argument("groupName", group(type)))
+                .executes(context -> {
+                    collarService.with(collar -> {
+                        Group group = getGroup(context, "groupName");
+                        plastic.display.displayMessage("Members:");
+                        group.members.forEach(member -> {
+                            Optional<Player> thePlayer = plastic.world.allPlayers().stream().filter(player -> member.player.minecraftPlayer.id.equals(player.id())).findFirst();
+                            String message;
+                            if (thePlayer.isPresent()) {
+                                message = member.profile.name + " playing as " + member.player.minecraftPlayer.id + " (" + member.membershipRole.name() + ")";
+                            } else {
+                                message = member.profile.name;
+                            }
+                            plastic.display.displayMessage(message + "(" + member.membershipRole.name() + ")");
+                        });
+                    });
+                    return 1;
+                })));
     }
 
     private void registerLocationCommands(CommandDispatcher<S> dispatcher) {
@@ -388,6 +441,34 @@ public final class Commands<S> {
                                                             });
                                                             return 1;
                                                         }))))))));
+    }
+
+    private void registerChatCommands(CommandDispatcher<S> dispatcher) {
+        // /msg player2 OwO
+        dispatcher.register(literal("msg")
+                .then(argument("recipient", player())
+                .then(argument("rawMessage", string())
+                .executes(context -> {
+                    Player recipient = getPlayer(context, "recipient");
+                    String message = getString(context, "rawMessage");
+                    messages.sendMessage(recipient, message);
+                    return 1;
+        }))));
+
+        // collar chat with coolkids
+        dispatcher.register(prefixed("chat", literal("with")
+                .then(argument("group", groups())
+                .executes(context -> {
+                    Group group = getGroup(context, "group");
+                    messages.switchToGroup(group);
+            return 1;
+        }))));
+
+        // collar chat off
+        dispatcher.register(prefixed("chat", literal("off").executes(context -> {
+            messages.switchToGeneralChat();
+            return 1;
+        })));
     }
 
     public <T> RequiredArgumentBuilder<S, T> argument(String name, ArgumentType<T> type) {

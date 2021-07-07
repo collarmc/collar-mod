@@ -5,7 +5,6 @@ import team.catgirl.collar.client.Collar;
 import team.catgirl.collar.client.api.friends.FriendsApi;
 import team.catgirl.collar.client.api.friends.FriendsListener;
 import team.catgirl.plastic.Plastic;
-import team.catgirl.plastic.ui.TextFormatting;
 
 public class Friends implements FriendsListener {
 
@@ -17,7 +16,7 @@ public class Friends implements FriendsListener {
 
     @Override
     public void onFriendChanged(Collar collar, FriendsApi friendsApi, Friend friend) {
-        plastic.display.displayStatusMessage(plastic.display.newTextBuilder().add(String.format("%s is %s", friend.friend.name, friend.status.name().toLowerCase()), TextFormatting.GREEN));
+        plastic.display.displayStatusMessage(plastic.display.newTextBuilder().add(String.format("%s is %s", friend.friend.name, friend.status.name().toLowerCase())));
     }
 
     @Override

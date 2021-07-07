@@ -26,7 +26,7 @@ public interface Display {
      * @param message to send
      */
     default void displayInfoMessage(String message) {
-        displayMessage(Plastic.getPlastic().display.newTextBuilder().add(message, TextFormatting.GRAY));
+        displayMessage(Plastic.getPlastic().display.newTextBuilder().add(message, TextColor.GRAY));
     }
 
     /**
@@ -34,7 +34,7 @@ public interface Display {
      * @param message to send
      */
     default void displayWarningMessage(String message) {
-        displayMessage(Plastic.getPlastic().display.newTextBuilder().add(message, TextFormatting.YELLOW));
+        displayMessage(Plastic.getPlastic().display.newTextBuilder().add(message, TextColor.YELLOW));
     }
 
     /**
@@ -42,7 +42,7 @@ public interface Display {
      * @param message to send
      */
     default void displayErrorMessage(String message) {
-        displayMessage(Plastic.getPlastic().display.newTextBuilder().add(message, TextFormatting.RED));
+        displayMessage(Plastic.getPlastic().display.newTextBuilder().add(message, TextColor.RED));
     }
 
     /**
@@ -50,24 +50,11 @@ public interface Display {
      * @param message to send
      */
     default void displayMessage(String message) {
-        displayMessage(Plastic.getPlastic().display.newTextBuilder().add(message, TextFormatting.RED));
+        displayMessage(Plastic.getPlastic().display.newTextBuilder().add(message, TextColor.GRAY));
     }
 
     /**
      * @return new text builder
      */
     TextBuilder newTextBuilder();
-
-    /**
-     * @param json representing the text
-     * @return new text builder from JSON
-     */
-    TextBuilder textBuilderFromJSON(String json);
-
-    /**
-     * Create a text builder from formatted string
-     * @param text
-     * @return new text builder
-     */
-    TextBuilder textBuilderFromFormattedString(String text);
 }

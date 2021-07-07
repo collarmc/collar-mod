@@ -1,4 +1,4 @@
-package team.catgirl.collar.mod.forge;
+package team.catgirl.collar.mod.forge.client;
 
 import net.minecraftforge.fml.common.Loader;
 import team.catgirl.collar.api.CollarPlugin;

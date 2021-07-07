@@ -1,4 +1,4 @@
-package team.catgirl.collar.mod.mixin;
+package team.catgirl.collar.mod.fabric.mixin;
 
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import net.minecraft.client.network.PlayerListEntry;

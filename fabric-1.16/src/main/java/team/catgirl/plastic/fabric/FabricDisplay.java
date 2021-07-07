@@ -29,16 +29,6 @@ public class FabricDisplay implements Display {
         return new FabricTextBuilder();
     }
 
-    @Override
-    public TextBuilder textBuilderFromJSON(String json) {
-        return new FabricTextBuilder(Text.Serializer.fromJson(json));
-    }
-
-    @Override
-    public TextBuilder textBuilderFromFormattedString(String text) {
-        return new FabricTextBuilder(new LiteralText(text));
-    }
-
     @NotNull
     private ClientPlayerEntity getPlayer() {
         ClientPlayerEntity player = MinecraftClient.getInstance().player;

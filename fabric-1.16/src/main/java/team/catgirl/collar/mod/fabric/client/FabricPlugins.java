@@ -1,4 +1,4 @@
-package team.catgirl.collar.mod;
+package team.catgirl.collar.mod.fabric.client;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.loader.api.FabricLoader;

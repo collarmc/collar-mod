@@ -11,7 +11,7 @@ import java.io.File;
 public final class FabricPlastic extends Plastic {
 
     public FabricPlastic(TextureProvider textureProvider, EventBus eventBus) {
-        super(new FabricDisplay(), new FabricWorld(textureProvider, eventBus), eventBus);
+        super(new FabricDisplay(), new FabricWorld(textureProvider, new FabricChatService(new FabricDisplay()), eventBus), eventBus);
     }
 
     @Override
@@ -20,11 +20,21 @@ public final class FabricPlastic extends Plastic {
     }
 
     @Override
-    public String serverIp() {
+    public String serverAddress() {
         ServerInfo currentServerEntry = MinecraftClient.getInstance().getCurrentServerEntry();
         if (currentServerEntry == null) {
             throw new IllegalStateException("not connected to a server");
         }
         return currentServerEntry.address;
+    }
+
+    @Override
+    public String sessionId() {
+        return MinecraftClient.getInstance().getSession().getSessionId();
+    }
+
+    @Override
+    public String accessToken() {
+        return MinecraftClient.getInstance().getSession().getAccessToken();
     }
 }

@@ -1,13 +1,13 @@
 buildscript {
     repositories {
-        mavenLocal()
-        maven { url = 'https://files.minecraftforge.net/maven' }
-        jcenter()
-        mavenCentral()
         maven {
             name = 'Fabric'
             url = 'https://maven.fabricmc.net/'
         }
+        mavenLocal()
+        maven { url = 'https://files.minecraftforge.net/maven' }
+        jcenter()
+        mavenCentral()
     }
     dependencies {
         classpath "net.fabricmc:fabric-loom:0.7-SNAPSHOT"
@@ -19,8 +19,10 @@ apply plugin: 'fabric-loom'
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
-archivesBaseName = project.archives_base_name
-version = project.mod_version
+project.setProperty('mod_version', project.property('collar.mod.version'))
+
+archivesBaseName = project.archives_base_name + '-' + project.property('minecraft_version')
+version = project.mod_version + '-' + getCheckedOutGitCommitHash()
 group = project.maven_group
 
 repositories {
@@ -38,6 +40,7 @@ dependencies {
 
     // PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
     // You may need to force-disable transitiveness on them.
+    implementation group: 'org.joml', name: 'joml', version: '1.10.1'
     implementation group: 'team.catgirl', name: 'pounce', version: "${project.property('pounce.version')}"
     implementation project(':plastic-api')
     implementation project(':common')

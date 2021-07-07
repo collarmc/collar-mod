@@ -3,6 +3,7 @@ package team.catgirl.collar.mod.forge;
 import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.client.ClientCommandHandler;
+import net.minecraftforge.client.event.ClientChatEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
@@ -17,19 +18,21 @@ import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientDisconnection
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import team.catgirl.collar.client.CollarListener;
-import team.catgirl.collar.client.minecraft.Ticks;
 import team.catgirl.collar.mod.common.CollarService;
+import team.catgirl.collar.mod.common.features.messaging.Messages;
 import team.catgirl.collar.mod.common.commands.Commands;
 import team.catgirl.collar.mod.common.plastic.CollarTextureProvider;
 import team.catgirl.collar.mod.common.plugins.Plugins;
+import team.catgirl.collar.mod.forge.client.ForgePlugins;
 import team.catgirl.plastic.Plastic;
+import team.catgirl.plastic.chat.ChatService;
 import team.catgirl.plastic.forge.ForgeCommand;
 import team.catgirl.plastic.forge.ForgePlastic;
 import team.catgirl.pounce.EventBus;
 
 @SideOnly(Side.CLIENT)
-@Mod(modid = CollarMod.MODID, name = CollarMod.NAME, version = CollarMod.VERSION)
-public class CollarMod implements CollarListener
+@Mod(modid = CollarForgeClient.MODID, name = CollarForgeClient.NAME, version = CollarForgeClient.VERSION)
+public class CollarForgeClient implements CollarListener
 {
     public static final String MODID = "team.catgirl.collar";
     public static final String NAME = "Collar";
@@ -54,7 +57,8 @@ public class CollarMod implements CollarListener
         collarService = new CollarService(PLASTIC, EVENT_BUS, PLUGINS);
         // Setup the command system
         CommandDispatcher<CollarService> dispatcher = new CommandDispatcher<>();
-        Commands<CollarService> commands = new Commands<>(collarService, PLASTIC, false);
+        Messages messages = new Messages(Plastic.getPlastic(), collarService);
+        Commands<CollarService> commands = new Commands<>(collarService, messages, PLASTIC, false);
         commands.register(dispatcher);
         ClientCommandHandler.instance.registerCommand(new ForgeCommand<>("collar", collarService, dispatcher));
     }
@@ -83,5 +87,17 @@ public class CollarMod implements CollarListener
     public void renderPlayer(RenderPlayerEvent.Post event) {
         EntityPlayer player = event.getEntityPlayer();
         PLASTIC.world.onPlayerRender(player.getGameProfile().getId());
+    }
+
+    @SubscribeEvent
+    public void onChatMessage(ClientChatEvent event) {
+        // if it looks like a command, don't intercept it
+        if (event.getMessage().startsWith("/")) {
+            return;
+        }
+        ChatService chatService = Plastic.getPlastic().world.chatService;
+        if (chatService.onChatMessageSent(event.getMessage())) {
+            event.setCanceled(true);
+        }
     }
 }

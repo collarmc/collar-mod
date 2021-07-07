@@ -11,10 +11,10 @@
   "environment": "*",
   "entrypoints": {
     "client": [
-      "team.catgirl.collar.mod.client.CollarFabricClient"
+      "team.catgirl.collar.mod.fabric.client.CollarFabricClient"
     ],
     "main": [
-      "team.catgirl.collar.mod.CollarFabric"
+      "team.catgirl.collar.mod.fabric.CollarFabric"
     ]
   },
   "mixins": [

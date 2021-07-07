@@ -5,7 +5,8 @@ import net.minecraft.util.Formatting;
 import team.catgirl.plastic.ui.TextAction;
 import team.catgirl.plastic.ui.TextAction.OpenLinkAction;
 import team.catgirl.plastic.ui.TextBuilder;
-import team.catgirl.plastic.ui.TextFormatting;
+import team.catgirl.plastic.ui.TextColor;
+import team.catgirl.plastic.ui.TextStyle;
 
 public final class FabricTextBuilder extends TextBuilder {
 
@@ -20,16 +21,21 @@ public final class FabricTextBuilder extends TextBuilder {
     }
 
     @Override
-    public TextBuilder add(String text, TextFormatting textFormatting, TextAction action) {
+    public TextBuilder add(String text, TextColor color, TextStyle style, TextAction action) {
         MutableText component = new LiteralText(text);
-        if (textFormatting != null) {
-            component = component.formatted(from(textFormatting));
+        if (color != null) {
+            Formatting colorFormatting = from(color);
+            component = component.formatted(colorFormatting);
+        }
+        if (style != null) {
+            Formatting styleFormatting = from(style);
+            component = component.formatted(styleFormatting);
         }
         if (action != null) {
             if (action instanceof OpenLinkAction) {
                 OpenLinkAction openLinkAction = (OpenLinkAction)action;
-                Style style = Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, openLinkAction.url));
-                component.setStyle(style);
+                Style clickEvent = Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, openLinkAction.url));
+                component.setStyle(clickEvent);
             } else {
                 throw new IllegalArgumentException("unknown action type " + action.getClass().getSimpleName());
             }
@@ -45,13 +51,23 @@ public final class FabricTextBuilder extends TextBuilder {
     }
 
     @Override
-    public TextBuilder add(String text, TextFormatting textFormatting) {
-        return add(text, textFormatting, null);
+    public TextBuilder add(String text, TextStyle textStyle) {
+        return add(text, null, textStyle, null);
+    }
+
+    @Override
+    public TextBuilder add(String text, TextColor color) {
+        return add(text, color, null, null);
+    }
+
+    @Override
+    public TextBuilder add(String text, TextColor color, TextStyle style) {
+        return add(text, color, style, null);
     }
 
     @Override
     public TextBuilder add(String text, TextAction action) {
-        return add(text, null, action);
+        return add(text, null, null, action);
     }
 
     @Override
@@ -64,11 +80,11 @@ public final class FabricTextBuilder extends TextBuilder {
         return Text.Serializer.toJson(text);
     }
 
-    Formatting from(TextFormatting textFormatting) {
-        if (textFormatting == null) {
+    private static Formatting from(TextColor color) {
+        if (color == null) {
             return null;
         }
-        switch (textFormatting) {
+        switch (color) {
             case RED:
                 return Formatting.RED;
             case AQUA:
@@ -101,6 +117,16 @@ public final class FabricTextBuilder extends TextBuilder {
                 return Formatting.DARK_RED;
             case LIGHT_PURPLE:
                 return Formatting.LIGHT_PURPLE;
+            default:
+                throw new IllegalStateException("unrecognised color " + color);
+        }
+    }
+
+    private static Formatting from(TextStyle textStyle) {
+        if (textStyle == null) {
+            return null;
+        }
+        switch (textStyle) {
             case BOLD:
                 return Formatting.BOLD;
             case ITALIC:
@@ -114,7 +140,7 @@ public final class FabricTextBuilder extends TextBuilder {
             case RESET:
                 return Formatting.RESET;
             default:
-                throw new IllegalStateException("unknown formatting " + textFormatting);
+                throw new IllegalStateException("unknown formatting " + textStyle);
         }
     }
 }

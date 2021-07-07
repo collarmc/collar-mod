@@ -2,6 +2,7 @@ package team.catgirl.plastic.forge;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
+import team.catgirl.plastic.chat.ChatService;
 import team.catgirl.plastic.player.Player;
 import team.catgirl.plastic.ui.TextureProvider;
 import team.catgirl.plastic.world.World;
@@ -12,8 +13,8 @@ import java.util.stream.Collectors;
 
 public class ForgeWorld extends World {
 
-    public ForgeWorld(TextureProvider textureProvider, EventBus eventBus) {
-        super(textureProvider, eventBus);
+    public ForgeWorld(TextureProvider textureProvider, ChatService chatService, EventBus eventBus) {
+        super(textureProvider, chatService, eventBus);
     }
 
     @Override

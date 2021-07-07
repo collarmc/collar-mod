@@ -2,17 +2,13 @@ package team.catgirl.collar.mod.common;
 
 import team.catgirl.collar.api.entities.Entity;
 import team.catgirl.collar.api.entities.EntityType;
-import team.catgirl.collar.api.location.Dimension;
-import team.catgirl.collar.api.location.Location;
-import team.catgirl.collar.client.Collar;
-import team.catgirl.collar.client.CollarConfiguration;
-import team.catgirl.collar.client.CollarException;
-import team.catgirl.collar.client.CollarListener;
+import team.catgirl.collar.client.*;
 import team.catgirl.collar.client.minecraft.Ticks;
 import team.catgirl.collar.client.security.ClientIdentityStore;
 import team.catgirl.collar.mod.common.features.*;
 import team.catgirl.collar.mod.common.events.CollarConnectedEvent;
 import team.catgirl.collar.mod.common.events.CollarDisconnectedEvent;
+import team.catgirl.collar.mod.common.features.messaging.MessagingListenerImpl;
 import team.catgirl.plastic.Plastic;
 import team.catgirl.plastic.events.client.ClientConnectedEvent;
 import team.catgirl.plastic.events.client.ClientDisconnectedEvent;
@@ -20,18 +16,22 @@ import team.catgirl.plastic.events.client.OnTickEvent;
 import team.catgirl.plastic.events.world.WorldLoadedEvent;
 import team.catgirl.plastic.player.Player;
 import team.catgirl.plastic.ui.TextAction;
+import team.catgirl.plastic.ui.TextAction.OpenLinkAction;
 import team.catgirl.plastic.ui.TextBuilder;
-import team.catgirl.plastic.ui.TextFormatting;
+import team.catgirl.plastic.ui.TextColor;
 import team.catgirl.collar.mod.common.plugins.Plugins;
 import team.catgirl.collar.security.mojang.MinecraftSession;
 import team.catgirl.pounce.EventBus;
 import team.catgirl.pounce.Preference;
 import team.catgirl.pounce.Subscribe;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -43,6 +43,7 @@ public class CollarService implements CollarListener {
 
     private static final Logger LOGGER = Logger.getLogger(CollarService.class.getName());
 
+    private final Lock connectionLock = new ReentrantLock();
     private final ExecutorService backgroundJobs;
     private final ConnectionState connectionState = new ConnectionState(this);
     private Collar collar;
@@ -53,7 +54,7 @@ public class CollarService implements CollarListener {
 
     public final Locations locations;
     public final Friends friends;
-    public final Messaging messaging;
+    public final MessagingListenerImpl messagingListenerImpl;
     public final Textures textures;
     public final Groups groups;
 
@@ -64,7 +65,7 @@ public class CollarService implements CollarListener {
         this.plugins = plugins;
         this.locations = new Locations(plastic, eventBus);
         this.friends = new Friends(plastic);
-        this.messaging = new Messaging(plastic);
+        this.messagingListenerImpl = new MessagingListenerImpl(plastic);
         this.textures = new Textures(plastic);
         this.groups = new Groups(plastic);
         this.backgroundJobs = Executors.newCachedThreadPool(r -> {
@@ -72,6 +73,7 @@ public class CollarService implements CollarListener {
             thread.setName("Collar Worker");
             return thread;
         });
+        eventBus.subscribe(this);
         eventBus.subscribe(connectionState);
     }
 
@@ -81,35 +83,55 @@ public class CollarService implements CollarListener {
 
     public void with(Consumer<Collar> action, Runnable emptyAction) {
         if (collar == null || !collar.getState().equals(CONNECTED)) {
-            emptyAction.run();
+            if (emptyAction != null) {
+                emptyAction.run();
+            }
         } else {
-            action.accept(collar);
+            if (action != null) {
+                action.accept(collar);
+            }
         }
     }
 
     public void with(Consumer<Collar> action) {
-        with(action, () -> plastic.display.displayMessage(plastic.display.newTextBuilder().add("Collar not connected", TextFormatting.YELLOW)));
+        with(action, () -> plastic.display.displayMessage(plastic.display.newTextBuilder().add("Collar not connected", TextColor.YELLOW)));
     }
 
     public void connect() {
+        if (!connectionLock.tryLock()) {
+            return;
+        }
+        connectionState.setAttempted(true);
         backgroundJobs.submit(() -> {
             try {
                 collar = createCollar();
                 collar.connect();
             } catch (CollarException e) {
-                plastic.display.displayMessage(plastic.display.newTextBuilder().add(e.getMessage(), TextFormatting.RED));
+                plastic.display.displayMessage(plastic.display.newTextBuilder().add(e.getMessage(), TextColor.RED));
                 LOGGER.log(Level.SEVERE, e.getMessage(), e);
             } catch (Throwable e) {
-                plastic.display.displayMessage(plastic.display.newTextBuilder().add("Failed to connect to Collar", TextFormatting.RED));
+                plastic.display.displayMessage(plastic.display.newTextBuilder().add("Failed to connect to Collar", TextColor.RED));
+                e.printStackTrace();
                 LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            } finally {
+                connectionLock.unlock();
             }
         });
     }
 
     public void disconnect() {
+        if (!connectionLock.tryLock()) {
+            return;
+        }
+        connectionState.setAttempted(false);
         backgroundJobs.submit(() -> {
-            if (collar != null) {
-                collar.disconnect();
+            try {
+                if (collar != null) {
+                    collar.disconnect();
+                    collar = null;
+                }
+            } finally {
+                connectionLock.unlock();
             }
         });
     }
@@ -117,22 +139,22 @@ public class CollarService implements CollarListener {
     @Override
     public void onStateChanged(Collar collar, Collar.State state) {
         backgroundJobs.submit(() -> {
-            String formatted;
             switch (state) {
                 case CONNECTING:
-                    plastic.display.displayMessage(this.plastic.display.newTextBuilder().add("Collar connecting...", TextFormatting.GREEN));
+                    plastic.display.displayMessage(this.plastic.display.newTextBuilder().add("Collar connecting...", TextColor.GREEN));
                     eventBus.dispatch(new CollarConnectedEvent(collar));
                     break;
                 case CONNECTED:
-                    plastic.display.displayMessage(this.plastic.display.newTextBuilder().add("Collar connected", TextFormatting.GREEN));
+                    plastic.display.displayMessage(this.plastic.display.newTextBuilder().add("Collar connected", TextColor.GREEN));
                     collar.location().subscribe(locations);
                     collar.groups().subscribe(groups);
                     collar.friends().subscribe(friends);
-                    collar.messaging().subscribe(messaging);
+                    collar.messaging().subscribe(messagingListenerImpl);
                     collar.textures().subscribe(textures);
                     break;
                 case DISCONNECTED:
-                    plastic.display.displayMessage(this.plastic.display.newTextBuilder().add("Collar disconnected", TextFormatting.GREEN));
+                    connectionState.setAttempted(false);
+                    plastic.display.displayMessage(this.plastic.display.newTextBuilder().add("Collar disconnected", TextColor.GREEN));
                     eventBus.dispatch(new CollarDisconnectedEvent());
                     break;
             }
@@ -158,7 +180,7 @@ public class CollarService implements CollarListener {
         plastic.display.displayMessage(rainbowText("Welcome to Collar!"));
         TextBuilder text = plastic.display.newTextBuilder()
                 .add("You'll need to associate this computer with your Collar account at ")
-                .add(approvalUrl, TextFormatting.GOLD, new TextAction.OpenLinkAction(approvalUrl));
+                .add(approvalUrl, TextColor.GOLD, null, new OpenLinkAction(approvalUrl));
         plastic.display.displayMessage(text);
     }
 
@@ -174,35 +196,50 @@ public class CollarService implements CollarListener {
     @Override
     public void onMinecraftAccountVerificationFailed(Collar collar, MinecraftSession session) {
         plastic.display.displayStatusMessage("Account verification failed");
-        plastic.display.displayMessage(plastic.display.newTextBuilder().add("Collar failed to verify your Minecraft account", TextFormatting.RED));
+        plastic.display.displayMessage(plastic.display.newTextBuilder().add("Collar failed to verify your Minecraft account", TextColor.RED));
     }
 
     @Override
     public void onPrivateIdentityMismatch(Collar collar, String url) {
         plastic.display.displayStatusMessage("Collar encountered a problem");
         TextBuilder builder = plastic.display.newTextBuilder().add("Your private identity did not match. We cannot decrypt your private data. To resolve please visit ")
-                .add(url, TextFormatting.RED, new TextAction.OpenLinkAction(url));
+                .add(url, TextColor.RED, null, new OpenLinkAction(url));
         plastic.display.displayMessage(builder);
+    }
+
+    @Override
+    public void onError(Collar collar, Throwable throwable) {
+        plastic.display.displayErrorMessage(throwable.getMessage());
     }
 
     private Collar createCollar() throws IOException {
         CollarConfiguration configuration = new CollarConfiguration.Builder()
-                .withCollarDevelopmentServer()
+//                .withCollarServer("http://localhost:4000")
+                .withCollarServer()
                 .withListener(this)
                 .withTicks(ticks)
-                .withHomeDirectory(plastic.home())
+                .withHomeDirectory(collarHome())
                 .withPlayerLocation(() -> plastic.world.currentPlayer().location())
                 .withEntitiesSupplier(this::nearbyPlayerEntities)
                 .withSession(this::getMinecraftSession).build();
         return Collar.create(configuration);
     }
 
+    /**
+     * Override the collar home directory with COLLAR_PLAYER so that you can test multiple players in the same IDE session
+     * @return home
+     */
+    private File collarHome() {
+        String player = System.getenv("COLLAR_PLAYER");
+        return player != null ? new File(plastic.home(), "collar-" + player) : plastic.home();
+    }
+
     private MinecraftSession getMinecraftSession() {
-        String serverIP = plastic.serverIp();
+        String serverIP = plastic.serverAddress();
         Player player = plastic.world.currentPlayer();
         UUID playerId = player.id();
         String playerName = player.name();
-        return MinecraftSession.noJang(playerId, playerName, player.networkId(), serverIP);
+        return MinecraftSession.mojang(playerId, playerName, player.networkId(), serverIP, plastic.accessToken(), null);
     }
 
     private Set<Entity> nearbyPlayerEntities() {
@@ -213,15 +250,14 @@ public class CollarService implements CollarListener {
 
     @Subscribe(Preference.POOL)
     private void onTick(OnTickEvent event) {
-        ticks.onTick();
+        with(i -> ticks.onTick(), null);
     }
 
     private TextBuilder rainbowText(String text) {
         TextBuilder builder = plastic.display.newTextBuilder();
-        List<TextFormatting> colors = TextFormatting.colors();
         Random random = new Random();
         for (char c : text.toCharArray()) {
-            TextFormatting value = colors.get(random.nextInt(colors.size()));
+            TextColor value = TextColor.values()[random.nextInt(TextColor.values().length)];
             builder = builder.add(Character.toString(c), value);
         }
         return builder;
@@ -235,6 +271,7 @@ public class CollarService implements CollarListener {
 
         private boolean connected = false;
         private boolean loaded = false;
+        private boolean attempted = false;
 
         public ConnectionState(CollarService service) {
             this.service = service;
@@ -250,6 +287,8 @@ public class CollarService implements CollarListener {
         public void disconnected(ClientDisconnectedEvent e) {
             this.connected = false;
             this.loaded = false;
+            this.attempted = false;
+            service.disconnect();
         }
 
         @Subscribe(Preference.CALLER)
@@ -259,9 +298,13 @@ public class CollarService implements CollarListener {
         }
 
         private void attemptToConnect() {
-            if (connected && loaded) {
+            if (!attempted && connected && loaded) {
                 service.connect();
             }
+        }
+
+        public void setAttempted(boolean collarConnectionAttempted) {
+            this.attempted = collarConnectionAttempted;
         }
     }
 }

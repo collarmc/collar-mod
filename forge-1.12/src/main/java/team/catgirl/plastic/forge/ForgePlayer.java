@@ -67,6 +67,11 @@ public class ForgePlayer implements Player {
     }
 
     @Override
+    public float yaw() {
+        return player.cameraYaw;
+    }
+
+    @Override
     public Location location() {
         Dimension dimension;
         switch (DimensionType.getById(player.dimension)) {

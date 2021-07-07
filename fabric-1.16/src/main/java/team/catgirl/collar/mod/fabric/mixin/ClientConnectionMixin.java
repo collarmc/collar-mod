@@ -1,4 +1,4 @@
-package team.catgirl.collar.mod.mixin;
+package team.catgirl.collar.mod.fabric.mixin;
 
 import io.netty.channel.ChannelHandlerContext;
 import net.minecraft.network.ClientConnection;

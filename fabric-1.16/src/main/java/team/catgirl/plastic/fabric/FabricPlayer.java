@@ -11,7 +11,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import team.catgirl.collar.api.location.Dimension;
 import team.catgirl.collar.api.location.Location;
-import team.catgirl.collar.mod.mixin.PlayerListEntryMixin;
+import team.catgirl.collar.mod.fabric.mixin.PlayerListEntryMixin;
 import team.catgirl.plastic.player.Player;
 import team.catgirl.plastic.ui.TextureProvider;
 import team.catgirl.plastic.ui.TextureType;
@@ -40,6 +40,11 @@ public class FabricPlayer implements Player {
     @Override
     public String name() {
         return playerEntity.getName().asString();
+    }
+
+    @Override
+    public float yaw() {
+        return playerEntity.yaw;
     }
 
     @Override

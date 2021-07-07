@@ -1,14 +1,17 @@
 package team.catgirl.plastic.ui;
 
+import java.util.Random;
+
 public abstract class TextBuilder {
     /**
      * Add formatted text to builder
      * @param text content
-     * @param textFormatting to format text
+     * @param color to style text
+     * @param style to style text
      * @param action for text
      * @return text
      */
-    public abstract TextBuilder add(String text, TextFormatting textFormatting, TextAction action);
+    public abstract TextBuilder add(String text, TextColor color, TextStyle style, TextAction action);
 
     /**
      * Add formatted text to builder
@@ -20,10 +23,27 @@ public abstract class TextBuilder {
     /**
      * Add formatted text to builder
      * @param text content
-     * @param textFormatting formatting
+     * @param textStyle formatting
      * @return text
      */
-    public abstract TextBuilder add(String text, TextFormatting textFormatting);
+    public abstract TextBuilder add(String text, TextStyle textStyle);
+
+    /**
+     * Add formatted text to builder
+     * @param text content
+     * @param color formatting
+     * @return text
+     */
+    public abstract TextBuilder add(String text, TextColor color);
+
+    /**
+     * Add formatted text to builder
+     * @param text content
+     * @param color formatting
+     * @param textStyle formatting
+     * @return text
+     */
+    public abstract TextBuilder add(String text, TextColor color, TextStyle textStyle);
 
     /**
      * Add formatted text to builder
@@ -38,5 +58,8 @@ public abstract class TextBuilder {
      */
     public abstract String formattedString();
 
+    /**
+     * @return serialize to json
+     */
     public abstract String toJSON();
 }
