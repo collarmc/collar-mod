@@ -33,7 +33,7 @@ jobs:
     - name: Build Collar API
       working-directory: collar
       run: mvn -B install --file pom.xml -Dmaven.test.skip=true
-    - name: Set up JDK 8 for Collar API
+    - name: Set up JDK 8 for Collar mod
       uses: actions/setup-java@v2
       with:
         java-version: '8'
