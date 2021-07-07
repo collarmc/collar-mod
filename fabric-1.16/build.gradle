@@ -19,7 +19,8 @@ apply plugin: 'fabric-loom'
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
-project.setProperty('mod_version', project.property('collar.mod.version'))
+ext.mod_version = project.property('collar.version')
+
 
 archivesBaseName = project.archives_base_name + '-' + project.property('minecraft_version')
 version = project.mod_version + '-' + getCheckedOutGitCommitHash()
@@ -44,19 +45,18 @@ dependencies {
     implementation group: 'team.catgirl', name: 'pounce', version: "${project.property('pounce.version')}"
     implementation project(':plastic-api')
     implementation project(':common')
+    implementation group: 'team.catgirl.collar', name: 'client', version: "${project.property('collar.version')}", classifier: 'full'
+    implementation group: 'team.catgirl.collar', name: 'plugin', version: "${project.property('collar.version')}"
+
 }
 
 processResources {
     inputs.property "version", project.version
 
-    from(sourceSets.main.resources.srcDirs) {
-        include "fabric.mod.json"
+    filesMatching("fabric.mod.json") {
         expand "version": project.version
     }
 
-    from(sourceSets.main.resources.srcDirs) {
-        exclude "fabric.mod.json"
-    }
 }
 
 // ensure that the encoding is set to UTF-8, no matter what the system default is

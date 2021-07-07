@@ -16,3 +16,4 @@ repositories {
 def getCheckedOutGitCommitHash() {
     'git rev-parse --verify --short HEAD'.execute().text.trim()
 }
+
