@@ -1,7 +1,7 @@
 plugins {
     id 'java'
     id 'dev.architectury.loom' version '0.8.0-SNAPSHOT' apply false //For forge 1.16, 1.17. It can be used to build Fabric too, we won't use both, only arch
-    //id "architectury-plugin" version "3.2-SNAPSHOT" apply false //We don't need @ExpectPlatform from Arch plugin, we only need the loom
+    id "architectury-plugin" version "3.2-SNAPSHOT" apply false //Need for common module management.
     id "com.github.johnrengelman.shadow" version "7.0.0" apply false
 
     //id "com.github.breadmoirai.github-release" version "2.2.12" //TODO automate GitHub releases

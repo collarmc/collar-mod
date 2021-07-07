@@ -1,0 +1,22 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "team.catgirl.glue.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "team.catgirl.mod.glue.mixin.ClientWorldMixin",
+    "team.catgirl.mod.glue.mixin.ClientConnectionMixin",
+    "team.catgirl.mod.glue.mixin.PlayerListEntryMixin",
+    "team.catgirl.mod.glue.mixin.PlayerEntityRendererMixin",
+    "team.catgirl.mod.glue.mixin.InGameOverlayRendererMixin",
+    "team.catgirl.mod.glue.mixin.MinecraftClientMixin",
+    "team.catgirl.mod.glue.mixin.MinecraftClientFieldMixin",
+    "team.catgirl.mod.glue.mixin.WorldRendererMixin",
+    "team.catgirl.mod.glue.mixin.ClientPlayerEntityMixin"
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
