@@ -20,15 +20,28 @@ jobs:
       with:
         image-version: latest
         port: 27017
-    - uses: actions/checkout@v2
+    - name: Checkout Collar API
+      uses: actions/checkout@v2
       with:
         repository: collarmc/collar
         path: collar
-    - name: Set up JDK 16
+    - name: Set up JDK 16 for Collar API
       uses: actions/setup-java@v2
       with:
         java-version: '16'
         distribution: 'adopt'
-    - name: Build with Maven
+    - name: Build Collar API
       working-directory: collar
-      run: mvn -B install --file pom.xml
+      run: mvn -B install --file pom.xml -Dmaven.test.skip=true
+    - name: Set up JDK 8 for Collar API
+      uses: actions/setup-java@v2
+      with:
+        java-version: '8'
+        distribution: 'adopt'
+    - name: Checkout Collar mod
+      uses: actions/checkout@v2
+      with:
+        repository: collarmc/collar
+        path: collar
+    - name: Build Collar Mod
+      run: ./gradlew clean build
