@@ -42,6 +42,7 @@ jobs:
       uses: actions/checkout@v2
       with:
         repository: collarmc/collar-mod
-        path: collar
+        path: collar-mod
     - name: Build Collar Mod
+      working-directory: collar-mod
       run: ./gradlew clean build
