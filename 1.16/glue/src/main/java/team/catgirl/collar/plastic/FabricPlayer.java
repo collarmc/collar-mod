@@ -1,4 +1,4 @@
-package team.catgirl.collar.mod.glue.plastic;
+package team.catgirl.collar.plastic;
 
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import net.minecraft.client.MinecraftClient;

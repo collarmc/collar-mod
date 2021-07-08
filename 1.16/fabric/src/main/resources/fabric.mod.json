@@ -7,14 +7,11 @@
   "authors": [],
   "contact": {},
   "license": "MIT",
-  "icon": "assets/collar-fabric/icon.png",
+  "icon": "assets/collar/icon.png",
   "environment": "*",
   "entrypoints": {
     "client": [
       "team.catgirl.collar.mod.fabric.client.CollarFabricClient"
-    ],
-    "main": [
-      "team.catgirl.collar.mod.fabric.CollarFabric"
     ]
   },
   "mixins": [

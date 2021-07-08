@@ -1,4 +1,4 @@
-package team.catgirl.collar.mod.glue.plastic;
+package team.catgirl.collar.plastic;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
