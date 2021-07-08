@@ -53,4 +53,4 @@ jobs:
         path: collar-mod
     - name: Build Collar Mod
       working-directory: collar-mod
-      run: ./gradlew clean build
+      run: ./gradlew clean setupCiWorkspace build
