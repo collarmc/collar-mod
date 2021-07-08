@@ -2,6 +2,7 @@ plugins {
     id 'java'
 }
 
+archivesBaseName = project.archives_base_name + '-' + project.property('minecraft_version')
 group project.maven_group
 version rootProject.version
 
