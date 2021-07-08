@@ -45,7 +45,7 @@ tasks.withType(JavaCompile) {
     it.options.encoding = "UTF-8"
 }
 task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = "sources"
+    classifier "sources"
     from sourceSets.main.allSource
 }
 shadowJar{

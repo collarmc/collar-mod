@@ -1,6 +1,5 @@
 package team.catgirl.collar.mod.glue.render;
 
-import net.minecraft.util.math.Matrix4f;
 import net.minecraft.util.math.Vec3d;
 
 import org.joml.Matrix4f;

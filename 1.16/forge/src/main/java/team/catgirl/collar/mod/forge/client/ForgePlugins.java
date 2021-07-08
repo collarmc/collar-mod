@@ -1,12 +1,8 @@
 package team.catgirl.collar.mod.forge.client;
 
-import net.minecraftforge.fml.loading.FMLCommonLaunchHandler;
-import net.minecraftforge.fml.loading.FMLEnvironment;
-import net.minecraftforge.fml.loading.FMLLoader;
 import team.catgirl.collar.api.CollarPlugin;
 import team.catgirl.collar.mod.common.plugins.Plugins;
 
-import net.minecraftforge.fml.common.Loader;
 
 import java.util.stream.Stream;
 
