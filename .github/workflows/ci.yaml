@@ -47,7 +47,7 @@ jobs:
         java-version: '8'
         distribution: 'adopt'
     - name: Clean gradle cache
-      run: rm -rf ~/.gradle
+      run: rm -rf ~/.gradle && rm -rf collar-mod/.gradle
     - name: Checkout Collar mod
       uses: actions/checkout@v2
       with:
