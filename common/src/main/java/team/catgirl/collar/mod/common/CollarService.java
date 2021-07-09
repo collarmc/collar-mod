@@ -214,7 +214,6 @@ public class CollarService implements CollarListener {
 
     private Collar createCollar() throws IOException {
         CollarConfiguration configuration = new CollarConfiguration.Builder()
-//                .withCollarServer("http://localhost:4000")
                 .withCollarServer()
                 .withListener(this)
                 .withTicks(ticks)

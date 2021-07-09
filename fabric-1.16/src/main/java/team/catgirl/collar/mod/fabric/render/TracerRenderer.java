@@ -27,13 +27,14 @@ public final class TracerRenderer {
 
     @Subscribe(Preference.CALLER)
     public void onRender(WorldRenderEvent event) {
-        ProjectionUtil.INSTANCE.updateBuffers();
-
-
         service.getCollar().ifPresent(collar -> {
-            if (collar.getState() != Collar.State.CONNECTED || !collar.isDebug()) {
+            if (!collar.configuration.debugConfiguration.tracers) {
                 return;
             }
+            if (collar.getState() != Collar.State.CONNECTED) {
+                return;
+            }
+            ProjectionUtil.INSTANCE.updateBuffers();
             collar.location().playerLocations().forEach((player, location) -> {
                 // Don't show where other players are if they are not in the same dimension
                 Location playerLocation = plastic.world.currentPlayer().location();

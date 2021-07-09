@@ -44,6 +44,9 @@ public class WaypointRenderer {
     @Subscribe(Preference.CALLER)
     public void renderWaypointBeacon(WorldRenderEvent event) {
         collarService.getCollar().ifPresent(collar -> {
+            if (!collar.configuration.debugConfiguration.waypoints) {
+                return;
+            }
             if (collar.getState() != Collar.State.CONNECTED) {
                 return;
             }
