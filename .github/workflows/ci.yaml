@@ -48,11 +48,12 @@ jobs:
         distribution: 'adopt'
     - name: Clean gradle cache
       run: rm -rf ~/.gradle && rm -rf collar-mod/.gradle
-    - name: Checkout Collar mod
-      uses: actions/checkout@v2
-      with:
-        repository: collarmc/collar-mod
-        path: collar-mod
-    - name: Build Collar Mod
+    - name: Clean collar mod
       working-directory: collar-mod
-      run: ./gradlew clean setupCiWorkspace setupDecompWorkspace build
+      run: ./gradlew clean
+    - name: Setup forge CI workspace
+      working-directory: collar-mod
+      run: ./gradlew setupDecompWorkspace setupCiWorkspace
+    - name: Build Collar mod
+      working-directory: collar-mod
+      run: ./gradlew build
