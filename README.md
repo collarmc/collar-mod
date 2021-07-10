@@ -23,8 +23,11 @@ Forge 1.16 debug won't launch, even if it can compile with JDK16
 Fix it by adding this to the launch arguments:  
 `--add-exports=java.base/sun.security.util=ALL-UNNAMED --add-opens=java.base/java.util.jar=ALL-UNNAMED`  
 ~~Or you can just make it to debug with old jdk.~~  
-  
-   
+
+**1.12**  
+Well, that is a bit complicated. Hope LexManos will fix it.  
+now: [forge-1.12/README](/forge-1.12/README.md)
+
 ###Warning:    
 Java `ByteBuffer` had some changes after J1.8, the return type.  
 Some function, what had `Buffer` return type, has `ByteBuffer` return in J9+ Java.  
