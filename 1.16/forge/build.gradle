@@ -28,7 +28,9 @@ dependencies{
     //developmentFabric(project(path: ":something")) { transitive = false } //Use this is a module contains ANY mod resources.
     compileModule project(':plastic-api')
     compileModule project(':common')
-    compileModule (project(path: ":${project.module_name}:glue"))
+    compileModule (project(path: ":${project.module_name}:glue", configuration: "transformProductionForge")){
+        transitive = false
+    }
 
 
     forge "net.minecraftforge:forge:${project.minecraft_version}-${project.forge_version}"

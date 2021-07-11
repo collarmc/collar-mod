@@ -27,7 +27,9 @@ dependencies {
     //developmentFabric(project(path: ":something")) { transitive = false } //Use this is a module contains ANY mod resources.
     compileModule project(':plastic-api')
     compileModule project(':common')
-    compileModule (project(path: ":${project.module_name}:glue"))
+    compileModule (project(path: ":${project.module_name}:glue", configuration: "transformProductionFabric")){
+        transitive = false;
+    }
 
 
     modImplementation "net.fabricmc:fabric-loader:${project.fabric_loader_version}"

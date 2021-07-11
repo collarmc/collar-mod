@@ -6,6 +6,10 @@ archivesBaseName = project.archives_base_name + '-' + project.property('minecraf
 group project.maven_group
 version rootProject.version
 
+architectury{
+    common()
+}
+
 dependencies {
     implementation project(':plastic-api')
     implementation project(':common')
