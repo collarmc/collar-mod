@@ -31,7 +31,7 @@ public final class TracerRenderer {
 
 
         service.getCollar().ifPresent(collar -> {
-            if (collar.getState() != Collar.State.CONNECTED || !collar.isDebug()) {
+            if (collar.getState() != Collar.State.CONNECTED || !collar.configuration.debugMode) {
                 return;
             }
             collar.location().playerLocations().forEach((player, location) -> {
