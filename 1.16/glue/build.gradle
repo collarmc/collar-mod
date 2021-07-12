@@ -7,6 +7,7 @@ group project.maven_group
 version rootProject.version
 
 architectury{
+    injectInjectables = false
     common()
 }
 
