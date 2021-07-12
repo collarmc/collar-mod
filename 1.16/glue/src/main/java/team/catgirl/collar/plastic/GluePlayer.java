@@ -23,11 +23,11 @@ import java.util.UUID;
 
 import static net.minecraft.world.dimension.DimensionType.*;
 
-public class FabricPlayer implements Player {
+public class GluePlayer implements Player {
     private final AbstractClientPlayerEntity playerEntity;
     private final TextureProvider textureProvider;
 
-    public FabricPlayer(AbstractClientPlayerEntity playerEntity, TextureProvider textureProvider) {
+    public GluePlayer(AbstractClientPlayerEntity playerEntity, TextureProvider textureProvider) {
         this.playerEntity = playerEntity;
         this.textureProvider = textureProvider;
     }

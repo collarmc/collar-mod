@@ -21,7 +21,7 @@ public class FabricWorld extends World {
 
     @Override
     public Player currentPlayer() {
-        return new FabricPlayer(getPlayer(), textureProvider);
+        return new GluePlayer(getPlayer(), textureProvider);
     }
 
     @Override
@@ -31,7 +31,7 @@ public class FabricWorld extends World {
             throw new IllegalStateException("no world");
         }
         return world.getPlayers().stream()
-                .map(playerEntity -> new FabricPlayer(playerEntity, textureProvider))
+                .map(playerEntity -> new GluePlayer(playerEntity, textureProvider))
                 .collect(Collectors.toList());
     }
 

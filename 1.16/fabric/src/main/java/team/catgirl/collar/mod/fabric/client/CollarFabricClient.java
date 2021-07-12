@@ -13,7 +13,7 @@ import team.catgirl.collar.mod.common.plugins.Plugins;
 import team.catgirl.collar.mod.glue.render.TracerRenderer;
 import team.catgirl.collar.mod.glue.render.WaypointRenderer;
 import team.catgirl.plastic.Plastic;
-import team.catgirl.collar.plastic.FabricPlastic;
+import team.catgirl.collar.plastic.GluePlastic;
 import team.catgirl.pounce.EventBus;
 
 @Environment(EnvType.CLIENT)
@@ -21,7 +21,7 @@ public class CollarFabricClient implements ClientModInitializer {
 
     private static final Plugins PLUGINS = new FabricPlugins();
     private static final EventBus EVENT_BUS = new EventBus(Runnable::run);
-    private static final Plastic PLASTIC = new FabricPlastic(new CollarTextureProvider(), EVENT_BUS);
+    private static final Plastic PLASTIC = new GluePlastic(new CollarTextureProvider(), EVENT_BUS);
     private static final CollarService COLLAR_SERVICE = new CollarService(PLASTIC, EVENT_BUS, PLUGINS);
     private static final WaypointRenderer WAYPOINT_RENDERER = new WaypointRenderer(PLASTIC, COLLAR_SERVICE);
     private static final TracerRenderer TRACER_RENDERER = new TracerRenderer(PLASTIC, COLLAR_SERVICE);

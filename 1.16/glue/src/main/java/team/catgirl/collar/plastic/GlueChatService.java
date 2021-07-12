@@ -5,9 +5,9 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import team.catgirl.plastic.chat.ChatService;
 import team.catgirl.plastic.ui.Display;
 
-public class FabricChatService extends ChatService {
+public class GlueChatService extends team.catgirl.plastic.chat.ChatService {
 
-    public FabricChatService(Display display) {
+    public GlueChatService(Display display) {
         super(display);
     }
 

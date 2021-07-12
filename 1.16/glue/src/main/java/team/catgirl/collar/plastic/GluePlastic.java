@@ -8,10 +8,10 @@ import team.catgirl.pounce.EventBus;
 
 import java.io.File;
 
-public final class FabricPlastic extends Plastic {
+public final class GluePlastic extends Plastic {
 
-    public FabricPlastic(TextureProvider textureProvider, EventBus eventBus) {
-        super(new FabricDisplay(), new FabricWorld(textureProvider, new FabricChatService(new FabricDisplay()), eventBus), eventBus);
+    public GluePlastic(TextureProvider textureProvider, EventBus eventBus) {
+        super(new GlueDisplay(), new FabricWorld(textureProvider, new GlueChatService(new GlueDisplay()), eventBus), eventBus);
     }
 
     @Override

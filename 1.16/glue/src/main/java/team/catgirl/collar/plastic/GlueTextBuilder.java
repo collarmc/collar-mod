@@ -8,15 +8,15 @@ import team.catgirl.plastic.ui.TextBuilder;
 import team.catgirl.plastic.ui.TextColor;
 import team.catgirl.plastic.ui.TextStyle;
 
-public final class FabricTextBuilder extends TextBuilder {
+public final class GlueTextBuilder extends TextBuilder {
 
     MutableText text;
 
-    public FabricTextBuilder(MutableText text) {
+    public GlueTextBuilder(MutableText text) {
         this.text = text;
     }
 
-    public FabricTextBuilder() {
+    public GlueTextBuilder() {
         this.text = new LiteralText("");
     }
 
