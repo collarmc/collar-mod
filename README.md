@@ -1,8 +1,8 @@
 #Collar mod
 //TODO general description about collar-mod
 
-##Forge 1.12 needs Java 1.8
-###Set it up in IntelliJ:  
+## Forge 1.12 needs Java 1.8
+### Set it up in IntelliJ:  
 
 **Set the project SDK to Java 16 in `Project Structure`**
 
@@ -12,7 +12,7 @@ Set `forge-1.12`, `forge-1.12.main` and `forge-1.12.test` JDK to Java 1.8.
 
 Using 1.16 or 1.17 with JDK16 is fine.
 
-###Debug
+### Debug
 
 1. `gradle :forge-1.12:genIntelliJRuns`  
 2. Then edit the configuration and set the JDK to 1.8 and the module to `collar-mod.1.12-forge.main`
@@ -28,7 +28,7 @@ Fix it by adding this to the launch arguments:
 Well, that is a bit complicated. Hope LexManos will fix it.  
 now: [forge-1.12/README](/forge-1.12/README.md)
 
-###Warning:    
+### Warning:    
 Java `ByteBuffer` had some changes after J1.8, the return type.  
 Some function, what had `Buffer` return type, has `ByteBuffer` return in J9+ Java.  
 These can cause errors (`NoSuchMethodError`), when you compile with J16, and then you use that in J1.8  

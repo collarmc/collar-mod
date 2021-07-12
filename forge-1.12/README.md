@@ -1,5 +1,5 @@
-##Issues with forge 1.12:
-###And how to fix it  
+## Issues with forge 1.12:
+### And how to fix it  
 
 gradle throws an error:  
 ```
