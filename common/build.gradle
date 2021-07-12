@@ -2,6 +2,8 @@ plugins {
     id 'java'
 }
 
+apply plugin: 'com.github.johnrengelman.shadow'
+
 //This file is so empty, but it's okay. The dependencies has been applied from the main build.gradle
 group project.maven_group
 version project.collar_mod_version
@@ -14,3 +16,19 @@ dependencies {
 //test {
 //    useJUnitPlatform()
 //}
+
+shadowJar{
+    dependencies {
+        include(dependency('com.mojang:brigadier:.*'))
+        include(dependency('team.catgirl:pounce:.*'))
+        include(project(':plastic-api'))
+        include(project(':common'))
+        include(dependency('team.catgirl.collar:client:.*'))
+        include(dependency('team.catgirl.collar:plugin:.*'))
+    }
+    //relocate 'com.mojang.brigadier', 'team.catgirl.collar.libs.com.mojang.brigadier'
+    relocate 'team.catgirl.collar.shared', 'team.catgirl.collar.libs.team.catgirl.collar.shared'
+    relocate 'team.catgirl.collar.client', 'team.catgirl.collar.libs.team.catgirl.collar.client'
+    relocate 'team.catgirl.pounce', 'team.catgirl.collar.libs.team.catgirl.pounce'
+    classifier 'shadow'
+}

@@ -25,8 +25,9 @@ dependencies {
 
     developmentFabric(project(path: ":${project.module_name}:glue")) { transitive = false }
     //developmentFabric(project(path: ":something")) { transitive = false } //Use this is a module contains ANY mod resources.
-    compileModule project(':plastic-api')
-    compileModule project(':common')
+
+    compileModule project(path: ":common", configuration: 'shadow')
+
     compileModule (project(path: ":${project.module_name}:glue", configuration: "transformProductionFabric")){
         transitive = false;
     }
@@ -68,7 +69,11 @@ task sourcesJar(type: Jar, dependsOn: classes) {
 }
 shadowJar{
     configurations = [project.configurations.compileModule]
-    classifier "fabric-dev"
+    classifier "dev"
+    //relocate 'com.mojang.brigadier', 'team.catgirl.collar.libs.com.mojang.brigadier'
+    relocate 'team.catgirl.collar.shared', 'team.catgirl.collar.libs.team.catgirl.collar.shared'
+    relocate 'team.catgirl.collar.client', 'team.catgirl.collar.libs.team.catgirl.collar.client'
+    relocate 'team.catgirl.pounce', 'team.catgirl.collar.libs.team.catgirl.pounce'
 }
 remapJar{
     dependsOn shadowJar
