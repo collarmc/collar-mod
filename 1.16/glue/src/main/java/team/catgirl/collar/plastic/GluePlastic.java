@@ -11,7 +11,7 @@ import java.io.File;
 public final class GluePlastic extends Plastic {
 
     public GluePlastic(TextureProvider textureProvider, EventBus eventBus) {
-        super(new GlueDisplay(), new FabricWorld(textureProvider, new GlueChatService(new GlueDisplay()), eventBus), eventBus);
+        super(new GlueDisplay(), new GlueWorld(textureProvider, new GlueChatService(new GlueDisplay()), eventBus), eventBus);
     }
 
     @Override

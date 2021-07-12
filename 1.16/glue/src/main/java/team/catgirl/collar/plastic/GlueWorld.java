@@ -13,9 +13,9 @@ import team.catgirl.pounce.EventBus;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class FabricWorld extends World {
+public class GlueWorld extends World {
 
-    public FabricWorld(TextureProvider textureProvider, ChatService chatService, EventBus eventBus) {
+    public GlueWorld(TextureProvider textureProvider, ChatService chatService, EventBus eventBus) {
         super(textureProvider, chatService, eventBus);
     }
 
