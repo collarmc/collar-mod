@@ -32,6 +32,8 @@ dependencies {
         transitive = false;
     }
 
+    compileModule group: 'org.joml', name: 'joml', version: '1.10.1'
+
 
     modImplementation "net.fabricmc:fabric-loader:${project.fabric_loader_version}"
 
@@ -74,6 +76,7 @@ shadowJar{
     relocate 'team.catgirl.collar.shared', 'team.catgirl.collar.libs.team.catgirl.collar.shared'
     relocate 'team.catgirl.collar.client', 'team.catgirl.collar.libs.team.catgirl.collar.client'
     relocate 'team.catgirl.pounce', 'team.catgirl.collar.libs.team.catgirl.pounce'
+    relocate 'org.joml', 'team.catgirl.collar.libs.org.joml'
 }
 remapJar{
     dependsOn shadowJar
