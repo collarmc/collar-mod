@@ -86,7 +86,7 @@ public class CollarForgeClient implements CollarListener
     @SubscribeEvent
     public void renderPlayer(RenderPlayerEvent.Post event) {
         EntityPlayer player = event.getEntityPlayer();
-        if(player.getGameProfile() != null) PLASTIC.world.onPlayerRender(player.getGameProfile().getId());
+        PLASTIC.world.onPlayerRender(player.getGameProfile().getId());
     }
 
     @SubscribeEvent

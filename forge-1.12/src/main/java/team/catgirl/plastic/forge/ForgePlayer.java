@@ -113,6 +113,7 @@ public class ForgePlayer implements Player {
         if (!hasCape) {
             AbstractClientPlayer acp = (AbstractClientPlayer) player;
             NetworkPlayerInfo playerInfo = ObfuscationReflectionHelper.getPrivateValue(AbstractClientPlayer.class, acp, "field_175157_a");
+            if(playerInfo == null) return;
             Map<MinecraftProfileTexture.Type, ResourceLocation> textures = ObfuscationReflectionHelper.getPrivateValue(NetworkPlayerInfo.class, playerInfo, "field_187107_a");
             String textureName = String.format("plastic-capes/%s.png", playerInfo.getGameProfile().getId());
             textureProvider.getTexture(this, TextureType.CAPE).thenAccept(textureOptional -> {
