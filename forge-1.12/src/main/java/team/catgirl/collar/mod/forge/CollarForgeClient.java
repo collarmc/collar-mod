@@ -31,12 +31,11 @@ import team.catgirl.plastic.forge.ForgePlastic;
 import team.catgirl.pounce.EventBus;
 
 @SideOnly(Side.CLIENT)
-@Mod(modid = CollarForgeClient.MODID, name = CollarForgeClient.NAME, version = CollarForgeClient.VERSION)
+@Mod(modid = CollarForgeClient.MODID, name = CollarForgeClient.NAME)
 public class CollarForgeClient implements CollarListener
 {
     public static final String MODID = "team.catgirl.collar.mod";
     public static final String NAME = "Collar";
-    public static final String VERSION = "0.1";
 
     private static final Plugins PLUGINS = new ForgePlugins();
     private static Plastic PLASTIC;
