@@ -66,7 +66,9 @@ public class GluePlayer implements Player {
             PlayerListEntry entry = networkHandler.getPlayerListEntry(playerEntity.getGameProfile().getId());
             PlayerListEntryMixin entryMixin = (PlayerListEntryMixin)entry;
             if (entryMixin == null) {
-                throw new IllegalStateException("entryMixin");
+                //throw new IllegalStateException("entryMixin");
+                //it shouldn't crash, there are dummy entities on multiple servers. like Hypixel
+                return;
             }
             Map<MinecraftProfileTexture.Type, Identifier> textures = entryMixin.textures();
             String textureName = String.format("plastic-capes/%s.png", playerEntity.getGameProfile().getId());
