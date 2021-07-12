@@ -14,7 +14,9 @@ version = rootProject.version
 group = project.maven_group
 archivesBaseName = 'collar-forge-' + project.property('collar.mc.version')
 sourceCompatibility = targetCompatibility = '1.8'
-
+configurations {
+    compileModule //We'll need to shadow the whole stuff together
+}
 minecraft {
     mappings channel: project.property('collar.mcp.channel'), version: "${project.property('collar.mcp.mapping')}-${project.property('collar.mcp.version')}"
     //makeObfSourceJar = false
@@ -66,17 +68,12 @@ dependencies {
     minecraft "net.minecraftforge:forge:${project.property('collar.forge.version')}"
     implementation project(':plastic-api')
     implementation project(':common')
+    compileModule project(path: ":common", configuration: 'shadow')
 }
 
 shadowJar {
-    dependencies {
-        include(dependency('com.mojang:brigadier:.*'))
-        include(dependency('team.catgirl:pounce:.*'))
-        include(project(':plastic-api'))
-        include(project(':common'))
-        include(dependency('team.catgirl.collar:client:.*'))
-        include(dependency('team.catgirl.collar:plugin:.*'))
-    }
+    configurations = [project.configurations.compileModule]
+
     relocate 'com.mojang.brigadier', 'team.catgirl.collar.libs.com.mojang.brigadier'
     relocate 'team.catgirl.collar.shared', 'team.catgirl.collar.libs.team.catgirl.collar.shared'
     relocate 'team.catgirl.collar.client', 'team.catgirl.collar.libs.team.catgirl.collar.client'
