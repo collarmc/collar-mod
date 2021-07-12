@@ -71,6 +71,15 @@ dependencies {
     compileModule project(path: ":common", configuration: 'shadow')
 }
 
+processResources {
+    inputs.property "version", project.version
+    inputs.property "mcversion", project.property('collar.mc.version')
+
+    filesMatching("mcmod.info") {
+        expand "version": project.version, "mcversion": project.property('collar.mc.version')
+    }
+}
+
 shadowJar {
     configurations = [project.configurations.compileModule]
 
