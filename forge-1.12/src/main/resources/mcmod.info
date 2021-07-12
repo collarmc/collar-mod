@@ -9,7 +9,7 @@
   "updateUrl": "",
   "authorList": ["orsond","sakuya","HermeticLock"],
   "credits": "Team Catgirl 2021",
-  "logoFile": "",
+  "logoFile": "assets/collar/icon.png",
   "screenshots": [],
   "dependencies": []
 }
