@@ -41,13 +41,6 @@ jobs:
       - name: Build Collar API
         working-directory: collar
         run: mvn install -DskipTests
-      - name: Checkout Collar mod
-        uses: actions/checkout@v2
-        with:
-          repository: collarmc/collar-mod
-          path: collar-mod
-      - name: Clean gradle cache
-        run: rm -rf ~/.gradle && rm -rf collar-mod/.gradle
       - name: Clean collar mod
         working-directory: collar-mod
         run: ./gradlew clean
