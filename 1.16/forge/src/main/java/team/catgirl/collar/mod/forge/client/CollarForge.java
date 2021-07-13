@@ -4,9 +4,12 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.common.Mod;
 import team.catgirl.collar.mod.common.CollarService;
+import team.catgirl.collar.mod.common.commands.Commands;
 import team.catgirl.collar.mod.common.features.messaging.Messages;
 import team.catgirl.collar.mod.common.plastic.CollarTextureProvider;
 import team.catgirl.collar.mod.common.plugins.Plugins;
+import team.catgirl.collar.mod.forge.client.commands.ClientCommands;
+import team.catgirl.collar.mod.forge.client.commands.ICommandSource;
 import team.catgirl.collar.mod.glue.render.TracerRenderer;
 import team.catgirl.collar.mod.glue.render.WaypointRenderer;
 import team.catgirl.collar.plastic.GluePlastic;
@@ -38,6 +41,9 @@ public class CollarForge {
         //https://github.com/MinecraftForge/MinecraftForge/pull/7754 PR to support client commands
 
         //We still CAN use mixins...
+        Commands<ICommandSource> commands = new Commands<>(COLLAR_SERVICE, GROUP_CHAT_SERVICE, PLASTIC, true);
+        commands.register(ClientCommands.DISPATCHER);
+
         //TODO Commands idk, somehow
         EVENT_BUS.subscribe(WAYPOINT_RENDERER);
         EVENT_BUS.subscribe(TRACER_RENDERER);
