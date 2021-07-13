@@ -15,7 +15,7 @@ displayName="Collar client"
 
 #TODO remove these comments
 
-logoFile="assets/collar/icon.png" #optional
+logoFile="icon.png" #optional
 # A text field displayed in the mod UI
 credits="Team Catgirl 2021"
 # A text field displayed in the mod UI
