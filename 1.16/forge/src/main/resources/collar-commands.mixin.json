@@ -1,0 +1,17 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "team.catgirl.collar.mod.forge.client.commands.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+  ],
+  "client": [
+    "ICommandSourceMixin",
+    "ClientPlayNetworkMixin",
+    "ClientCommandDispatcher",
+    "MCClientMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

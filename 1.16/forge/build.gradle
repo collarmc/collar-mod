@@ -17,6 +17,7 @@ configurations {
 
 loom{
     mixinConfig "collar.mixins.json"
+    mixinConfig "collar-commands.mixin.json"
 }
 dependencies{
 
