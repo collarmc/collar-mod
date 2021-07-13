@@ -48,11 +48,11 @@ dependencies {
 
 processResources {
     inputs.property "version", project.version
+    inputs.property "description", project.collar_description
 
     filesMatching("fabric.mod.json") {
-        expand "version": project.version
+        expand "version": project.version, "description": project.collar_description
     }
-
 }
 
 // ensure that the encoding is set to UTF-8, no matter what the system default is

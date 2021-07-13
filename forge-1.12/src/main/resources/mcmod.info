@@ -2,7 +2,7 @@
 {
   "modid": "team.catgirl.collar.mod",
   "name": "Collar",
-  "description": "Do you want to play a block game?",
+  "description": "${description}",
   "version": "${version}",
   "mcversion": "${mcversion}",
   "url": "http://www.collarmc.com/",

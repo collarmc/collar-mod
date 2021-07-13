@@ -38,9 +38,10 @@ dependencies{
 
 processResources {
     inputs.property "version", project.version
+    inputs.property "description", project.collar_description
 
     filesMatching("META-INF/mods.toml") {
-        expand "version": project.version
+        expand "version": project.version, "description": project.collar_description
     }
 }
 tasks.withType(JavaCompile) {

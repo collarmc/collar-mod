@@ -3,7 +3,7 @@
   "id": "collar-fabric",
   "version": "${version}",
   "name": "Collar Fabric",
-  "description": "",
+  "description": "${description}",
   "authors": [],
   "contact": {},
   "license": "MIT",

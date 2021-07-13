@@ -74,9 +74,10 @@ dependencies {
 processResources {
     inputs.property "version", project.version
     inputs.property "mcversion", project.property('collar.mc.version')
+    inputs.property "description", project.collar_description
 
     filesMatching("mcmod.info") {
-        expand "version": project.version, "mcversion": project.property('collar.mc.version')
+        expand "version": project.version, "mcversion": project.property('collar.mc.version'), "description": project.collar_description
     }
 }
 

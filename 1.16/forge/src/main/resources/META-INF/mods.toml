@@ -15,17 +15,13 @@ displayName="Collar client"
 
 #TODO remove these comments
 
-logoFile="icon.png" #optional
+logoFile="assets/collar/icon.png" #optional
 # A text field displayed in the mod UI
-credits="Thanks for this example mod goes to Java" #optional
+credits="Team Catgirl 2021"
 # A text field displayed in the mod UI
-authors="Collar team" #optional
+authors="orsond, sakuya, HermeticLock, KosmX" #optional
 # The description text for the mod (multi line!) (#mandatory)
-description='''
-TODO
-If I write here a TODO, I'll forget this field...
-But here is it: TODO
-'''
+description="${description}"
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
 [[dependencies.collar-forge]] #optional
 # the modid of the dependency
