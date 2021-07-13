@@ -44,7 +44,7 @@ public class GluePlayer implements Player {
 
     @Override
     public float yaw() {
-        return playerEntity.yaw;
+        return playerEntity.getYaw();
     }
 
     @Override
@@ -86,7 +86,7 @@ public class GluePlayer implements Player {
 
     @Override
     public int networkId() {
-        return playerEntity.getEntityId();
+        return playerEntity.getId();
     }
 
     @Override

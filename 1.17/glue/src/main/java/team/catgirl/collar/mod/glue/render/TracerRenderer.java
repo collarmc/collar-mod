@@ -1,5 +1,6 @@
 package team.catgirl.collar.mod.glue.render;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.util.math.MathHelper;
@@ -50,7 +51,7 @@ public final class TracerRenderer {
     }
 
     private static void renderLine(Vec3d from, Vec3d to, Color col, float width) {
-        Camera c = BlockEntityRenderDispatcher.INSTANCE.camera;
+        Camera c = MinecraftClient.getInstance().getEntityRenderDispatcher().camera;
         GL11.glPushMatrix();
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);

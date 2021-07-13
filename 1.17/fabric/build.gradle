@@ -28,7 +28,7 @@ dependencies {
 
     compileModule project(path: ":common", configuration: 'shadow')
 
-    compileModule (project(path: ":${project.module_name}:glue", configuration: "transformProductionFabric")){
+    compileModule (project(path: ":${project.module_name}:glue")){ //, configuration: "transformProductionFabric"
         transitive = false;
     }
 
