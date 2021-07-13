@@ -12,10 +12,13 @@ import team.catgirl.collar.mod.glue.render.WaypointRenderer;
 import team.catgirl.collar.plastic.GluePlastic;
 import team.catgirl.plastic.Plastic;
 import team.catgirl.pounce.EventBus;
+import java.util.logging.Logger;
 
 @OnlyIn(Dist.CLIENT)
 @Mod("collar-forge")
 public class CollarForge {
+
+    public static final Logger LOGGER = Logger.getLogger("Collar");
 
     private static final Plugins PLUGINS = new ForgePlugins();
     private static final EventBus EVENT_BUS = new EventBus(Runnable::run);
