@@ -10,14 +10,14 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath "net.fabricmc:fabric-loom:0.7-SNAPSHOT"
+        classpath "net.fabricmc:fabric-loom:0.8-SNAPSHOT"
     }
 }
 
 apply plugin: 'fabric-loom'
 
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
+sourceCompatibility = JavaVersion.VERSION_16
+targetCompatibility = JavaVersion.VERSION_16
 
 ext.mod_version = project.property('collar.version')
 

@@ -13,13 +13,15 @@ repositories {
     }
 }
 
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
 
 dependencies {
     implementation "com.mojang:brigadier:${project.property('brigadier.version')}"
     implementation group: 'team.catgirl', name: 'pounce', version: "${project.property('pounce.version')}"
     implementation project(':plastic-api')
-    compile group: 'team.catgirl.collar', name: 'client', version: "${project.property('collar.version')}", classifier: 'full'
-    compile group: 'team.catgirl.collar', name: 'plugin', version: "${project.property('collar.version')}"
+    implementation group: 'team.catgirl.collar', name: 'client', version: "${project.property('collar.version')}", classifier: 'full'
+    implementation group: 'team.catgirl.collar', name: 'plugin', version: "${project.property('collar.version')}"
 }
 
 test {

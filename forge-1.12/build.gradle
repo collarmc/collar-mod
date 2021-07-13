@@ -2,18 +2,17 @@ buildscript {
     repositories {
         mavenLocal()
         maven { url = 'https://files.minecraftforge.net/maven' }
-        jcenter()
-        mavenCentral()
+        gradlePluginPortal()
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:5.+'
         classpath "com.github.jengelman.gradle.plugins:shadow:2.0.4"
     }
 }
 
 apply plugin: 'java'
 apply plugin: 'idea'
-apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'com.github.johnrengelman.shadow'
 
 version = project.property('collar.mod.version') + '-' + getCheckedOutGitCommitHash()
@@ -22,10 +21,42 @@ archivesBaseName = 'collar-forge-' + project.property('collar.mc.version')
 sourceCompatibility = targetCompatibility = '1.8'
 
 minecraft {
-    runDir = "run"
-    version = project.property('collar.forge.version')
-    mappings = "${project.property('collar.mcp.channel')}_${project.property('collar.mcp.mapping')}"
-    makeObfSourceJar = false
+    mappings channel: project.property('collar.mcp.channel'), version: "${project.property('collar.mcp.mapping')}-${project.property('collar.mcp.version')}"
+    //makeObfSourceJar = false
+    runs {
+        client {
+            workingDirectory project.file('run')
+
+            // Recommended logging data for a userdev environment
+            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+
+            // Recommended logging level for the console
+            property 'forge.logging.console.level', 'debug'
+        }
+
+        server {
+
+            // Recommended logging data for a userdev environment
+            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+
+            // Recommended logging level for the console
+            property 'forge.logging.console.level', 'debug'
+        }
+    }
+}
+
+jar {
+    manifest {
+        attributes([
+                "Specification-Title": "examplemod",
+                "Specification-Vendor": "examplemodsareus",
+                "Specification-Version": "1", // We are version 1 of ourselves
+                "Implementation-Title": project.name,
+                "Implementation-Version": "${project.version}",
+                "Implementation-Vendor" :"examplemodsareus",
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+        ])
+    }
 }
 
 repositories {
@@ -37,10 +68,13 @@ repositories {
 }
 
 dependencies {
+    minecraft "net.minecraftforge:forge:${project.property('collar.forge.version')}"
     implementation project(':plastic-api')
     implementation project(':common')
     implementation group: 'team.catgirl', name: 'pounce', version: "${project.property('pounce.version')}"
     implementation "com.mojang:brigadier:${project.property("brigadier.version")}"
+    implementation group: 'team.catgirl.collar', name: 'client', version: "${project.property('collar.version')}", classifier: 'full'
+    implementation group: 'team.catgirl.collar', name: 'plugin', version: "${project.property('collar.version')}"
 }
 
 shadowJar {
