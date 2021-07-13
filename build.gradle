@@ -57,7 +57,8 @@ task cleanupArtifacts{
 task collectArtifacts{
     dependsOn('cleanupArtifacts')
     dependsOn(':forge-1.12:copyArtifacts')
-    dependsOn(':16:copyArtifacts', ':17:copyArtifacts')
+    dependsOn(':1.16:copyArtifacts')
+    //dependsOn(':1.17:copyArtifacts')
     doLast {
         releaseArtifacts = project.getProjectDir().toPath().resolve("artifacts").toFile().listFiles()
     }

@@ -91,3 +91,14 @@ shadowJar {
 }
 
 jar.finalizedBy('shadowJar','reobfJar')
+
+
+task copyArtifacts{
+    dependsOn("build")
+    doLast {
+        copy{
+            from "${project.projectDir}/build/libs/${project.archives_base_name}-forge-1.12.2-${project.version}.jar"
+            into "${rootProject.projectDir}/artifacts"
+        }
+    }
+}
