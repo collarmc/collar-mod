@@ -9,7 +9,7 @@ If forge will come out for MC 1.17, do it back:
 
 architectury{
 injectInjectables = false
--    fabric()
+-    common(false)
 +    common()
      }
 
