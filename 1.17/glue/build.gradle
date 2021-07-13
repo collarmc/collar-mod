@@ -8,7 +8,7 @@ version rootProject.version
 
 architectury{
     injectInjectables = false
-    common()
+    fabric()
 }
 
 dependencies {
