@@ -28,3 +28,8 @@ include '1.16:glue'
 include '1.16:fabric'
 include '1.16:forge'
 
+//1.17 stuff
+include '1.17'
+include '1.17:glue'
+include '1.17:fabric'
+//include '1.17:forge' //No forge for 1.17
