@@ -43,6 +43,8 @@ jobs:
         run: mvn install -DskipTests
       - name: Checkout Collar mod
         uses: actions/checkout@v2
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
       - name: Clean collar mod
         working-directory: collar-mod
         run: ./gradlew clean
