@@ -26,13 +26,13 @@ dependencies{
 
     developmentForge(project(path: ":${project.module_name}:glue")) { transitive = false }
     //developmentFabric(project(path: ":something")) { transitive = false } //Use this is a module contains ANY mod resources.
-    compileModule project(':plastic-api')
-    compileModule project(':common')
+
+    compileModule project(path: ":common", configuration: 'shadow')
+
     compileModule (project(path: ":${project.module_name}:glue", configuration: "transformProductionForge")){
         transitive = false
     }
-
-
+    
     forge "net.minecraftforge:forge:${project.minecraft_version}-${project.forge_version}"
 }
 
@@ -53,7 +53,11 @@ task sourcesJar(type: Jar, dependsOn: classes) {
 }
 shadowJar{
     configurations = [project.configurations.compileModule]
-    classifier "forge-dev"
+    classifier "dev"
+    relocate 'team.catgirl.collar.shared', 'team.catgirl.collar.libs.team.catgirl.collar.shared'
+    relocate 'team.catgirl.collar.client', 'team.catgirl.collar.libs.team.catgirl.collar.client'
+    relocate 'team.catgirl.pounce', 'team.catgirl.collar.libs.team.catgirl.pounce'
+    relocate 'org.joml', 'team.catgirl.collar.libs.org.joml'
 }
 remapJar{
     dependsOn shadowJar
