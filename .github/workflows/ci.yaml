@@ -5,9 +5,9 @@ name: CI
 
 on:
   push:
-    branches: [ topic/ci ]
+    branches: [ * ]
   pull_request:
-    branches: [ topic/ci ]
+    branches: [ * ]
 
 jobs:
   build:
@@ -60,4 +60,4 @@ jobs:
         with:
           name: artifacts
           path: |
-            artifacts
+            collar-mod/artifacts
