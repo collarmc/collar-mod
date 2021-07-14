@@ -77,12 +77,12 @@ if(System.getenv("GITHUB_TOKEN") != null) {
         // default is the last part of your group. Eg group: "com.github.breadmoirai" => owner: "breadmoirai"
         repo "collar-mod" // by default this is set to your project name
         tagName "${project.version}" // by default this is set to "v${project.version}"
-        targetCommitish "master" // by default this is set to "master"
+        targetCommitish "grade/arch" // by default this is set to "master"
         releaseName "collar-${project.version}" // Release title, by default this is the same as the tagName
         body ":D" // by default this is empty
         draft false // by default this is false
         prerelease false // by default this is false
-        //releaseAssets = releaseArtifacts
+        releaseAssets = releaseArtifacts
         // this points to which files you want to upload as assets with your release
         //releaseAssets jar.destinationDir.listFiles
         overwrite true // by default false; if set to true, will delete an existing release with the same tag and name
