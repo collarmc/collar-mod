@@ -3,7 +3,7 @@
 
 name: CI
 
-on: [workflow_dispatch] #Only for manual use
+on: [workflow_dispatch]
 
 jobs:
   build:
@@ -50,10 +50,4 @@ jobs:
         run: ./gradlew clean
       - name: Build Collar mod
         working-directory: collar-mod
-        run: ./gradlew collectArtifacts
-      - name: Capture artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: artifacts
-          path: |
-            collar-mod/artifacts
+        run: ./gradlew githubRelease

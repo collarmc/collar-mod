@@ -4,7 +4,7 @@ plugins {
     id "architectury-plugin" version "3.2-SNAPSHOT" apply false //Need for common module management.
     id "com.github.johnrengelman.shadow" version "7.0.0" apply false
 
-    //id "com.github.breadmoirai.github-release" version "2.2.12" //TODO automate GitHub releases
+    id "com.github.breadmoirai.github-release" version "2.2.12" //TODO automate GitHub releases
 }
 
 group project.maven_group
@@ -65,4 +65,29 @@ task collectArtifacts{
 }
 clean{
     delete "${project.projectDir}/artifacts"
+}
+
+
+//CI
+if(System.getenv("GITHUB_TOKEN") != null) {
+    githubRelease {
+        token System.getenv("GITHUB_TOKEN") // This is your personal access token with Repo permissions
+        // You get this from your user settings > developer settings > Personal Access Tokens
+        owner "KosmX"
+        // default is the last part of your group. Eg group: "com.github.breadmoirai" => owner: "breadmoirai"
+        repo "collar-mod" // by default this is set to your project name
+        tagName "${project.version}" // by default this is set to "v${project.version}"
+        targetCommitish "master" // by default this is set to "master"
+        releaseName "collar-${project.version}" // Release title, by default this is the same as the tagName
+        body ":D" // by default this is empty
+        draft false // by default this is false
+        prerelease false // by default this is false
+        //releaseAssets = releaseArtifacts
+        // this points to which files you want to upload as assets with your release
+        //releaseAssets jar.destinationDir.listFiles
+        overwrite true // by default false; if set to true, will delete an existing release with the same tag and name
+        dryRun false // by default false; you can use this to see what actions would be taken without making a release
+        apiEndpoint "https://api.github.com" // should only change for github enterprise users
+        client // This is the okhttp client used for http requests
+    }
 }
