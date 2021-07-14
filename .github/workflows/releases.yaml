@@ -5,6 +5,8 @@ name: GH Releases
 
 on: [workflow_dispatch]
 
+permissions: write-all #well, this will be enough TODO only needed
+
 jobs:
   build:
 
