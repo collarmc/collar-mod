@@ -27,11 +27,8 @@ public final class TracerRenderer {
 
     @Subscribe(Preference.CALLER)
     public void onRender(WorldRenderEvent event) {
-        ProjectionUtil.INSTANCE.updateBuffers();
-
-
         service.getCollar().ifPresent(collar -> {
-            if (collar.getState() != Collar.State.CONNECTED || !collar.isDebug()) {
+            if (collar.getState() != Collar.State.CONNECTED || !collar.configuration.debugConfiguration.tracers) {
                 return;
             }
             collar.location().playerLocations().forEach((player, location) -> {
@@ -40,6 +37,7 @@ public final class TracerRenderer {
                 if (!location.dimension.equals(playerLocation.dimension)) {
                     return;
                 }
+                ProjectionUtil.INSTANCE.updateBuffers();
                 renderLine(from(playerLocation), from(location), Color.MAGENTA, 3f);
             });
         });
