@@ -141,11 +141,11 @@ public class CollarService implements CollarListener {
         backgroundJobs.submit(() -> {
             switch (state) {
                 case CONNECTING:
-                    plastic.display.displayMessage(this.plastic.display.newTextBuilder().add("Collar connecting...", TextColor.GREEN));
+                    plastic.display.displayInfoMessage("Collar connecting...");
                     eventBus.dispatch(new CollarConnectedEvent(collar));
                     break;
                 case CONNECTED:
-                    plastic.display.displayMessage(this.plastic.display.newTextBuilder().add("Collar connected", TextColor.GREEN));
+                    plastic.display.displayMessage(rainbowText("Collar connected"));
                     collar.location().subscribe(locations);
                     collar.groups().subscribe(groups);
                     collar.friends().subscribe(friends);
@@ -154,7 +154,7 @@ public class CollarService implements CollarListener {
                     break;
                 case DISCONNECTED:
                     connectionState.setAttempted(false);
-                    plastic.display.displayMessage(this.plastic.display.newTextBuilder().add("Collar disconnected", TextColor.GREEN));
+                    plastic.display.displayWarningMessage("Collar disconnected");
                     eventBus.dispatch(new CollarDisconnectedEvent());
                     break;
             }
@@ -196,7 +196,7 @@ public class CollarService implements CollarListener {
     @Override
     public void onMinecraftAccountVerificationFailed(Collar collar, MinecraftSession session) {
         plastic.display.displayStatusMessage("Account verification failed");
-        plastic.display.displayMessage(plastic.display.newTextBuilder().add("Collar failed to verify your Minecraft account", TextColor.RED));
+        plastic.display.displayErrorMessage("Collar failed to verify your Minecraft account");
     }
 
     @Override
@@ -212,9 +212,13 @@ public class CollarService implements CollarListener {
         plastic.display.displayErrorMessage(throwable.getMessage());
     }
 
+    @Override
+    public void onError(Collar collar, String reason) {
+        plastic.display.displayErrorMessage(reason);
+    }
+
     private Collar createCollar() throws IOException {
         CollarConfiguration configuration = new CollarConfiguration.Builder()
-//                .withCollarServer("http://localhost:4000")
                 .withCollarServer()
                 .withListener(this)
                 .withTicks(ticks)
@@ -256,8 +260,10 @@ public class CollarService implements CollarListener {
     private TextBuilder rainbowText(String text) {
         TextBuilder builder = plastic.display.newTextBuilder();
         Random random = new Random();
+        List<TextColor> values = Arrays.asList(TextColor.values());
+        values.remove(TextColor.BLACK); // too dark to display in most contexts
         for (char c : text.toCharArray()) {
-            TextColor value = TextColor.values()[random.nextInt(TextColor.values().length)];
+            TextColor value = values.get(random.nextInt(values.size()));
             builder = builder.add(Character.toString(c), value);
         }
         return builder;
