@@ -260,6 +260,11 @@ public class CollarService implements CollarListener {
         values.remove(TextColor.BLACK);
         values.remove(TextColor.GRAY);
         values.remove(TextColor.DARK_GRAY);
+        values.remove(TextColor.DARK_BLUE);
+        values.remove(TextColor.DARK_GREEN);
+        values.remove(TextColor.DARK_AQUA);
+        values.remove(TextColor.DARK_RED);
+        values.remove(TextColor.DARK_PURPLE);
         for (char c : text.toCharArray()) {
             TextColor value = values.get(random.nextInt(values.size()));
             builder = builder.add(Character.toString(c), value);
