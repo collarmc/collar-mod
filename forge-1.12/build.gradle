@@ -17,7 +17,7 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'com.github.johnrengelman.shadow'
 
 version = project.property('collar.mod.version') + '-' + getCheckedOutGitCommitHash()
-group = 'team.catgirl.collar.mod'
+group = 'com.collarmc.mod'
 archivesBaseName = 'collar-forge-' + project.property('collar.mc.version')
 sourceCompatibility = targetCompatibility = '1.8'
 
@@ -49,13 +49,13 @@ shadowJar {
         include(dependency('team.catgirl:pounce:.*'))
         include(project(':plastic-api'))
         include(project(':common'))
-        include(dependency('team.catgirl.collar:client:.*'))
-        include(dependency('team.catgirl.collar:plugin:.*'))
+        include(dependency('com.collarmc:client:.*'))
+        include(dependency('com.collarmc:plugin:.*'))
     }
-    relocate 'com.mojang.brigadier', 'team.catgirl.collar.libs.com.mojang.brigadier'
-    relocate 'team.catgirl.collar.shared', 'team.catgirl.collar.libs.team.catgirl.collar.shared'
-    relocate 'team.catgirl.collar.client', 'team.catgirl.collar.libs.team.catgirl.collar.client'
-    relocate 'team.catgirl.pounce', 'team.catgirl.collar.libs.team.catgirl.pounce'
+    relocate 'com.mojang.brigadier', 'com.collarmc.libs.com.mojang.brigadier'
+    relocate 'com.collarmc.shared', 'com.collarmc.libs.com.collarmc.shared'
+    relocate 'com.collarmc.client', 'com.collarmc.libs.com.collarmc.client'
+    relocate 'team.catgirl.pounce', 'com.collarmc.libs.team.catgirl.pounce'
     classifier ''
 }
 

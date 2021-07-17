@@ -1,7 +1,7 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "team.catgirl.collar.mod.fabric.mixin",
+  "package": "com.collarmc.mod.fabric.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "ClientWorldMixin",
