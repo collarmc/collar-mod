@@ -15,7 +15,6 @@ import team.catgirl.plastic.events.client.ClientDisconnectedEvent;
 import team.catgirl.plastic.events.client.OnTickEvent;
 import team.catgirl.plastic.events.world.WorldLoadedEvent;
 import team.catgirl.plastic.player.Player;
-import team.catgirl.plastic.ui.TextAction;
 import team.catgirl.plastic.ui.TextAction.OpenLinkAction;
 import team.catgirl.plastic.ui.TextBuilder;
 import team.catgirl.plastic.ui.TextColor;
@@ -46,7 +45,7 @@ public class CollarService implements CollarListener {
     private final Lock connectionLock = new ReentrantLock();
     private final ExecutorService backgroundJobs;
     private final ConnectionState connectionState = new ConnectionState(this);
-    private Collar collar;
+    private transient Collar collar;
     private final Plastic plastic;
     private final EventBus eventBus;
     private final Ticks ticks;
@@ -94,7 +93,7 @@ public class CollarService implements CollarListener {
     }
 
     public void with(Consumer<Collar> action) {
-        with(action, () -> plastic.display.displayMessage(plastic.display.newTextBuilder().add("Collar not connected", TextColor.YELLOW)));
+        with(action, () -> plastic.display.displayInfoMessage("Collar not connected"));
     }
 
     public void connect() {
@@ -106,12 +105,8 @@ public class CollarService implements CollarListener {
             try {
                 collar = createCollar();
                 collar.connect();
-            } catch (CollarException e) {
-                plastic.display.displayMessage(plastic.display.newTextBuilder().add(e.getMessage(), TextColor.RED));
-                LOGGER.log(Level.SEVERE, e.getMessage(), e);
-            } catch (Throwable e) {
-                plastic.display.displayMessage(plastic.display.newTextBuilder().add("Failed to connect to Collar", TextColor.RED));
-                e.printStackTrace();
+            } catch (CollarException|IOException e) {
+                plastic.display.displayErrorMessage(e.getMessage());
                 LOGGER.log(Level.SEVERE, e.getMessage(), e);
             } finally {
                 connectionLock.unlock();
@@ -260,8 +255,11 @@ public class CollarService implements CollarListener {
     private TextBuilder rainbowText(String text) {
         TextBuilder builder = plastic.display.newTextBuilder();
         Random random = new Random();
-        List<TextColor> values = Arrays.asList(TextColor.values());
-        values.remove(TextColor.BLACK); // too dark to display in most contexts
+        List<TextColor> values = new ArrayList<>(Arrays.asList(TextColor.values()));
+        // too dark to display in most contexts
+        values.remove(TextColor.BLACK);
+        values.remove(TextColor.GRAY);
+        values.remove(TextColor.DARK_GRAY);
         for (char c : text.toCharArray()) {
             TextColor value = values.get(random.nextInt(values.size()));
             builder = builder.add(Character.toString(c), value);
