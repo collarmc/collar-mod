@@ -101,7 +101,9 @@ public class CollarService implements CollarListener {
     }
 
     public void connect() {
+        LOGGER.info("Attempting to connect...");
         if (!connectionLock.tryLock()) {
+            LOGGER.info("Connection already in progress.");
             return;
         }
         connectionState.setAttempted(true);
@@ -109,9 +111,10 @@ public class CollarService implements CollarListener {
             try {
                 collar = createCollar();
                 collar.connect();
+                LOGGER.info("Connected to Collar");
             } catch (CollarException|IOException e) {
                 plastic.display.displayErrorMessage(e.getMessage());
-                LOGGER.error(e.getMessage(), e);
+                LOGGER.error("Connection failed " + e.getMessage(), e);
             } finally {
                 connectionLock.unlock();
             }
