@@ -11,7 +11,7 @@ import com.collarmc.client.Collar;
 import com.collarmc.client.api.location.LocationApi;
 import com.collarmc.client.api.location.LocationListener;
 import com.collarmc.plastic.Plastic;
-import team.catgirl.pounce.EventBus;
+import com.collarmc.pounce.EventBus;
 
 import java.util.Set;
 

@@ -39,14 +39,14 @@ repositories {
 dependencies {
     implementation project(':plastic-api')
     implementation project(':common')
-    implementation group: 'team.catgirl', name: 'pounce', version: "${project.property('pounce.version')}"
+    implementation group: 'com.collarmc', name: 'pounce', version: "${project.property('pounce.version')}"
     implementation "com.mojang:brigadier:${project.property("brigadier.version")}"
 }
 
 shadowJar {
     dependencies {
         include(dependency('com.mojang:brigadier:.*'))
-        include(dependency('team.catgirl:pounce:.*'))
+        include(dependency('com.collarmc:pounce:.*'))
         include(project(':plastic-api'))
         include(project(':common'))
         include(dependency('com.collarmc:client:.*'))
@@ -55,7 +55,7 @@ shadowJar {
     relocate 'com.mojang.brigadier', 'com.collarmc.libs.com.mojang.brigadier'
     relocate 'com.collarmc.shared', 'com.collarmc.libs.com.collarmc.shared'
     relocate 'com.collarmc.client', 'com.collarmc.libs.com.collarmc.client'
-    relocate 'team.catgirl.pounce', 'com.collarmc.libs.team.catgirl.pounce'
+    relocate 'com.collarmc.pounce', 'com.collarmc.libs.com.collarmc.pounce'
     classifier ''
 }
 

@@ -10,8 +10,8 @@ import com.collarmc.api.location.Location;
 import com.collarmc.client.Collar;
 import com.collarmc.mod.common.CollarService;
 import com.collarmc.plastic.Plastic;
-import team.catgirl.pounce.Preference;
-import team.catgirl.pounce.Subscribe;
+import com.collarmc.pounce.Preference;
+import com.collarmc.pounce.Subscribe;
 
 import java.awt.*;
 

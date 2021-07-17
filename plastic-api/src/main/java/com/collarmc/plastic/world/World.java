@@ -4,7 +4,7 @@ import com.collarmc.plastic.chat.ChatService;
 import com.collarmc.plastic.events.world.WorldLoadedEvent;
 import com.collarmc.plastic.player.Player;
 import com.collarmc.plastic.ui.TextureProvider;
-import team.catgirl.pounce.EventBus;
+import com.collarmc.pounce.EventBus;
 
 import java.util.List;
 import java.util.Optional;

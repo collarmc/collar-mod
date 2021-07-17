@@ -12,8 +12,8 @@ import com.collarmc.mod.common.CollarService;
 import com.collarmc.mod.fabric.mixin.MinecraftClientFieldMixin;
 import com.collarmc.plastic.Plastic;
 import com.collarmc.plastic.player.Player;
-import team.catgirl.pounce.Preference;
-import team.catgirl.pounce.Subscribe;
+import com.collarmc.pounce.Preference;
+import com.collarmc.pounce.Subscribe;
 
 import static net.minecraft.client.render.block.entity.BeaconBlockEntityRenderer.BEAM_TEXTURE;
 

@@ -5,7 +5,7 @@ import com.collarmc.plastic.events.client.ClientDisconnectedEvent;
 import com.collarmc.plastic.events.client.OnTickEvent;
 import com.collarmc.plastic.ui.Display;
 import com.collarmc.plastic.world.World;
-import team.catgirl.pounce.EventBus;
+import com.collarmc.pounce.EventBus;
 
 import java.io.File;
 

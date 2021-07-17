@@ -26,9 +26,9 @@ import com.collarmc.plastic.ui.TextAction.OpenLinkAction;
 import com.collarmc.plastic.ui.TextBuilder;
 import com.collarmc.plastic.ui.TextColor;
 import com.collarmc.security.mojang.MinecraftSession;
-import team.catgirl.pounce.EventBus;
-import team.catgirl.pounce.Preference;
-import team.catgirl.pounce.Subscribe;
+import com.collarmc.pounce.EventBus;
+import com.collarmc.pounce.Preference;
+import com.collarmc.pounce.Subscribe;
 
 import java.io.File;
 import java.io.IOException;

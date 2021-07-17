@@ -4,7 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ServerData;
 import com.collarmc.plastic.Plastic;
 import com.collarmc.plastic.ui.TextureProvider;
-import team.catgirl.pounce.EventBus;
+import com.collarmc.pounce.EventBus;
 
 import java.io.File;
 

@@ -8,7 +8,7 @@ import com.collarmc.mod.common.events.CollarConnectedEvent;
 import com.collarmc.plastic.player.Player;
 import com.collarmc.plastic.ui.TextureProvider;
 import com.collarmc.plastic.ui.TextureType;
-import team.catgirl.pounce.Subscribe;
+import com.collarmc.pounce.Subscribe;
 
 import java.awt.image.BufferedImage;
 import java.util.Objects;

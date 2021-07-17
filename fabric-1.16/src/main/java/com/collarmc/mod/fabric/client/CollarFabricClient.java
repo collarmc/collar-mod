@@ -14,7 +14,7 @@ import com.collarmc.mod.fabric.render.TracerRenderer;
 import com.collarmc.mod.fabric.render.WaypointRenderer;
 import com.collarmc.plastic.Plastic;
 import com.collarmc.plastic.fabric.FabricPlastic;
-import team.catgirl.pounce.EventBus;
+import com.collarmc.pounce.EventBus;
 
 @Environment(EnvType.CLIENT)
 public class CollarFabricClient implements ClientModInitializer {

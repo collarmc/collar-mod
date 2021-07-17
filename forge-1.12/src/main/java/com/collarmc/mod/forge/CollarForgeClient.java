@@ -28,7 +28,7 @@ import com.collarmc.plastic.Plastic;
 import com.collarmc.plastic.chat.ChatService;
 import com.collarmc.plastic.forge.ForgeCommand;
 import com.collarmc.plastic.forge.ForgePlastic;
-import team.catgirl.pounce.EventBus;
+import com.collarmc.pounce.EventBus;
 
 @SideOnly(Side.CLIENT)
 @Mod(modid = CollarForgeClient.MODID, name = CollarForgeClient.NAME, version = CollarForgeClient.VERSION)
