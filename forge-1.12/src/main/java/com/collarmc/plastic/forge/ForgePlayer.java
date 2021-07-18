@@ -1,7 +1,10 @@
 package com.collarmc.plastic.forge;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
+import com.collarmc.api.location.Dimension;
+import com.collarmc.api.location.Location;
+import com.collarmc.plastic.player.Player;
+import com.collarmc.plastic.ui.TextureProvider;
+import com.collarmc.plastic.ui.TextureType;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
@@ -15,11 +18,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.DimensionType;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
-import com.collarmc.api.location.Dimension;
-import com.collarmc.api.location.Location;
-import com.collarmc.plastic.ui.TextureProvider;
-import com.collarmc.plastic.ui.TextureType;
-import com.collarmc.plastic.player.Player;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -28,17 +26,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class ForgePlayer implements Player {
-
-    private final static Cache<String, Optional<BufferedImage>> AVATAR_CACHE = CacheBuilder.newBuilder()
-            .expireAfterAccess(60, TimeUnit.SECONDS)
-            .initialCapacity(50)
-            .build();
-
     public final UUID id;
     public final EntityPlayer player;
     private final TextureProvider textureProvider;
@@ -92,15 +81,7 @@ public class ForgePlayer implements Player {
 
     @Override
     public Optional<BufferedImage> avatar() {
-        try {
-            return AVATAR_CACHE.get(name(), () -> {
-                AtomicReference<BufferedImage> avatarImage = new AtomicReference<>();
-                textureProvider.getTexture(this, TextureType.AVATAR);
-                return avatarImage.get() == null ? Optional.empty() : Optional.of(avatarImage.get());
-            });
-        } catch (ExecutionException e) {
-            return Optional.empty();
-        }
+        return defaultAvatar();
     }
 
     @Override
@@ -114,10 +95,9 @@ public class ForgePlayer implements Player {
             NetworkPlayerInfo playerInfo = ObfuscationReflectionHelper.getPrivateValue(AbstractClientPlayer.class, acp, "field_175157_a");
             Map<MinecraftProfileTexture.Type, ResourceLocation> textures = ObfuscationReflectionHelper.getPrivateValue(NetworkPlayerInfo.class, playerInfo, "field_187107_a");
             String textureName = String.format("plastic-capes/%s.png", playerInfo.getGameProfile().getId());
-            textureProvider.getTexture(this, TextureType.CAPE).thenAccept(textureOptional -> {
+            textureProvider.getTexture(this, TextureType.CAPE, null).thenAccept(textureOptional -> {
                 textureOptional.ifPresent(texture -> {
                     ResourceLocation resourceLocation = minecraft.getTextureManager().getDynamicTextureLocation(textureName, new DynamicTexture(texture));
-//                            minecraft.getTextureManager().bindTexture(resourceLocation);
                     textures.put(MinecraftProfileTexture.Type.CAPE, resourceLocation);
                     textures.put(MinecraftProfileTexture.Type.ELYTRA, resourceLocation);
                 });
@@ -139,7 +119,7 @@ public class ForgePlayer implements Player {
                 return Optional.of(bufferedImage.getSubimage(8, 8, 15, 15));
             }
         } catch (IOException e) {
-            return Optional.empty();
+            throw new IllegalStateException("could not find player avatar");
         }
     }
 

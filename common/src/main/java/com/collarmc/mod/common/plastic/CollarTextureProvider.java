@@ -27,7 +27,7 @@ public class CollarTextureProvider implements TextureProvider {
     private Collar collar;
 
     @Override
-    public CompletableFuture<Optional<BufferedImage>> getTexture(Player player, TextureType type) {
+    public CompletableFuture<Optional<BufferedImage>> getTexture(Player player, TextureType type, BufferedImage defaultTexture) {
         if (collar == null || !collar.getState().equals(Collar.State.CONNECTED)) {
             return CompletableFuture.completedFuture(Optional.empty());
         }
@@ -51,15 +51,21 @@ public class CollarTextureProvider implements TextureProvider {
                                     if (textureOptional.isPresent()) {
                                         CompletableFuture<Optional<BufferedImage>> result = new CompletableFuture<>();
                                         textureOptional.ifPresent(texture -> {
-                                            texture.loadImage(result::complete);
+                                            texture.loadImage(bufferedImageOptional -> {
+                                                if (bufferedImageOptional.isPresent()) {
+                                                    result.complete(bufferedImageOptional);
+                                                } else {
+                                                    result.complete(Optional.ofNullable(defaultTexture));
+                                                }
+                                            });
                                         });
                                         return result;
                                     } else {
-                                        return CompletableFuture.completedFuture(Optional.empty());
+                                        return CompletableFuture.completedFuture(Optional.ofNullable(defaultTexture));
                                     }
                                 });
                     } else {
-                        return CompletableFuture.completedFuture(Optional.empty());
+                        return CompletableFuture.completedFuture(Optional.ofNullable(defaultTexture));
                     }
                 });
     }
