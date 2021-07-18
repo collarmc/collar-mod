@@ -72,10 +72,10 @@ task sourcesJar(type: Jar, dependsOn: classes) {
 shadowJar{
     configurations = [project.configurations.compileModule]
     classifier "dev"
-    //relocate 'com.mojang.brigadier', 'team.catgirl.collar.libs.com.mojang.brigadier'
-    relocate 'com.collarmc.shared', 'com.collarmc.libs.team.catgirl.collar.shared'
-    relocate 'com.collarmc.client', 'com.collarmc.libs.team.catgirl.collar.client'
-    relocate 'com.collarmc.pounce', 'com.collarmc.libs.team.catgirl.pounce'
+    //relocate 'com.mojang.brigadier', 'com.collarmc.libs.com.mojang.brigadier'
+    relocate 'com.collarmc.shared', 'com.collarmc.libs.com.collarmc.shared'
+    relocate 'com.collarmc.client', 'com.collarmc.libs.com.collarmc.client'
+    relocate 'com.collarmc.pounce', 'com.collarmc.libs.com.collarmc.pounce'
     relocate 'org.joml', 'com.collarmc.libs.org.joml'
 }
 remapJar{

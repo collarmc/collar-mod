@@ -11,7 +11,7 @@
   "environment": "*",
   "entrypoints": {
     "client": [
-      "team.catgirl.collar.mod.fabric.client.CollarFabricClient"
+      "com.collarmc.mod.fabric.client.CollarFabricClient"
     ]
   },
   "mixins": [

@@ -1,18 +1,18 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "team.catgirl.collar.mod.glue.mixin",
+  "package": "com.collarmc.mod.glue.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "ClientWorldMixin",
-    "ClientConnectionMixin",
-    "PlayerListEntryMixin",
-    "PlayerEntityRendererMixin",
-    "InGameOverlayRendererMixin",
-    "MinecraftClientMixin",
-    "MinecraftClientFieldMixin",
-    "WorldRendererMixin",
-    "ClientPlayerEntityMixin"
+    "com.collarmc.collar.mod.glue.mixin.ClientWorldMixin",
+    "com.collarmc.collar.mod.glue.mixin.ClientConnectionMixin",
+    "com.collarmc.collar.mod.glue.mixin.PlayerListEntryMixin",
+    "com.collarmc.collar.mod.glue.mixin.PlayerEntityRendererMixin",
+    "com.collarmc.collar.mod.glue.mixin.InGameOverlayRendererMixin",
+    "com.collarmc.collar.mod.glue.mixin.MinecraftClientMixin",
+    "com.collarmc.collar.mod.glue.mixin.MinecraftClientFieldMixin",
+    "com.collarmc.collar.mod.glue.mixin.WorldRendererMixin",
+    "com.collarmc.collar.mod.glue.mixin.ClientPlayerEntityMixin"
   ],
   "client": [
   ],
