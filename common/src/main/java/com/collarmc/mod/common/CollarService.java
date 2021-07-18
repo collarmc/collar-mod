@@ -113,8 +113,9 @@ public class CollarService implements CollarListener {
                 collar.connect();
                 LOGGER.info("Connected to Collar");
             } catch (CollarException|IOException e) {
-                plastic.display.displayErrorMessage(e.getMessage());
-                LOGGER.error("Connection failed " + e.getMessage(), e);
+                String msg = "Connection failed " + e.getMessage();
+                plastic.display.displayErrorMessage(msg);
+                LOGGER.error(msg, e);
             } finally {
                 connectionLock.unlock();
             }
@@ -272,9 +273,14 @@ public class CollarService implements CollarListener {
         values.remove(TextColor.DARK_AQUA);
         values.remove(TextColor.DARK_RED);
         values.remove(TextColor.DARK_PURPLE);
+        TextColor lastColor = null;
         for (char c : text.toCharArray()) {
-            TextColor value = values.get(random.nextInt(values.size()));
-            builder = builder.add(Character.toString(c), value);
+            TextColor color = values.get(random.nextInt(values.size()));
+            while (color == lastColor) {
+                color = values.get(random.nextInt(values.size()));
+            }
+            lastColor = color;
+            builder = builder.add(Character.toString(c), color);
         }
         return builder;
     }
