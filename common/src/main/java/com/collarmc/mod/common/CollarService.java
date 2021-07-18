@@ -267,6 +267,7 @@ public class CollarService implements CollarListener {
         // too dark to display in most contexts
         values.remove(TextColor.BLACK);
         values.remove(TextColor.GRAY);
+        values.remove(TextColor.WHITE);
         values.remove(TextColor.DARK_GRAY);
         values.remove(TextColor.DARK_BLUE);
         values.remove(TextColor.DARK_GREEN);
