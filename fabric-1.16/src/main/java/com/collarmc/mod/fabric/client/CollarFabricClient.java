@@ -1,5 +1,6 @@
 package com.collarmc.mod.fabric.client;
 
+import com.collarmc.mod.common.events.CollarModInitializedEvent;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -33,5 +34,6 @@ public class CollarFabricClient implements ClientModInitializer {
         commands.register(ClientCommandManager.DISPATCHER);
         EVENT_BUS.subscribe(WAYPOINT_RENDERER);
         EVENT_BUS.subscribe(TRACER_RENDERER);
+        EVENT_BUS.dispatch(new CollarModInitializedEvent());
     }
 }

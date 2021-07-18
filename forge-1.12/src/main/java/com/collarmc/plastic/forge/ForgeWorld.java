@@ -1,6 +1,7 @@
 package com.collarmc.plastic.forge;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.entity.player.EntityPlayer;
 import com.collarmc.plastic.chat.ChatService;
 import com.collarmc.plastic.player.Player;
@@ -8,6 +9,7 @@ import com.collarmc.plastic.ui.TextureProvider;
 import com.collarmc.plastic.world.World;
 import com.collarmc.pounce.EventBus;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,7 +29,11 @@ public class ForgeWorld extends World {
 
     @Override
     public List<Player> allPlayers() {
-        return Minecraft.getMinecraft().world.playerEntities.stream()
+        WorldClient world = Minecraft.getMinecraft().world;
+        if (world == null) {
+            return new ArrayList<>();
+        }
+        return world.playerEntities.stream()
                 .map(player -> new ForgePlayer(player, textureProvider))
                 .collect(Collectors.toList());
     }

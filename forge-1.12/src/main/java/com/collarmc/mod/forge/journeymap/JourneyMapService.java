@@ -19,7 +19,6 @@ import journeymap.client.api.display.Waypoint;
 import journeymap.client.api.display.WaypointGroup;
 import journeymap.client.api.model.MapImage;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.DimensionType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -53,8 +52,8 @@ public final class JourneyMapService {
     }
 
     @Subscribe(Preference.CALLER)
-    public void setClientAPI(IClientAPI api) {
-        this.api = api;
+    public void setClientAPI(JourneyMapEvent event) {
+        this.api = event.api;
         reset();
     }
 
@@ -122,6 +121,13 @@ public final class JourneyMapService {
         }
     }
 
+    /**
+     * Try not to leave journey map in a dirty state when client quits
+     */
+    public void registerShutdownHook() {
+        Runtime.getRuntime().addShutdownHook(new Thread(this::reset));
+    }
+
     private WaypointGroup findOrCreateWaypointGroup(WaypointCreatedEvent event) {
         UUID id = event.group == null ? plastic.world.currentPlayer().id() : event.group.id;
         String name = event.group == null ? plastic.world.currentPlayer().name() : event.group.name;
@@ -154,8 +160,13 @@ public final class JourneyMapService {
         playerMarkers.put(player.id(), markerOverlay);
     }
 
-    private void reset() {
-        playerMarkers.values().forEach(markerOverlay -> api.remove(markerOverlay));
-        waypoints.values().forEach(markerOverlay -> api.remove(markerOverlay));
+    public void reset() {
+        if (api != null) {
+            playerMarkers.values().forEach(markerOverlay -> api.remove(markerOverlay));
+            waypoints.values().forEach(markerOverlay -> api.remove(markerOverlay));
+            api.removeAll(CollarForgeClient.MODID);
+        }
+        playerMarkers.clear();
+        waypoints.clear();
     }
 }

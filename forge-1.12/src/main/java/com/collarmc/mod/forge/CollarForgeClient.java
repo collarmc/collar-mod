@@ -1,6 +1,7 @@
 package com.collarmc.mod.forge;
 
 import com.collarmc.client.CollarListener;
+import com.collarmc.mod.common.events.CollarModInitializedEvent;
 import com.collarmc.mod.forge.journeymap.JourneyMapService;
 import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.entity.player.EntityPlayer;
@@ -69,7 +70,9 @@ public class CollarForgeClient implements CollarListener
     }
 
     @EventHandler
-    public void init(FMLInitializationEvent event) {}
+    public void init(FMLInitializationEvent event) {
+        EVENT_BUS.dispatch(new CollarModInitializedEvent());
+    }
 
     @SubscribeEvent
     public void onTick(ClientTickEvent event) {
@@ -113,6 +116,7 @@ public class CollarForgeClient implements CollarListener
         try {
             journeyMapService = new JourneyMapService(collarService, PLASTIC);
             EVENT_BUS.subscribe(journeyMapService);
+            journeyMapService.registerShutdownHook();
             LOGGER.info("JourneyMap available.");
         } catch (NoClassDefFoundError e) {
             LOGGER.warn("JourneyMap not available.");
