@@ -1,4 +1,4 @@
-package com.collarmc.collar.mod.forge;
+package com.collarmc.mod.forge;
 
 import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.entity.player.EntityPlayer;
