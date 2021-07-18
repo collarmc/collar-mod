@@ -69,6 +69,8 @@ dependencies {
     implementation project(':plastic-api')
     implementation project(':common')
     compileModule project(path: ":common", configuration: 'shadow')
+
+    implementation group: 'info.journeymap', name: 'journeymap-api', version: '1.12-1.4'
 }
 
 processResources {

@@ -1,5 +1,8 @@
 package com.collarmc.mod.forge.client;
 
+import com.collarmc.mod.glue.render.TracerRenderer;
+import com.collarmc.mod.glue.render.WaypointRenderer;
+import com.collarmc.plastic.GluePlastic;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.common.Mod;
@@ -10,9 +13,6 @@ import com.collarmc.mod.common.plastic.CollarTextureProvider;
 import com.collarmc.mod.common.plugins.Plugins;
 import com.collarmc.mod.forge.client.commands.ClientCommands;
 import com.collarmc.mod.forge.client.commands.ICommandSource;
-import com.collarmc.collar.mod.glue.render.TracerRenderer;
-import com.collarmc.collar.mod.glue.render.WaypointRenderer;
-import com.collarmc.collar.plastic.GluePlastic;
 import com.collarmc.plastic.Plastic;
 import com.collarmc.pounce.EventBus;
 import java.util.logging.Logger;

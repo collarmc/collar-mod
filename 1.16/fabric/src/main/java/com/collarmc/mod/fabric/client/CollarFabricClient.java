@@ -1,5 +1,8 @@
 package com.collarmc.mod.fabric.client;
 
+import com.collarmc.mod.glue.render.TracerRenderer;
+import com.collarmc.mod.glue.render.WaypointRenderer;
+import com.collarmc.plastic.GluePlastic;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -10,10 +13,7 @@ import com.collarmc.mod.common.features.messaging.Messages;
 import com.collarmc.mod.common.commands.Commands;
 import com.collarmc.mod.common.plastic.CollarTextureProvider;
 import com.collarmc.mod.common.plugins.Plugins;
-import com.collarmc.collar.mod.glue.render.TracerRenderer;
-import com.collarmc.collar.mod.glue.render.WaypointRenderer;
 import com.collarmc.plastic.Plastic;
-import com.collarmc.collar.plastic.GluePlastic;
 import com.collarmc.pounce.EventBus;
 
 @Environment(EnvType.CLIENT)
