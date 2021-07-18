@@ -113,4 +113,9 @@ public class FabricPlayer implements Player {
         }
         return nativeImage;
     }
+
+    @Override
+    public String toString() {
+        return playerEntity.getUuid() + " " + playerEntity.getName();
+    }
 }

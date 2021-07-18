@@ -155,4 +155,9 @@ public class ForgePlayer implements Player {
     public int hashCode() {
         return Objects.hash(id);
     }
+
+    @Override
+    public String toString() {
+        return id + " " + player.getName();
+    }
 }

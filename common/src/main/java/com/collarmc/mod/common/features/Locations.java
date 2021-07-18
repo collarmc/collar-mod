@@ -2,7 +2,7 @@ package com.collarmc.mod.common.features;
 
 import com.collarmc.mod.common.features.events.PlayerLocationUpdatedEvent;
 import com.collarmc.mod.common.features.events.WaypointCreatedEvent;
-import com.collarmc.mod.common.features.events.WaypointDeletedEvent;
+import com.collarmc.mod.common.features.events.WaypointRemovedEvent;
 import com.collarmc.api.groups.Group;
 import com.collarmc.api.location.Location;
 import com.collarmc.api.session.Player;
@@ -45,7 +45,7 @@ public class Locations implements LocationListener {
         }
         plastic.display.displayStatusMessage(message);
         plastic.display.displayInfoMessage(message);
-        events.dispatch(new WaypointCreatedEvent(waypoint));
+        events.dispatch(new WaypointCreatedEvent(waypoint, group));
     }
 
     @Override
@@ -58,12 +58,12 @@ public class Locations implements LocationListener {
         }
         plastic.display.displayStatusMessage(message);
         plastic.display.displayInfoMessage(message);
-        events.dispatch(new WaypointDeletedEvent(waypoint));
+        events.dispatch(new WaypointRemovedEvent(waypoint, group));
     }
 
     @Override
     public void onPrivateWaypointsReceived(Collar collar, LocationApi locationApi, Set<Waypoint> privateWaypoints) {
-        privateWaypoints.forEach(waypoint -> events.dispatch(new WaypointCreatedEvent(waypoint)));
+        privateWaypoints.forEach(waypoint -> events.dispatch(new WaypointCreatedEvent(waypoint, null)));
     }
 
     @Override
