@@ -18,17 +18,21 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.DimensionType;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
 
 public class ForgePlayer implements Player {
+
+    private static final Logger LOGGER = LogManager.getLogger(ForgePlayer.class);
+
     public final UUID id;
     public final EntityPlayer player;
     private final TextureProvider textureProvider;
@@ -84,6 +88,9 @@ public class ForgePlayer implements Player {
     public void avatar(Consumer<BufferedImage> consumer) {
         textureProvider.getTexture(this, TextureType.AVATAR, defaultAvatar()).thenAccept(bufferedImageOptional -> {
             bufferedImageOptional.ifPresent(consumer);
+            if (!bufferedImageOptional.isPresent()) {
+                LOGGER.error("Avatar for " + this + " is missing");
+            }
         });
     }
 

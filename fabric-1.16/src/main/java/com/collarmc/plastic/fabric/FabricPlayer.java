@@ -16,6 +16,8 @@ import net.minecraft.client.texture.NativeImageBackedTexture;
 import net.minecraft.resource.Resource;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -28,6 +30,8 @@ import java.util.function.Consumer;
 import static net.minecraft.world.dimension.DimensionType.*;
 
 public class FabricPlayer implements Player {
+
+    private static final Logger LOGGER = LogManager.getLogger(FabricPlayer.class);
 
     private final AbstractClientPlayerEntity playerEntity;
     private final TextureProvider textureProvider;
@@ -56,6 +60,9 @@ public class FabricPlayer implements Player {
     public void avatar(Consumer<BufferedImage> consumer) {
         textureProvider.getTexture(this, TextureType.AVATAR, defaultAvatar()).thenAccept(bufferedImageOptional -> {
             bufferedImageOptional.ifPresent(consumer);
+            if (!bufferedImageOptional.isPresent()) {
+                LOGGER.error("Avatar for " + this + " is missing");
+            }
         });
     }
 
