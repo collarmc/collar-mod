@@ -17,7 +17,7 @@ displayName="Collar client"
 
 logoFile="icon.png" #optional
 # A text field displayed in the mod UI
-credits="Team Catgirl 2021"
+credits="com.collarmc 2021"
 # A text field displayed in the mod UI
 authors="orsond, sakuya, HermeticLock, KosmX" #optional
 # The description text for the mod (multi line!) (#mandatory)

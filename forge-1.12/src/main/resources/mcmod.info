@@ -1,6 +1,6 @@
 [
 {
-  "modid": "team.catgirl.collar.mod",
+  "modid": "com.collarmc.mod",
   "name": "Collar",
   "description": "${description}",
   "version": "${version}",
@@ -8,7 +8,7 @@
   "url": "http://www.collarmc.com/",
   "updateUrl": "",
   "authorList": ["orsond","sakuya","HermeticLock"],
-  "credits": "Team Catgirl 2021",
+  "credits": "com.collarmc 2021",
   "logoFile": "assets/collar/icon.png",
   "screenshots": [],
   "dependencies": []
