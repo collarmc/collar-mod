@@ -1,12 +1,13 @@
 package com.collarmc.plastic.forge;
 
-import com.collarmc.plastic.ui.TextAction;
-import com.collarmc.plastic.ui.TextBuilder;
-import com.collarmc.plastic.ui.TextColor;
-import com.collarmc.plastic.ui.TextStyle;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.event.ClickEvent;
+import com.collarmc.plastic.ui.TextAction;
+import com.collarmc.plastic.ui.TextAction.OpenLinkAction;
+import com.collarmc.plastic.ui.TextBuilder;
+import com.collarmc.plastic.ui.TextColor;
+import com.collarmc.plastic.ui.TextStyle;
 
 public final class ForgeTextBuilder extends TextBuilder {
 
@@ -32,8 +33,8 @@ public final class ForgeTextBuilder extends TextBuilder {
             component.getStyle().setColor(textColor);
         }
         if (action != null) {
-            if (action instanceof TextAction.OpenLinkAction) {
-                TextAction.OpenLinkAction openLinkAction = (TextAction.OpenLinkAction) action;
+            if (action instanceof OpenLinkAction) {
+                OpenLinkAction openLinkAction = (OpenLinkAction) action;
                 component.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, openLinkAction.url));
             }
         }

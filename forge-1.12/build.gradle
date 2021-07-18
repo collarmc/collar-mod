@@ -69,6 +69,10 @@ dependencies {
     implementation project(':plastic-api')
     implementation project(':common')
     compileModule project(path: ":common", configuration: 'shadow')
+
+    implementation group: 'info.journeymap', name: 'journeymap-api', version: project.journey_version
+    //TODO compileModule group: 'info.journeymap', name: 'journeymap-api', version: project.journey_version
+    //Do we want to include it in the mod?
 }
 
 processResources {

@@ -1,8 +1,8 @@
 package com.collarmc.mod.common.features.messaging;
 
+import com.collarmc.mod.common.CollarService;
 import com.collarmc.api.groups.Group;
 import com.collarmc.api.messaging.TextMessage;
-import com.collarmc.mod.common.CollarService;
 import com.collarmc.plastic.chat.ChatInterceptor;
 
 public class GroupChatInterceptor implements ChatInterceptor {

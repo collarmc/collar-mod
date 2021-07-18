@@ -1,5 +1,12 @@
 package com.collarmc.mod.common;
 
+import com.collarmc.mod.common.features.Friends;
+import com.collarmc.mod.common.features.Groups;
+import com.collarmc.mod.common.features.Locations;
+import com.collarmc.mod.common.features.Textures;
+import com.collarmc.mod.common.plugins.Plugins;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import com.collarmc.api.entities.Entity;
 import com.collarmc.api.entities.EntityType;
 import com.collarmc.client.*;
@@ -18,7 +25,6 @@ import com.collarmc.plastic.player.Player;
 import com.collarmc.plastic.ui.TextAction.OpenLinkAction;
 import com.collarmc.plastic.ui.TextBuilder;
 import com.collarmc.plastic.ui.TextColor;
-import com.collarmc.mod.common.plugins.Plugins;
 import com.collarmc.security.mojang.MinecraftSession;
 import com.collarmc.pounce.EventBus;
 import com.collarmc.pounce.Preference;
@@ -32,20 +38,18 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import static com.collarmc.client.Collar.State.*;
 
 public class CollarService implements CollarListener {
 
-    private static final Logger LOGGER = Logger.getLogger(CollarService.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger(CollarService.class.getName());
 
     private final Lock connectionLock = new ReentrantLock();
     private final ExecutorService backgroundJobs;
     private final ConnectionState connectionState = new ConnectionState(this);
-    private Collar collar;
+    private transient Collar collar;
     private final Plastic plastic;
     private final EventBus eventBus;
     private final Ticks ticks;
@@ -93,11 +97,13 @@ public class CollarService implements CollarListener {
     }
 
     public void with(Consumer<Collar> action) {
-        with(action, () -> plastic.display.displayMessage(plastic.display.newTextBuilder().add("Collar not connected", TextColor.YELLOW)));
+        with(action, () -> plastic.display.displayInfoMessage("Collar not connected"));
     }
 
     public void connect() {
+        LOGGER.info("Attempting to connect...");
         if (!connectionLock.tryLock()) {
+            LOGGER.info("Connection already in progress.");
             return;
         }
         connectionState.setAttempted(true);
@@ -105,13 +111,11 @@ public class CollarService implements CollarListener {
             try {
                 collar = createCollar();
                 collar.connect();
-            } catch (CollarException e) {
-                plastic.display.displayMessage(plastic.display.newTextBuilder().add(e.getMessage(), TextColor.RED));
-                LOGGER.log(Level.SEVERE, e.getMessage(), e);
-            } catch (Throwable e) {
-                plastic.display.displayMessage(plastic.display.newTextBuilder().add("Failed to connect to Collar", TextColor.RED));
-                e.printStackTrace();
-                LOGGER.log(Level.SEVERE, e.getMessage(), e);
+                LOGGER.info("Connected to Collar");
+            } catch (CollarException|IOException e) {
+                String msg = "Connection failed " + e.getMessage();
+                plastic.display.displayErrorMessage(msg);
+                LOGGER.error(msg, e);
             } finally {
                 connectionLock.unlock();
             }
@@ -140,11 +144,11 @@ public class CollarService implements CollarListener {
         backgroundJobs.submit(() -> {
             switch (state) {
                 case CONNECTING:
-                    plastic.display.displayMessage(this.plastic.display.newTextBuilder().add("Collar connecting...", TextColor.GREEN));
+                    plastic.display.displayInfoMessage("Collar connecting...");
                     eventBus.dispatch(new CollarConnectedEvent(collar));
                     break;
                 case CONNECTED:
-                    plastic.display.displayMessage(this.plastic.display.newTextBuilder().add("Collar connected", TextColor.GREEN));
+                    plastic.display.displayMessage(rainbowText("Collar connected"));
                     collar.location().subscribe(locations);
                     collar.groups().subscribe(groups);
                     collar.friends().subscribe(friends);
@@ -153,7 +157,7 @@ public class CollarService implements CollarListener {
                     break;
                 case DISCONNECTED:
                     connectionState.setAttempted(false);
-                    plastic.display.displayMessage(this.plastic.display.newTextBuilder().add("Collar disconnected", TextColor.GREEN));
+                    plastic.display.displayWarningMessage("Collar disconnected");
                     eventBus.dispatch(new CollarDisconnectedEvent());
                     break;
             }
@@ -195,7 +199,7 @@ public class CollarService implements CollarListener {
     @Override
     public void onMinecraftAccountVerificationFailed(Collar collar, MinecraftSession session) {
         plastic.display.displayStatusMessage("Account verification failed");
-        plastic.display.displayMessage(plastic.display.newTextBuilder().add("Collar failed to verify your Minecraft account", TextColor.RED));
+        plastic.display.displayErrorMessage("Collar failed to verify your Minecraft account");
     }
 
     @Override
@@ -211,9 +215,13 @@ public class CollarService implements CollarListener {
         plastic.display.displayErrorMessage(throwable.getMessage());
     }
 
+    @Override
+    public void onError(Collar collar, String reason) {
+        plastic.display.displayErrorMessage(reason);
+    }
+
     private Collar createCollar() throws IOException {
         CollarConfiguration configuration = new CollarConfiguration.Builder()
-//                .withCollarServer("http://localhost:4000")
                 .withCollarServer()
                 .withListener(this)
                 .withTicks(ticks)
@@ -255,9 +263,25 @@ public class CollarService implements CollarListener {
     private TextBuilder rainbowText(String text) {
         TextBuilder builder = plastic.display.newTextBuilder();
         Random random = new Random();
+        List<TextColor> values = new ArrayList<>(Arrays.asList(TextColor.values()));
+        // too dark to display in most contexts
+        values.remove(TextColor.BLACK);
+        values.remove(TextColor.GRAY);
+        values.remove(TextColor.WHITE);
+        values.remove(TextColor.DARK_GRAY);
+        values.remove(TextColor.DARK_BLUE);
+        values.remove(TextColor.DARK_GREEN);
+        values.remove(TextColor.DARK_AQUA);
+        values.remove(TextColor.DARK_RED);
+        values.remove(TextColor.DARK_PURPLE);
+        TextColor lastColor = null;
         for (char c : text.toCharArray()) {
-            TextColor value = TextColor.values()[random.nextInt(TextColor.values().length)];
-            builder = builder.add(Character.toString(c), value);
+            TextColor color = values.get(random.nextInt(values.size()));
+            while (color == lastColor) {
+                color = values.get(random.nextInt(values.size()));
+            }
+            lastColor = color;
+            builder = builder.add(Character.toString(c), color);
         }
         return builder;
     }

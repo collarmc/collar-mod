@@ -1,9 +1,9 @@
 package com.collarmc.plastic.forge;
 
-import com.collarmc.plastic.chat.ChatService;
-import com.collarmc.plastic.ui.Display;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
+import com.collarmc.plastic.chat.ChatService;
+import com.collarmc.plastic.ui.Display;
 
 public final class ForgeChatService extends ChatService {
 

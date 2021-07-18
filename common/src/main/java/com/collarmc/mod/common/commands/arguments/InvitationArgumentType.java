@@ -1,5 +1,6 @@
 package com.collarmc.mod.common.commands.arguments;
 
+import com.collarmc.mod.common.CollarService;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.context.CommandContext;
@@ -9,7 +10,6 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.collarmc.api.groups.GroupType;
 import com.collarmc.client.Collar;
 import com.collarmc.client.api.groups.GroupInvitation;
-import com.collarmc.mod.common.CollarService;
 import com.collarmc.plastic.brigadier.CommandTargetNotFoundException;
 
 import java.util.Collection;

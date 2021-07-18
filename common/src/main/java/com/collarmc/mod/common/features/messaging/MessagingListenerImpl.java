@@ -1,6 +1,5 @@
 package com.collarmc.mod.common.features.messaging;
 
-import com.collarmc.plastic.player.Player;
 import com.collarmc.api.groups.Group;
 import com.collarmc.api.messaging.Message;
 import com.collarmc.api.messaging.TextMessage;
@@ -36,7 +35,7 @@ public class MessagingListenerImpl implements MessagingListener {
                     PublicProfile profile = profileOptional.get();
                     displaySecurePrivateMessage(profile.name, textMessage.content);
                 } else {
-                    Optional<Player> collarPlayer = plastic.world.findPlayerById(player.minecraftPlayer.id);
+                    Optional<com.collarmc.plastic.player.Player> collarPlayer = plastic.world.findPlayerById(player.minecraftPlayer.id);
                     if (collarPlayer.isPresent()) {
                         displaySecurePrivateMessage(collarPlayer.get().name(), textMessage.content);
                     } else {
@@ -54,7 +53,7 @@ public class MessagingListenerImpl implements MessagingListener {
     public void onPrivateMessageRecipientIsUntrusted(Collar collar, MessagingApi messagingApi, MinecraftPlayer player, Message message) {
         if (message instanceof TextMessage) {
             TextMessage textMessage = (TextMessage) message;
-            Optional<Player> foundPlayer = plastic.world.findPlayerById(player.id);
+            Optional<com.collarmc.plastic.player.Player> foundPlayer = plastic.world.findPlayerById(player.id);
             if (foundPlayer.isPresent()) {
                 displayInsecurePrivateMessage(foundPlayer.get().name(), textMessage.content);
             } else {
@@ -99,7 +98,7 @@ public class MessagingListenerImpl implements MessagingListener {
                     PublicProfile profile = profileOptional.get();
                     displayReceivedGroupMessage(profile.name, group, textMessage.content);
                 } else {
-                    Optional<Player> collarPlayer = plastic.world.findPlayerById(sender.minecraftPlayer.id);
+                    Optional<com.collarmc.plastic.player.Player> collarPlayer = plastic.world.findPlayerById(sender.minecraftPlayer.id);
                     if (collarPlayer.isPresent()) {
                         displayReceivedGroupMessage(collarPlayer.get().name(), group, textMessage.content);
                     } else {

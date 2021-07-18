@@ -1,8 +1,5 @@
 package com.collarmc.plastic.forge;
 
-import com.collarmc.plastic.player.Player;
-import com.collarmc.plastic.ui.TextureProvider;
-import com.collarmc.plastic.ui.TextureType;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
@@ -20,6 +17,9 @@ import net.minecraft.world.DimensionType;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import com.collarmc.api.location.Dimension;
 import com.collarmc.api.location.Location;
+import com.collarmc.plastic.ui.TextureProvider;
+import com.collarmc.plastic.ui.TextureType;
+import com.collarmc.plastic.player.Player;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -112,7 +112,6 @@ public class ForgePlayer implements Player {
         if (!hasCape) {
             AbstractClientPlayer acp = (AbstractClientPlayer) player;
             NetworkPlayerInfo playerInfo = ObfuscationReflectionHelper.getPrivateValue(AbstractClientPlayer.class, acp, "field_175157_a");
-            if(playerInfo == null) return;
             Map<MinecraftProfileTexture.Type, ResourceLocation> textures = ObfuscationReflectionHelper.getPrivateValue(NetworkPlayerInfo.class, playerInfo, "field_187107_a");
             String textureName = String.format("plastic-capes/%s.png", playerInfo.getGameProfile().getId());
             textureProvider.getTexture(this, TextureType.CAPE).thenAccept(textureOptional -> {
@@ -155,5 +154,10 @@ public class ForgePlayer implements Player {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return id + " " + player.getName();
     }
 }
