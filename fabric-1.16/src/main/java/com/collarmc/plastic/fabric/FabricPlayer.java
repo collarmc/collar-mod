@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 import static net.minecraft.world.dimension.DimensionType.*;
 
@@ -52,8 +53,10 @@ public class FabricPlayer implements Player {
     }
 
     @Override
-    public Optional<BufferedImage> avatar() {
-        return defaultAvatar();
+    public void avatar(Consumer<BufferedImage> consumer) {
+        textureProvider.getTexture(this, TextureType.AVATAR, defaultAvatar()).thenAccept(bufferedImageOptional -> {
+            bufferedImageOptional.ifPresent(consumer);
+        });
     }
 
     @Override
@@ -108,7 +111,7 @@ public class FabricPlayer implements Player {
         return new Location((double)blockPos.getX(), (double)blockPos.getY(), (double)blockPos.getZ(), dimension);
     }
 
-    private Optional<BufferedImage> defaultAvatar() {
+    private BufferedImage defaultAvatar() {
         MinecraftClient minecraftClient = MinecraftClient.getInstance();
         if (minecraftClient == null) {
             throw new IllegalStateException("minecraftClient");
@@ -117,9 +120,9 @@ public class FabricPlayer implements Player {
         try {
             Resource resource = minecraftClient.getResourceManager().getResource(skinTexture);
             BufferedImage skin = ImageIO.read(resource.getInputStream());
-            return Optional.ofNullable(skin.getSubimage(8, 8, 15, 15));
+            return skin.getSubimage(8, 8, 15, 15);
         } catch (IOException e) {
-            return Optional.empty();
+            throw new IllegalStateException("could not load skin for " + this);
         }
     }
 

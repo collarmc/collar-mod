@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 public class ForgePlayer implements Player {
     public final UUID id;
@@ -80,8 +81,10 @@ public class ForgePlayer implements Player {
     }
 
     @Override
-    public Optional<BufferedImage> avatar() {
-        return defaultAvatar();
+    public void avatar(Consumer<BufferedImage> consumer) {
+        textureProvider.getTexture(this, TextureType.AVATAR, defaultAvatar()).thenAccept(bufferedImageOptional -> {
+            bufferedImageOptional.ifPresent(consumer);
+        });
     }
 
     @Override
@@ -105,18 +108,15 @@ public class ForgePlayer implements Player {
         }
     }
 
-    private Optional<BufferedImage> defaultAvatar() {
-        EntityPlayer playerEntityByName = minecraft.world.getPlayerEntityByName(player.getName());
-        if (playerEntityByName == null) {
-            return Optional.empty();
-        }
+    private BufferedImage defaultAvatar() {
+        EntityPlayer playerEntityByName = minecraft.world.getPlayerEntityByUUID(player.getUniqueID());
         EntityOtherPlayerMP playerMP = (EntityOtherPlayerMP) playerEntityByName;
         ResourceLocation locationSkin = playerMP.getLocationSkin();
         try {
             IResource resource = minecraft.getResourceManager().getResource(locationSkin);
             try (InputStream stream = resource.getInputStream()) {
                 BufferedImage bufferedImage = TextureUtil.readBufferedImage(stream);
-                return Optional.of(bufferedImage.getSubimage(8, 8, 15, 15));
+                return bufferedImage.getSubimage(8, 8, 15, 15);
             }
         } catch (IOException e) {
             throw new IllegalStateException("could not find player avatar");

@@ -102,7 +102,7 @@ public final class JourneyMapService {
                 api.remove(marker);
             }
         } else {
-            event.player.avatar().ifPresent(bufferedImage -> displayMarker(event.player, event.location, bufferedImage));
+            event.player.avatar(bufferedImage -> displayMarker(event.player, event.location, bufferedImage));
         }
     }
 

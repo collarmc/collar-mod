@@ -6,6 +6,7 @@ import com.collarmc.plastic.world.Entity;
 import java.awt.image.BufferedImage;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 public interface Player extends Entity {
     /**
@@ -25,10 +26,7 @@ public interface Player extends Entity {
 
     float yaw();
 
-    /**
-     * @return player's avatar
-     */
-    Optional<BufferedImage> avatar();
+    void avatar(Consumer<BufferedImage> consumer);
 
     /**
      * Run when {@link PlayerRenderEvent} fired
