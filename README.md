@@ -1,51 +1,48 @@
-#Collar mod
-//TODO general description about collar-mod
+# Collar mod  
+//TODO general description about collar-mod  
+maybe put the current stuff into a `BUILD.md` and use README as a user-manual
 
-## Forge 1.12 needs Java 1.8
-### Set it up in IntelliJ:  
+## Compiling submodules with Java 1.8
+### Set it up in IntelliJ:
 
 **Set the project SDK to Java 16 in `Project Structure`**
 
 *Then*  
-Set `forge-1.12`, `forge-1.12.main` and `forge-1.12.test` JDK to Java 1.8.
+if you want to compile Forge 1.12 with J1.8:  
+Set `forge-1.12`, `forge-1.12.main` and `forge-1.12.test` JDK to Java 1.8.  
 
+Apparently every module can be compiled with `JDK 16`, including `forge-1.12`  
 
-Using 1.16 or 1.17 with JDK16 is fine.
+## Debug
 
-### Debug
+**1.16**  
+Forge 1.16 debug won't launch, even if it can compile with JDK16
 
-1. `gradle :forge-1.12:genIntelliJRuns`  
-2. Then edit the configuration and set the JDK to 1.8 and the module to `collar-mod.1.12-forge.main`
+Fix it by adding this to the launch arguments:  
+`--add-exports=java.base/sun.security.util=ALL-UNNAMED --add-opens=java.base/java.util.jar=ALL-UNNAMED`  
+~~Or you can just make it to debug with old jdk.~~
 
-Issues with forge 1.12:    
+**1.12**  
+Well, that is a bit complicated. Hope *[The Forge God, LexManos](https://github.com/LexManos)* will fix it.  
+now: [forge-1.12/README](/forge-1.12/README.md)
+
+### Warning:
+Java `ByteBuffer` had some changes after J1.8, mostly the return type.  
+Some function, what had `Buffer` return type, has `ByteBuffer` return in J9+.  
+These can cause errors (`NoSuchMethodError`), when you compile with J16, and then you use that in J1.8  
+(`targetCompatibility = 1.8` does not help)  
+You can avoid these by casting the `ByteBuffer` to `Buffer` before invoking the method.
+```java
+ByteBuffer buf;
+
+//J1.8: public Buffer position(int newPosition);
+//19+ : public ByteBuffer position(int newPosition);
+
+        ((Buffer)buf).position(someInt);
+//It will search for a method, what returns with Buffer. A method what returns with ByteBuffer will be accepted.
+
+        buf.position(someInt);
+//It will search for a function, what returns with ByteBuffer, but there is what returns with Buffer.
 ```
-Exception in thread "main" java.lang.IllegalArgumentException: Invalid descriptor: Ljava/nio/file/attribute/UserPrincipal;
-at org.jetbrains.java.decompiler.struct.consts.LinkConstant.resolveDescriptor(LinkConstant.java:140)
-at org.jetbrains.java.decompiler.struct.consts.LinkConstant.initConstant(LinkConstant.java:130)
-...
-```
-Gradle can not decompile Forge with Java 16, what is not an issue for building the mod.  
-But a crash when you try to debug and/or see the Forge sources...  
-**workarounds**: The decompiled forge will be cached, we only need that cache.  
-
-**import forge MDK with J1.8:** When you import the default Forge MDK, it will write the cache.  
-Downloaded from [files.minecraftforge.net/net/minecraftforge/forge/index_1.12.2.html](https://files.minecraftforge.net/net/minecraftforge/forge/index_1.12.2.html)  
-Then reload this project, so the classpath will be updated.  
-
-**Import this without J16 required modules, with J1.8** If you import this project using J1.8, that is another working solution.  
-After the cache has been generated, re-enable the modules, set gradle JDK to J16, and it will work.
-
- ~~**Borrow cache from another PC**~~: this is often a very bad idea, but can work.  
-*the affected cache files (we'll need to supply these in some ways to work)*:
-```
-~\.gradle\caches\forge_gradle\minecraft_user_repo\net\minecraftforge\forge\1.12.2-14.23.5.2855\forge-1.12.2-14.23.5.2855-decomp.jar
-~\.gradle\caches\forge_gradle\minecraft_user_repo\net\minecraftforge\forge\1.12.2-14.23.5.2855\forge-1.12.2-14.23.5.2855-decomp.jar.input
-~\.gradle\caches\forge_gradle\minecraft_user_repo\net\minecraftforge\forge\1.12.2-14.23.5.2855\forge-1.12.2-14.23.5.2855-decomp.jar.sha1
-```
-
-
-link-to-forum:  
-https://forums.minecraftforge.net/topic/93803-crashing-on-the-1122-fml/  
-
-`1.12 is no longer supported on this forum.`   
-well, this is why I don't like Forge
+Using the first one, will solve the issue.  
+Example in: [[KosmX/emotes]](https://github.com/KosmX/emotes/blob/1911036abcb30b67de4b3cc2609e6414f33d766a/emotesCommon/src/main/java/io/github/kosmx/emotes/common/network/objects/EmoteDataPacket.java#L122)
