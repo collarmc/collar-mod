@@ -47,9 +47,6 @@ jobs:
       - name: Grant execute permission for gradlew
         working-directory: collar-mod
         run: chmod +x gradlew
-      - name: Clean collar mod
-        working-directory: collar-mod
-        run: ./gradlew clean
       - name: Build Collar mod
         working-directory: collar-mod
         run: ./gradlew githubRelease
