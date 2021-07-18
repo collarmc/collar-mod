@@ -32,9 +32,9 @@ allprojects {
         //We implement these in every submodule...
         dependencies {
             implementation "com.mojang:brigadier:${project.brigadier_version}"
-            implementation group: 'team.catgirl', name: 'pounce', version: "${project.pounce_version}"
-            implementation group: 'team.catgirl.collar', name: 'client', version: "${project.collar_version}", classifier: 'full'
-            implementation group: 'team.catgirl.collar', name: 'plugin', version: "${project.collar_version}"
+            implementation group: 'com.collarmc', name: 'pounce', version: "${project.pounce_version}"
+            implementation group: 'com.collarmc', name: 'client', version: "${project.collar_version}", classifier: 'full'
+            implementation group: 'com.collarmc', name: 'plugin', version: "${project.collar_version}"
         }
     }
 }

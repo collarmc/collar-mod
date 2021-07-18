@@ -20,11 +20,11 @@ dependencies {
 shadowJar{
     dependencies {
         include(dependency('com.mojang:brigadier:.*'))
-        include(dependency('team.catgirl:pounce:.*'))
+        include(dependency('com.collarmc:pounce:.*'))
         include(project(':plastic-api'))
         include(project(':common'))
-        include(dependency('team.catgirl.collar:client:.*'))
-        include(dependency('team.catgirl.collar:plugin:.*'))
+        include(dependency('com.collarmc:client:.*'))
+        include(dependency('com.collarmc:plugin:.*'))
     }
     classifier 'shadow'
 }
