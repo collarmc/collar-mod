@@ -2,26 +2,29 @@ plugins {
     id 'java'
 }
 
-group 'com.collarmc'
-version '1.0-SNAPSHOT'
+apply plugin: 'com.github.johnrengelman.shadow'
 
-repositories {
-    mavenLocal()
-    mavenCentral()
-    maven {
-        url "https://libraries.minecraft.net"
-    }
-}
+//This file is so empty, but it's okay. The dependencies has been applied from the main build.gradle
+group project.maven_group
+version project.collar_mod_version
 
 
 dependencies {
-    implementation "com.mojang:brigadier:${project.property('brigadier.version')}"
-    implementation group: 'com.collarmc', name: 'pounce', version: "${project.property('pounce.version')}"
     implementation project(':plastic-api')
-    compile group: 'com.collarmc', name: 'client', version: "${project.property('collar.version')}", classifier: 'full'
-    compile group: 'com.collarmc', name: 'plugin', version: "${project.property('collar.version')}"
 }
 
-test {
-    useJUnitPlatform()
+//test {
+//    useJUnitPlatform()
+//}
+
+shadowJar{
+    dependencies {
+        include(dependency('com.mojang:brigadier:.*'))
+        include(dependency('com.collarmc:pounce:.*'))
+        include(project(':plastic-api'))
+        include(project(':common'))
+        include(dependency('com.collarmc:client:.*'))
+        include(dependency('com.collarmc:plugin:.*'))
+    }
+    classifier 'shadow'
 }
