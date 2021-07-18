@@ -30,6 +30,14 @@ public interface Display {
     }
 
     /**
+     * Send a success message to the chat console
+     * @param message to send
+     */
+    default void displaySuccessMessage(String message) {
+        displayMessage(Plastic.getPlastic().display.newTextBuilder().add(message, TextColor.GREEN));
+    }
+
+    /**
      * Send a warning message to the chat console
      * @param message to send
      */

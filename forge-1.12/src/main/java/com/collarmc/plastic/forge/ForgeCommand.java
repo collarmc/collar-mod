@@ -23,7 +23,6 @@
  */
 package com.collarmc.plastic.forge;
 
-import com.collarmc.plastic.brigadier.CommandTargetNotFoundException;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestion;
@@ -33,6 +32,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
+import com.collarmc.plastic.brigadier.CommandTargetNotFoundException;
 
 import java.util.Collections;
 import java.util.List;

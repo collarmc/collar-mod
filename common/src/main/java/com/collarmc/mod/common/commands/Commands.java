@@ -1,5 +1,6 @@
 package com.collarmc.mod.common.commands;
 
+import com.collarmc.mod.common.commands.arguments.*;
 import com.google.common.collect.ImmutableList;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;

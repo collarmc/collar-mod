@@ -1,6 +1,5 @@
 package com.collarmc.mod.common.features;
 
-import com.collarmc.plastic.player.Player;
 import com.collarmc.api.groups.Group;
 import com.collarmc.api.groups.GroupType;
 import com.collarmc.api.session.Player;
@@ -49,7 +48,7 @@ public class Groups implements GroupsListener {
         if (invitation.type == GroupType.NEARBY || invitation.sender == null) {
             return;
         }
-        Player player = plastic.world.allPlayers()
+        com.collarmc.plastic.player.Player player = plastic.world.allPlayers()
                 .stream().filter(player1 -> player1.id().equals(invitation.sender.minecraftPlayer.id))
                 .findFirst().orElseThrow(() -> new IllegalStateException("cannot find player " + invitation.sender.minecraftPlayer.id));
         String message = String.format("You are invited to %s %s by %s", invitation.type.name, invitation.name, player.name());

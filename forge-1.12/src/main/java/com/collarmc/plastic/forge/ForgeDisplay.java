@@ -1,9 +1,9 @@
 package com.collarmc.plastic.forge;
 
-import com.collarmc.plastic.ui.Display;
-import com.collarmc.plastic.ui.TextBuilder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.TextComponentString;
+import com.collarmc.plastic.ui.Display;
+import com.collarmc.plastic.ui.TextBuilder;
 
 public class ForgeDisplay implements Display {
 

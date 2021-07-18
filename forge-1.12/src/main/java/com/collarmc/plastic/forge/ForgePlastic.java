@@ -1,9 +1,9 @@
 package com.collarmc.plastic.forge;
 
-import com.collarmc.plastic.ui.TextureProvider;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ServerData;
 import com.collarmc.plastic.Plastic;
+import com.collarmc.plastic.ui.TextureProvider;
 import com.collarmc.pounce.EventBus;
 
 import java.io.File;

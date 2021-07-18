@@ -1,7 +1,7 @@
 package com.collarmc.plastic.player;
 
-import com.collarmc.plastic.world.Entity;
 import com.collarmc.plastic.events.render.PlayerRenderEvent;
+import com.collarmc.plastic.world.Entity;
 
 import java.awt.image.BufferedImage;
 import java.util.Optional;
