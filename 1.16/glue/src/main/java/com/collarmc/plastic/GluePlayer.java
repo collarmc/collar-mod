@@ -29,6 +29,7 @@ import static net.minecraft.world.dimension.DimensionType.*;
 
 
 public class GluePlayer implements Player {
+
     private final static Cache<String, Optional<BufferedImage>> AVATAR_CACHE = CacheBuilder.newBuilder()
             .expireAfterAccess(60, TimeUnit.SECONDS)
             .initialCapacity(50)

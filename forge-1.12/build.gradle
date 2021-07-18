@@ -70,7 +70,9 @@ dependencies {
     implementation project(':common')
     compileModule project(path: ":common", configuration: 'shadow')
 
-    implementation group: 'info.journeymap', name: 'journeymap-api', version: '1.12-1.4'
+    implementation group: 'info.journeymap', name: 'journeymap-api', version: project.journey_version
+    //TODO compileModule group: 'info.journeymap', name: 'journeymap-api', version: project.journey_version
+    //Do we want to include it in the mod?
 }
 
 processResources {
