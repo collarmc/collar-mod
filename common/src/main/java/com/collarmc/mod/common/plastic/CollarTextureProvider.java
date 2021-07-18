@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 public class CollarTextureProvider implements TextureProvider {
 
     private static final Cache<TextureKey, CompletableFuture<Texture>> TEXTURE_CACHE = CacheBuilder.newBuilder()
-            .expireAfterAccess(5, TimeUnit.SECONDS)
+            .expireAfterAccess(5, TimeUnit.MINUTES)
             .initialCapacity(100)
             .build();
 
