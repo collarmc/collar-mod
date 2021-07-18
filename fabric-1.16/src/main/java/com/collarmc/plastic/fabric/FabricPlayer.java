@@ -1,5 +1,7 @@
 package com.collarmc.plastic.fabric;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
@@ -20,10 +22,19 @@ import java.awt.image.BufferedImage;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static net.minecraft.world.dimension.DimensionType.*;
 
 public class FabricPlayer implements Player {
+
+    private final static Cache<String, Optional<BufferedImage>> AVATAR_CACHE = CacheBuilder.newBuilder()
+            .expireAfterAccess(60, TimeUnit.SECONDS)
+            .initialCapacity(50)
+            .build();
+
     private final AbstractClientPlayerEntity playerEntity;
     private final TextureProvider textureProvider;
 
@@ -49,7 +60,15 @@ public class FabricPlayer implements Player {
 
     @Override
     public Optional<BufferedImage> avatar() {
-        return Optional.empty();
+        try {
+            return AVATAR_CACHE.get(name(), () -> {
+                AtomicReference<BufferedImage> avatarImage = new AtomicReference<>();
+                textureProvider.getTexture(this, TextureType.AVATAR);
+                return avatarImage.get() == null ? Optional.empty() : Optional.of(avatarImage.get());
+            });
+        } catch (ExecutionException e) {
+            return Optional.empty();
+        }
     }
 
     @Override

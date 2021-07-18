@@ -102,22 +102,7 @@ public final class JourneyMapService {
                 api.remove(marker);
             }
         } else {
-            collarService.with(collar -> {
-                // Find the player
-                collar.identities().resolvePlayer(event.player.id()).thenAccept(player -> {
-                    // Resolve the texture
-                    player.ifPresent(value -> collar.textures().playerTextureFuture(value, TextureType.AVATAR).thenAccept(optionalTexture -> {
-                        optionalTexture.ifPresent(texture -> {
-                            // Get the image
-                            texture.loadImage(avatar -> {
-                                avatar.ifPresent(bufferedImage -> {
-                                    displayMarker(event.player, event.location, bufferedImage);
-                                });
-                            });
-                        });
-                    }));
-                });
-            });
+            event.player.avatar().ifPresent(bufferedImage -> displayMarker(event.player, event.location, bufferedImage));
         }
     }
 
