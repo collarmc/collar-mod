@@ -1,8 +1,6 @@
 package com.collarmc.plastic;
 
 import com.collarmc.mod.glue.mixin.PlayerListEntryMixin;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
@@ -18,10 +16,13 @@ import com.collarmc.api.location.Location;
 import com.collarmc.plastic.player.Player;
 import com.collarmc.plastic.ui.TextureProvider;
 import com.collarmc.plastic.ui.TextureType;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
 
@@ -30,7 +31,7 @@ import static net.minecraft.world.dimension.DimensionType.*;
 
 public class GluePlayer implements Player {
 
-    private static final Logger LOGGER = LogManager.getLogger(FabricPlayer.class);
+    private static final Logger LOGGER = LogManager.getLogger(GluePlayer.class);
 
     private final AbstractClientPlayerEntity playerEntity;
     private final TextureProvider textureProvider;
