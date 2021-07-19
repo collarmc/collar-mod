@@ -10,6 +10,7 @@ import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.texture.NativeImageBackedTexture;
+import net.minecraft.resource.Resource;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import com.collarmc.api.location.Dimension;
@@ -17,23 +18,24 @@ import com.collarmc.api.location.Location;
 import com.collarmc.plastic.player.Player;
 import com.collarmc.plastic.ui.TextureProvider;
 import com.collarmc.plastic.ui.TextureType;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 
 import static net.minecraft.world.dimension.DimensionType.*;
 
 public class GluePlayer implements Player {
 
-    private final static Cache<String, Optional<BufferedImage>> AVATAR_CACHE = CacheBuilder.newBuilder()
-            .expireAfterAccess(60, TimeUnit.SECONDS)
-            .initialCapacity(50)
-            .build();
+    private static final Logger LOGGER = LogManager.getLogger(GluePlayer.class);
 
     private final AbstractClientPlayerEntity playerEntity;
     private final TextureProvider textureProvider;
@@ -59,16 +61,13 @@ public class GluePlayer implements Player {
     }
 
     @Override
-    public Optional<BufferedImage> avatar() {
-        try {
-            return AVATAR_CACHE.get(name(), () -> {
-                AtomicReference<BufferedImage> avatarImage = new AtomicReference<>();
-                textureProvider.getTexture(this, TextureType.AVATAR);
-                return avatarImage.get() == null ? Optional.empty() : Optional.of(avatarImage.get());
-            });
-        }catch (ExecutionException e){
-            return Optional.empty();
-        }
+    public void avatar(Consumer<BufferedImage> consumer) {
+        textureProvider.getTexture(this, TextureType.AVATAR, defaultAvatar()).thenAccept(bufferedImageOptional -> {
+            bufferedImageOptional.ifPresent(consumer);
+            if(!bufferedImageOptional.isPresent()){
+                LOGGER.error("Avatar for " + this + " is missing");
+            }
+        });
     }
 
     @Override
@@ -91,7 +90,7 @@ public class GluePlayer implements Player {
             }
             Map<MinecraftProfileTexture.Type, Identifier> textures = entryMixin.textures();
             String textureName = String.format("plastic-capes/%s.png", playerEntity.getGameProfile().getId());
-            textureProvider.getTexture(this, TextureType.CAPE).thenAccept(textureOptional -> {
+            textureProvider.getTexture(this, TextureType.CAPE, null).thenAccept(textureOptional -> {
                 textureOptional.ifPresent(texture -> {
                     NativeImage image = nativeImageFrom(texture);
                     NativeImageBackedTexture nativeImageTexture = new NativeImageBackedTexture(image);
@@ -123,6 +122,21 @@ public class GluePlayer implements Player {
         }
         BlockPos blockPos = playerEntity.getBlockPos();
         return new Location((double)blockPos.getX(), (double)blockPos.getY(), (double)blockPos.getZ(), dimension);
+    }
+
+    private BufferedImage defaultAvatar(){
+        MinecraftClient minecraftClient = MinecraftClient.getInstance();
+        if(minecraftClient == null){
+            throw new IllegalStateException("minecraftClient");
+        }
+        Identifier skinTexture = this.playerEntity.getSkinTexture();
+        try {
+            Resource resource = minecraftClient.getResourceManager().getResource(skinTexture);
+            BufferedImage skin = ImageIO.read(resource.getInputStream());
+            return skin.getSubimage(8, 8, 15, 15);
+        } catch (IOException e){
+            throw new IllegalStateException("could not load skin for " + this);
+        }
     }
 
     private static NativeImage nativeImageFrom(BufferedImage img) {
