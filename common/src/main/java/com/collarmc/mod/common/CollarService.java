@@ -242,11 +242,15 @@ public class CollarService implements CollarListener {
     }
 
     private MinecraftSession getMinecraftSession() {
-        String serverIP = plastic.serverAddress();
         Player player = plastic.world.currentPlayer();
-        UUID playerId = player.id();
-        String playerName = player.name();
-        return MinecraftSession.mojang(playerId, playerName, player.networkId(), serverIP, plastic.accessToken(), null);
+        return MinecraftSession.mojang(
+                player.id(),
+                player.name(),
+                player.networkId(),
+                plastic.serverAddress(),
+                plastic.accessToken(),
+                null
+        );
     }
 
     private Set<Entity> nearbyPlayerEntities() {
