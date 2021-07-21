@@ -96,23 +96,23 @@ public class ForgePlayer implements Player {
 
     @Override
     public void onRender() {
-        if (!(player instanceof AbstractClientPlayer)) {
-            return;
-        }
-        boolean hasCape = ((AbstractClientPlayer) player).hasPlayerInfo() && ((AbstractClientPlayer) player).getLocationCape() != null;
-        if (!hasCape) {
-            AbstractClientPlayer acp = (AbstractClientPlayer) player;
-            NetworkPlayerInfo playerInfo = ObfuscationReflectionHelper.getPrivateValue(AbstractClientPlayer.class, acp, "field_175157_a");
-            Map<MinecraftProfileTexture.Type, ResourceLocation> textures = ObfuscationReflectionHelper.getPrivateValue(NetworkPlayerInfo.class, playerInfo, "field_187107_a");
-            String textureName = String.format("plastic-capes/%s.png", playerInfo.getGameProfile().getId());
-            textureProvider.getTexture(this, TextureType.CAPE, null).thenAccept(textureOptional -> {
-                textureOptional.ifPresent(texture -> {
-                    ResourceLocation resourceLocation = minecraft.getTextureManager().getDynamicTextureLocation(textureName, new DynamicTexture(texture));
-                    textures.put(MinecraftProfileTexture.Type.CAPE, resourceLocation);
-                    textures.put(MinecraftProfileTexture.Type.ELYTRA, resourceLocation);
-                });
-            });
-        }
+//        if (!(player instanceof AbstractClientPlayer)) {
+//            return;
+//        }
+//        boolean hasCape = ((AbstractClientPlayer) player).hasPlayerInfo() && ((AbstractClientPlayer) player).getLocationCape() != null;
+//        if (!hasCape) {
+//            AbstractClientPlayer acp = (AbstractClientPlayer) player;
+//            NetworkPlayerInfo playerInfo = ObfuscationReflectionHelper.getPrivateValue(AbstractClientPlayer.class, acp, "field_175157_a");
+//            Map<MinecraftProfileTexture.Type, ResourceLocation> textures = ObfuscationReflectionHelper.getPrivateValue(NetworkPlayerInfo.class, playerInfo, "field_187107_a");
+//            String textureName = String.format("plastic-capes/%s.png", playerInfo.getGameProfile().getId());
+//            textureProvider.getTexture(this, TextureType.CAPE, null).thenAccept(textureOptional -> {
+//                textureOptional.ifPresent(texture -> {
+//                    ResourceLocation resourceLocation = minecraft.getTextureManager().getDynamicTextureLocation(textureName, new DynamicTexture(texture));
+//                    textures.put(MinecraftProfileTexture.Type.CAPE, resourceLocation);
+//                    textures.put(MinecraftProfileTexture.Type.ELYTRA, resourceLocation);
+//                });
+//            });
+//        }
     }
 
     private BufferedImage defaultAvatar() {
