@@ -56,6 +56,16 @@ public final class RusherHack extends AbstractWaypointCommandIntegration {
         return WAYPOINTS_COMMAND;
     }
 
+    @Override
+    protected String addCommand() {
+        return "add";
+    }
+
+    @Override
+    protected String removeCommand() {
+        return "remove";
+    }
+
     private static final class PrefixFile {
         public final String prefix;
 

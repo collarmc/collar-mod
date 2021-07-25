@@ -30,6 +30,16 @@ public final class FutureClient extends AbstractWaypointCommandIntegration {
     }
 
     @Override
+    protected String addCommand() {
+        return "add";
+    }
+
+    @Override
+    protected String removeCommand() {
+        return "del";
+    }
+
+    @Override
 
     public boolean isLoaded() {
         return loaded;

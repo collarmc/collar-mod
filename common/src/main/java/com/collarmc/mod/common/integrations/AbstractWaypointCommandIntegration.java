@@ -24,14 +24,15 @@ public abstract class AbstractWaypointCommandIntegration {
             return;
         }
         plastic.world.chatService.sendChatMessageToSelf(String.format(
-                "%s%s add \"%s\" %s %s %s",
+                "%s%s %s \"%s\" %s %s %s",
                 prefix(),
-                "waypoints",
+                waypointsCommand(),
+                addCommand(),
                 name(e.waypoint, e.group),
                 e.waypoint.location.x,
                 e.waypoint.location.y,
-                e.waypoint.location.z)
-        );
+                e.waypoint.location.z
+        ));
     }
 
     @Subscribe(Preference.CALLER)
@@ -40,16 +41,21 @@ public abstract class AbstractWaypointCommandIntegration {
             return;
         }
         plastic.world.chatService.sendChatMessageToSelf(String.format(
-                "%s%s remove \"%s\"",
+                "%s%s %s \"%s\"",
                 prefix(),
                 waypointsCommand(),
-                name(e.waypoint, e.group))
-        );
+                removeCommand(),
+                name(e.waypoint, e.group)
+        ));
     }
 
     protected abstract String prefix();
 
     protected abstract String waypointsCommand();
+
+    protected abstract String addCommand();
+
+    protected abstract String removeCommand();
 
     public abstract boolean isLoaded();
 
