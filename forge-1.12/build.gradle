@@ -2,6 +2,9 @@ buildscript {
     repositories {
         mavenLocal()
         maven { url = 'https://files.minecraftforge.net/maven' }
+        maven {
+            url "https://www.cursemaven.com"
+        }
         jcenter()
         mavenCentral()
     }
@@ -34,6 +37,9 @@ repositories {
     maven {
         url "https://libraries.minecraft.net"
     }
+    maven {
+        url "https://www.cursemaven.com"
+    }
 }
 
 dependencies {
@@ -41,7 +47,7 @@ dependencies {
     implementation project(':common')
     implementation group: 'com.collarmc', name: 'pounce', version: "${project.property('pounce.version')}"
     implementation "com.mojang:brigadier:${project.property("brigadier.version")}"
-    implementation group: 'info.journeymap', name: 'journeymap-api', version: '1.12-1.4'
+    implementation 'curse.maven:journeymap-32274:2916002' // journeymap-1.12.2-5.7.1
 }
 
 shadowJar {

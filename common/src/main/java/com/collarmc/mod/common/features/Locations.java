@@ -27,11 +27,10 @@ public class Locations implements LocationListener {
 
     @Override
     public void onLocationUpdated(Collar collar, LocationApi locationApi, Player player, Location location) {
-        plastic.world.allPlayers().stream()
-                .filter(candidate -> candidate.id().equals(player.minecraftPlayer.id))
-                .findFirst()
+        plastic.world.findPlayerById(player.minecraftPlayer.id)
                 .ifPresent(thePlayer -> {
-                    events.dispatch(new PlayerLocationUpdatedEvent(thePlayer, thePlayer.location()));
+                    System.out.println("Found player " + player + " at + " + location);
+                    events.dispatch(new PlayerLocationUpdatedEvent(thePlayer, location));
                 });
     }
 

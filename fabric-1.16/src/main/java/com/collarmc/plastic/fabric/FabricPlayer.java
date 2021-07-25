@@ -4,6 +4,7 @@ import com.collarmc.api.location.Dimension;
 import com.collarmc.api.location.Location;
 import com.collarmc.mod.fabric.mixin.PlayerListEntryMixin;
 import com.collarmc.plastic.player.Player;
+import com.collarmc.plastic.ui.TextBuilder;
 import com.collarmc.plastic.ui.TextureProvider;
 import com.collarmc.plastic.ui.TextureType;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
@@ -94,6 +95,16 @@ public class FabricPlayer implements Player {
                 });
             });
         }
+    }
+
+    @Override
+    public void send(TextBuilder message) {
+        playerEntity.sendMessage(((FabricTextBuilder)message).text, false);
+    }
+
+    @Override
+    public void send(String message) {
+        send(new FabricTextBuilder().add(message));
     }
 
     @Override

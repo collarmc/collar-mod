@@ -3,6 +3,7 @@ package com.collarmc.plastic.forge;
 import com.collarmc.api.location.Dimension;
 import com.collarmc.api.location.Location;
 import com.collarmc.plastic.player.Player;
+import com.collarmc.plastic.ui.TextBuilder;
 import com.collarmc.plastic.ui.TextureProvider;
 import com.collarmc.plastic.ui.TextureType;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
@@ -20,12 +21,15 @@ import net.minecraft.world.DimensionType;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import scala.tools.cmd.Opt;
 
+import javax.annotation.Nullable;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
 
@@ -34,40 +38,46 @@ public class ForgePlayer implements Player {
     private static final Logger LOGGER = LogManager.getLogger(ForgePlayer.class);
 
     public final UUID id;
-    public final EntityPlayer player;
+    @Nullable
+    public final EntityPlayer entityPlayer;
+    public final NetworkPlayerInfo networkPlayer;
     private final TextureProvider textureProvider;
     private final Minecraft minecraft = Minecraft.getMinecraft();
 
-    public ForgePlayer(EntityPlayer player, TextureProvider textureProvider) {
-        this.id = player.getUniqueID();
-        this.player = player;
+    public ForgePlayer(@Nullable EntityPlayer entityPlayer, NetworkPlayerInfo networkPlayer, TextureProvider textureProvider) {
+        this.id = networkPlayer.getGameProfile().getId();
+        this.entityPlayer = entityPlayer;
+        this.networkPlayer = networkPlayer;
         this.textureProvider = textureProvider;
     }
 
     @Override
     public UUID id() {
-        return player.getGameProfile().getId();
+        return networkPlayer.getGameProfile().getId();
     }
 
     @Override
     public int networkId() {
-        return player.getEntityId();
+        return entityPlayer == null ? -1 : entityPlayer.getEntityId();
     }
 
     @Override
     public String name() {
-        return player.getName();
+        return networkPlayer.getGameProfile().getName();
     }
 
     @Override
     public float yaw() {
-        return player.cameraYaw;
+        return entityPlayer == null ? -1 : entityPlayer.cameraYaw;
     }
 
     @Override
     public Location location() {
+        if (entityPlayer == null) {
+            return Location.UNKNOWN;
+        }
         Dimension dimension;
-        switch (DimensionType.getById(player.dimension)) {
+        switch (DimensionType.getById(entityPlayer.dimension)) {
             case NETHER:
                 dimension = Dimension.NETHER;
                 break;
@@ -80,18 +90,19 @@ public class ForgePlayer implements Player {
             default:
                 dimension = Dimension.UNKNOWN;
         }
-        BlockPos pos = player.getPosition();
+        BlockPos pos = entityPlayer.getPosition();
         return new Location((double)pos.getX(), (double)pos.getY(), (double)pos.getZ(), dimension);
     }
 
     @Override
     public void avatar(Consumer<BufferedImage> consumer) {
-        textureProvider.getTexture(this, TextureType.AVATAR, defaultAvatar()).thenAccept(bufferedImageOptional -> {
-            bufferedImageOptional.ifPresent(consumer);
-            if (!bufferedImageOptional.isPresent()) {
-                LOGGER.error("Avatar for " + this + " is missing");
-            }
-        });
+//        textureProvider.getTexture(this, TextureType.AVATAR, defaultAvatar()).thenAccept(bufferedImageOptional -> {
+//            bufferedImageOptional.ifPresent(consumer);
+//            if (!bufferedImageOptional.isPresent()) {
+//                LOGGER.error("Avatar for " + this + " is missing");
+//            }
+//        });
+        consumer.accept(defaultAvatar());
     }
 
     @Override
@@ -115,9 +126,22 @@ public class ForgePlayer implements Player {
 //        }
     }
 
+    @Override
+    public void send(TextBuilder message) {
+        if (entityPlayer == null) {
+            return;
+        }
+        entityPlayer.sendMessage(((ForgeTextBuilder)message).componentString);
+    }
+
+    @Override
+    public void send(String message) {
+        send(new ForgeTextBuilder().add(message));
+    }
+
     private BufferedImage defaultAvatar() {
-        EntityPlayer playerEntityByName = minecraft.world.getPlayerEntityByUUID(player.getUniqueID());
-        EntityOtherPlayerMP playerMP = (EntityOtherPlayerMP) playerEntityByName;
+        EntityPlayer entity = entityPlayer == null ? minecraft.world.getPlayerEntityByUUID(id) : entityPlayer;
+        EntityOtherPlayerMP playerMP = (EntityOtherPlayerMP) entity;
         ResourceLocation locationSkin = playerMP.getLocationSkin();
         try {
             IResource resource = minecraft.getResourceManager().getResource(locationSkin);
@@ -145,6 +169,6 @@ public class ForgePlayer implements Player {
 
     @Override
     public String toString() {
-        return id + " " + player.getName();
+        return id + " " + name();
     }
 }
