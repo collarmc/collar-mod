@@ -5,7 +5,7 @@ import com.collarmc.plastic.ui.Display;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
- * Chat
+ * Handles sending and receiving chat messages
  */
 public abstract class ChatService {
 
