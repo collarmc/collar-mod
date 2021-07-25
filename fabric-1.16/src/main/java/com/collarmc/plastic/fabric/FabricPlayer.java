@@ -98,16 +98,6 @@ public class FabricPlayer implements Player {
     }
 
     @Override
-    public void send(TextBuilder message) {
-        playerEntity.sendMessage(((FabricTextBuilder)message).text, false);
-    }
-
-    @Override
-    public void send(String message) {
-        send(new FabricTextBuilder().add(message));
-    }
-
-    @Override
     public int networkId() {
         return playerEntity.getEntityId();
     }

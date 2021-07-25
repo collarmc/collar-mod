@@ -126,19 +126,6 @@ public class ForgePlayer implements Player {
 //        }
     }
 
-    @Override
-    public void send(TextBuilder message) {
-        if (entityPlayer == null) {
-            return;
-        }
-        entityPlayer.sendMessage(((ForgeTextBuilder)message).componentString);
-    }
-
-    @Override
-    public void send(String message) {
-        send(new ForgeTextBuilder().add(message));
-    }
-
     private BufferedImage defaultAvatar() {
         EntityPlayer entity = entityPlayer == null ? minecraft.world.getPlayerEntityByUUID(id) : entityPlayer;
         EntityOtherPlayerMP playerMP = (EntityOtherPlayerMP) entity;

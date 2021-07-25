@@ -20,4 +20,9 @@ public class FabricChatService extends ChatService {
             player.sendChatMessage(String.format("/tell %s %s", recipient, message));
         }
     }
+
+    @Override
+    public void sendChatMessageToSelf(String message) {
+        MinecraftClient.getInstance().player.sendChatMessage(message);
+    }
 }

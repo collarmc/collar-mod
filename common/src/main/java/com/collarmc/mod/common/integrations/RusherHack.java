@@ -43,7 +43,7 @@ public final class RusherHack {
         if (!loaded) {
             return;
         }
-        plastic.world.currentPlayer().send(String.format(
+        plastic.world.chatService.sendChatMessageToSelf(String.format(
                 "%s%s add \"%s\" %s %s %s",
                 prefix(),
                 "waypoints",
@@ -59,7 +59,12 @@ public final class RusherHack {
         if (!loaded) {
             return;
         }
-        plastic.world.currentPlayer().send(String.format("%s%s remove \"%s\"", prefix(), WAYPOINTS_COMMAND, name(e.waypoint, e.group)));
+        plastic.world.chatService.sendChatMessageToSelf(String.format(
+                "%s%s remove \"%s\"",
+                prefix(),
+                WAYPOINTS_COMMAND,
+                name(e.waypoint, e.group))
+        );
     }
 
     public static boolean isLoaded() {

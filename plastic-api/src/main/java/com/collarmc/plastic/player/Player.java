@@ -32,8 +32,4 @@ public interface Player extends Entity {
      * Run when {@link PlayerRenderEvent} fired
      */
     void onRender();
-
-    void send(TextBuilder message);
-
-    void send(String message);
 }
