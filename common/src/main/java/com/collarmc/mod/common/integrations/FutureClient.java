@@ -40,7 +40,6 @@ public final class FutureClient extends AbstractWaypointCommandIntegration {
     }
 
     @Override
-
     public boolean isLoaded() {
         return loaded;
     }
