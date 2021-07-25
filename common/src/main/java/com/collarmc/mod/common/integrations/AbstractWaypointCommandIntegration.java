@@ -24,14 +24,15 @@ public abstract class AbstractWaypointCommandIntegration {
             return;
         }
         plastic.world.chatService.sendChatMessageToSelf(String.format(
-                "%s%s %s \"%s\" %s %s %s",
+                "%s%s %s \"%s\" %s %s %s %s",
                 prefix(),
                 waypointsCommand(),
                 addCommand(),
                 name(e.waypoint, e.group),
                 e.waypoint.location.x,
                 e.waypoint.location.y,
-                e.waypoint.location.z
+                e.waypoint.location.z,
+                e.waypoint.location.dimension.name().toLowerCase()
         ));
     }
 
