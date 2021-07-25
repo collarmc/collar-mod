@@ -6,6 +6,7 @@ import com.collarmc.pounce.EventBus;
 public final class Integrations {
 
     public final RusherHack rusherHack;
+    public final FutureClient futureClient;
 
     public Integrations(Plastic plastic, EventBus eventBus) {
         if (RusherHack.isLoaded()) {
@@ -13,6 +14,12 @@ public final class Integrations {
             eventBus.subscribe(rusherHack);
         } else {
             rusherHack = null;
+        }
+        if (FutureClient.isLoaded()) {
+            futureClient = new FutureClient(plastic);
+            eventBus.subscribe(futureClient);
+        } else {
+            futureClient = null;
         }
     }
 }
