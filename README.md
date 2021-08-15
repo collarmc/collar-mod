@@ -23,8 +23,13 @@ Fix it by adding this to the launch arguments:
 ~~Or you can just make it to debug with old jdk.~~
 
 **1.12**  
-Well, that is a bit complicated. Hope *[The Forge God, LexManos](https://github.com/LexManos)* will fix it.  
-now: [forge-1.12/README](/forge-1.12/README.md)
+~~Well, that is a bit complicated. Hope *[The Forge God, LexManos](https://github.com/LexManos)* will fix it.~~  
+~~now: [forge-1.12/README](/forge-1.12/README.md)~~   
+
+It has been fixed.  
+Just set the debug Java version to Java 1.8 and the module to `collar-mod.forge-1.12.main`  
+And press run/debug
+
 
 ### Warning:
 Java `ByteBuffer` had some changes after J1.8, mostly the return type.  
