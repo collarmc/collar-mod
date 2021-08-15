@@ -1,22 +1,8 @@
-apply plugin: 'java'
-
-group 'org.example'
-version '1.0-SNAPSHOT'
-
-repositories {
-    mavenLocal()
-    mavenCentral()
-    maven {
-        url "https://libraries.minecraft.net"
-    }
+plugins {
+    id 'java'
 }
 
-dependencies {
-    compile group: 'com.collarmc', name: 'client', version: "${project.property('collar.version')}", classifier: 'full'
-    implementation group: 'com.collarmc', name: 'pounce', version: "${project.property('pounce.version')}"
-    implementation "com.mojang:brigadier:${project.property("brigadier.version")}"
-}
+group project.maven_group
+version project.collar_mod_version
 
-test {
-    useJUnitPlatform()
-}
+//emptiest gradle file ever...
