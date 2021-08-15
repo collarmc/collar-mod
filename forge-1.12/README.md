@@ -1,6 +1,11 @@
-# Issues with forge 1.12:
-## And how to fix it  
+# ~~Issues with forge 1.12:~~
+## ~~And how to fix it~~  
+# Fixed in latest ForgeGradle.  
+I don't know, when...
 
+
+
+## The old docs: Jump to `Debugging`
 you should be able to do:  
 1. `gradle forge-1.12:genIntelliJRuns`  
 2. Then edit the configuration and set the JDK to 1.8 and the module to `collar-mod.1.12-forge.main`
