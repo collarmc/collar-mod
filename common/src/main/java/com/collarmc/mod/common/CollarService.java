@@ -4,6 +4,7 @@ import com.collarmc.mod.common.features.Friends;
 import com.collarmc.mod.common.features.Groups;
 import com.collarmc.mod.common.features.Locations;
 import com.collarmc.mod.common.features.Textures;
+import com.collarmc.mod.common.integrations.Integrations;
 import com.collarmc.mod.common.plugins.Plugins;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -60,8 +61,10 @@ public class CollarService implements CollarListener {
     public final MessagingListenerImpl messagingListenerImpl;
     public final Textures textures;
     public final Groups groups;
+    public final Integrations integrations;
 
     public CollarService(Plastic plastic, EventBus eventBus, Plugins plugins) {
+        this.integrations = new Integrations(plastic, eventBus);
         this.plastic = plastic;
         this.eventBus = eventBus;
         this.ticks = new Ticks();
@@ -242,11 +245,15 @@ public class CollarService implements CollarListener {
     }
 
     private MinecraftSession getMinecraftSession() {
-        String serverIP = plastic.serverAddress();
         Player player = plastic.world.currentPlayer();
-        UUID playerId = player.id();
-        String playerName = player.name();
-        return MinecraftSession.mojang(playerId, playerName, player.networkId(), serverIP, plastic.accessToken(), null);
+        return MinecraftSession.mojang(
+                player.id(),
+                player.name(),
+                player.networkId(),
+                plastic.serverAddress(),
+                plastic.accessToken(),
+                null
+        );
     }
 
     private Set<Entity> nearbyPlayerEntities() {

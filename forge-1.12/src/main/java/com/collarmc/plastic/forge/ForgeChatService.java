@@ -20,4 +20,9 @@ public final class ForgeChatService extends ChatService {
             player.sendChatMessage(String.format("/tell %s %s", recipient, message));
         }
     }
+
+    @Override
+    public void sendChatMessageToSelf(String message) {
+        Minecraft.getMinecraft().player.sendChatMessage(message);
+    }
 }

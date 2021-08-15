@@ -1,8 +1,8 @@
 package com.collarmc.mod.forge.journeymap;
 
 import com.collarmc.api.location.Location;
-import com.collarmc.api.textures.TextureType;
 import com.collarmc.mod.common.CollarService;
+import com.collarmc.mod.common.events.CollarConnectedEvent;
 import com.collarmc.mod.common.events.CollarDisconnectedEvent;
 import com.collarmc.mod.common.features.events.PlayerLocationUpdatedEvent;
 import com.collarmc.mod.common.features.events.WaypointCreatedEvent;
@@ -13,19 +13,29 @@ import com.collarmc.plastic.Plastic;
 import com.collarmc.plastic.player.Player;
 import com.collarmc.pounce.Preference;
 import com.collarmc.pounce.Subscribe;
+import com.mojang.authlib.GameProfile;
 import journeymap.client.api.IClientAPI;
+import journeymap.client.api.display.Context;
 import journeymap.client.api.display.MarkerOverlay;
 import journeymap.client.api.display.Waypoint;
 import journeymap.client.api.display.WaypointGroup;
 import journeymap.client.api.model.MapImage;
+import journeymap.common.Journeymap;
+import journeymap.common.feature.PlayerRadarManager;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityOtherPlayerMP;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import scala.Int;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.EnumSet;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 public final class JourneyMapService {
 
@@ -34,9 +44,9 @@ public final class JourneyMapService {
     private IClientAPI api;
     private final CollarService collarService;
     private final Plastic plastic;
-    private final Map<UUID, MarkerOverlay> playerMarkers = new HashMap<>();
-    private final Map<UUID, Waypoint> waypoints = new HashMap<>();
-    private final Map<UUID, WaypointGroup> groups = new HashMap<>();
+    private final ConcurrentMap<UUID, MarkerOverlay> playerMarkers = new ConcurrentHashMap<>();
+    private final ConcurrentMap<UUID, Waypoint> waypoints = new ConcurrentHashMap<>();
+    private final ConcurrentMap<UUID, WaypointGroup> groups = new ConcurrentHashMap<>();
 
     public JourneyMapService(CollarService collarService, Plastic plastic) {
         this.collarService = collarService;
@@ -55,6 +65,32 @@ public final class JourneyMapService {
     public void setClientAPI(JourneyMapEvent event) {
         this.api = event.api;
         reset();
+//        Journeymap.getClient().setPlayerTrackingEnabled(true);
+//        Journeymap.getClient().setJourneyMapServerConnection(true);
+    }
+
+    @Subscribe
+    public void update(CollarConnectedEvent event) {
+        BufferedImage bi = createMarker();
+
+        MapImage icon = new MapImage(bi);
+        MarkerOverlay overlay = new MarkerOverlay(CollarForgeClient.MODID, "test", Minecraft.getMinecraft().player.getPosition(), icon);
+        overlay.setDimension(Minecraft.getMinecraft().player.dimension);
+        overlay.setTitle("Spawn Point");
+        overlay.setActiveMapTypes(EnumSet.of(Context.MapType.Any));
+        try {
+            api.show(overlay);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private BufferedImage createMarker() {
+        BufferedImage bi = new BufferedImage(16, 16, BufferedImage.TYPE_INT_RGB);
+        Graphics g = bi.getGraphics();
+        g.setColor(Color.red);
+        g.fillRect(0, 0, 16, 16);
+        return bi;
     }
 
     @Subscribe(Preference.POOL)
@@ -64,14 +100,15 @@ public final class JourneyMapService {
         }
         int dimensionId = Utils.getDimensionId(event.waypoint.location);
         BlockPos pos = Utils.getBlockPos(event.waypoint.location);
-        Waypoint waypoint = waypoints.get(event.waypoint.id);
-        if (waypoint == null) {
-            waypoint = new Waypoint(CollarForgeClient.MODID, event.waypoint.id.toString(), event.waypoint.name, dimensionId, pos);
-        } else {
-            waypoint.setName(event.waypoint.name);
-            waypoint.setPosition(dimensionId, pos);
-        }
-        waypoint.setGroup(findOrCreateWaypointGroup(event));
+        Waypoint waypoint = waypoints.compute(event.waypoint.id, (uuid, mapWaypoint) -> {
+            if (mapWaypoint == null) {
+                mapWaypoint = new Waypoint(CollarForgeClient.MODID, event.waypoint.id.toString(), event.waypoint.name, dimensionId, pos);
+            }
+            mapWaypoint.setName(event.waypoint.name);
+            mapWaypoint.setPosition(dimensionId, pos);
+            mapWaypoint.setGroup(findOrCreateWaypointGroup(event));
+            return mapWaypoint;
+        });
         try {
             api.show(waypoint);
         } catch (Exception e) {
@@ -96,14 +133,18 @@ public final class JourneyMapService {
         if (api == null) {
             return;
         }
-        if (event.location.equals(Location.UNKNOWN)) {
-            MarkerOverlay marker = playerMarkers.remove(event.player.id());
-            if (marker != null) {
-                api.remove(marker);
-            }
-        } else {
-            event.player.avatar(bufferedImage -> displayMarker(event.player, event.location, bufferedImage));
-        }
+
+        PlayerRadarManager.getInstance().addPlayer(createEntityPlayer(event.player, event.location));
+
+//        if (event.location.equals(Location.UNKNOWN)) {
+//            MarkerOverlay marker = playerMarkers.remove(event.player.id());
+//            if (marker != null) {
+//                api.remove(marker);
+//            }
+//        } else {
+//            displayMarker(event.player, event.location, createMarker());
+////            event.player.avatar(bufferedImage -> displayMarker(event.player, event.location, bufferedImage));
+//        }
     }
 
     /**
@@ -116,13 +157,13 @@ public final class JourneyMapService {
     private WaypointGroup findOrCreateWaypointGroup(WaypointCreatedEvent event) {
         UUID id = event.group == null ? plastic.world.currentPlayer().id() : event.group.id;
         String name = event.group == null ? plastic.world.currentPlayer().name() : event.group.name;
-        WaypointGroup waypointGroup = groups.get(id);
-        if (waypointGroup == null) {
-            waypointGroup = new WaypointGroup(CollarForgeClient.MODID, name);
-        } else {
-            waypointGroup.setName(name);
-        }
-        groups.put(id, waypointGroup);
+        WaypointGroup waypointGroup = groups.compute(id, (uuid, group) -> {
+            if (group == null) {
+                group = new WaypointGroup(CollarForgeClient.MODID, name);
+            }
+            group.setName(name);
+            return group;
+        });
         try {
             api.show(waypointGroup);
         } catch (Exception e) {
@@ -133,16 +174,21 @@ public final class JourneyMapService {
 
     private void displayMarker(Player player, Location location, BufferedImage avatar) {
         BlockPos pos = Utils.getBlockPos(location);
-        MapImage icon = new MapImage(avatar);
-        MarkerOverlay markerOverlay = new MarkerOverlay(CollarForgeClient.MODID, player.id().toString(), pos, icon);
-        markerOverlay.setLabel(player.name());
-        markerOverlay.setDimension(Utils.getDimensionId(location));
+        MarkerOverlay markerOverlay = playerMarkers.compute(player.id(), (uuid, overlay) -> {
+            if (overlay == null) {
+                MapImage icon = new MapImage(avatar);
+                overlay = new MarkerOverlay(CollarForgeClient.MODID, player.id().toString(), pos, icon);
+            }
+            overlay.setTitle(player.name());
+            overlay.setPoint(pos);
+            overlay.setDimension(Utils.getDimensionId(location));
+            return overlay;
+        });
         try {
             api.show(markerOverlay);
         } catch (Exception e) {
             LOGGER.error("Could not display marker for player " + player);
         }
-        playerMarkers.put(player.id(), markerOverlay);
     }
 
     public void reset() {
@@ -153,5 +199,20 @@ public final class JourneyMapService {
         }
         playerMarkers.clear();
         waypoints.clear();
+    }
+
+    private static EntityOtherPlayerMP createEntityPlayer(Player player, Location location) {
+        EntityOtherPlayerMP entityPlayer = new EntityOtherPlayerMP(Minecraft.getMinecraft().world, new GameProfile(player.id(), player.name()));
+        entityPlayer.setPositionAndRotation(location.x, location.y, location.z, 0, 0);
+        entityPlayer.setEntityId(player.networkId());
+        entityPlayer.dimension = Utils.getDimensionId(location);
+        entityPlayer.setUniqueId(player.id());
+        entityPlayer.chunkCoordX = location.x.intValue() << 4;
+        entityPlayer.chunkCoordY = location.y.intValue() << 4;
+        entityPlayer.chunkCoordZ = location.z.intValue() << 4;
+        entityPlayer.addedToChunk = true;
+        entityPlayer.rotationYawHead = 0; // TODO: pass around player rotation
+        entityPlayer.setSneaking(false);
+        return entityPlayer;
     }
 }

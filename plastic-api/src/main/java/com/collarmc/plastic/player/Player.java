@@ -1,10 +1,10 @@
 package com.collarmc.plastic.player;
 
 import com.collarmc.plastic.events.render.PlayerRenderEvent;
+import com.collarmc.plastic.ui.TextBuilder;
 import com.collarmc.plastic.world.Entity;
 
 import java.awt.image.BufferedImage;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
 

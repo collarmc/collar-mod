@@ -2,6 +2,7 @@ package com.collarmc.plastic.forge;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
+import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.entity.player.EntityPlayer;
 import com.collarmc.plastic.chat.ChatService;
 import com.collarmc.plastic.player.Player;
@@ -21,10 +22,7 @@ public class ForgeWorld extends World {
 
     @Override
     public Player currentPlayer() {
-        EntityPlayer entityPlayer = Minecraft.getMinecraft().world.playerEntities.stream()
-                .filter(player -> player.getEntityId() == Minecraft.getMinecraft().player.getEntityId())
-                .findFirst().orElseThrow(() -> new IllegalStateException("could not find current player"));
-        return new ForgePlayer(entityPlayer, textureProvider);
+        return findPlayerById(Minecraft.getMinecraft().player.getGameProfile().getId()).orElseThrow(() -> new IllegalStateException("could not find own player"));
     }
 
     @Override
@@ -33,8 +31,16 @@ public class ForgeWorld extends World {
         if (world == null) {
             return new ArrayList<>();
         }
-        return world.playerEntities.stream()
-                .map(player -> new ForgePlayer(player, textureProvider))
+        NetHandlerPlayClient connection = Minecraft.getMinecraft().getConnection();
+        if (connection == null) {
+            return new ArrayList<>();
+        }
+        return connection.getPlayerInfoMap()
+                .stream()
+                .map(networkPlayer -> {
+                    EntityPlayer entityPlayer = world.getPlayerEntityByUUID(networkPlayer.getGameProfile().getId());
+                    return new ForgePlayer(entityPlayer, networkPlayer, textureProvider);
+                })
                 .collect(Collectors.toList());
     }
 }

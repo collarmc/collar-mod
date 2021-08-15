@@ -5,7 +5,7 @@ import com.collarmc.plastic.ui.Display;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
- * Chat
+ * Handles sending and receiving chat messages
  */
 public abstract class ChatService {
 
@@ -39,5 +39,16 @@ public abstract class ChatService {
         interceptors.remove(interceptor);
     }
 
+    /**
+     * Send message to a player
+     * @param recipient to send to
+     * @param message to send
+     */
     public abstract void sendChatMessage(String recipient, String message);
+
+    /**
+     * Send a message to yourself
+     * @param message to send
+     */
+    public abstract void sendChatMessageToSelf(String message);
 }
