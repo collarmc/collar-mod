@@ -39,7 +39,7 @@ public class MessagingListenerImpl implements MessagingListener {
                     if (collarPlayer.isPresent()) {
                         displaySecurePrivateMessage(collarPlayer.get().name(), textMessage.content);
                     } else {
-                        displaySecurePrivateMessage(player.profile.toString(), textMessage.content);
+                        displaySecurePrivateMessage(player.identity.id().toString(), textMessage.content);
                     }
                 }
             });
@@ -102,7 +102,7 @@ public class MessagingListenerImpl implements MessagingListener {
                     if (collarPlayer.isPresent()) {
                         displayReceivedGroupMessage(collarPlayer.get().name(), group, textMessage.content);
                     } else {
-                        displayReceivedGroupMessage(sender.profile.toString(), group, textMessage.content);
+                        displayReceivedGroupMessage(sender.identity.id().toString(), group, textMessage.content);
                     }
                 }
             });

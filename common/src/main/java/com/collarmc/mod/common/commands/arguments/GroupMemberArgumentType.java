@@ -74,7 +74,7 @@ public final class GroupMemberArgumentType implements ArgumentType<Member> {
         }
         Collection<Member> values = collar.groups().all().stream()
                 .flatMap(group -> group.members.stream())
-                .collect(Collectors.toMap(member -> member.player.profile, o -> o, (member, member2) -> member)).values();
+                .collect(Collectors.toMap(member -> member.profile.id, o -> o, (member, member2) -> member)).values();
         return ImmutableList.copyOf(values);
     }
 }

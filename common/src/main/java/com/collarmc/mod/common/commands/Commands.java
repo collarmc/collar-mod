@@ -98,7 +98,7 @@ public final class Commands<S> {
         // collar me
         dispatcher.register(prefixed("me", context -> {
             collarService.with(collar -> {
-                plastic.display.displayInfoMessage("You are connected as " + collar.player().profile);
+                plastic.display.displayInfoMessage("You are connected as " + collar.player().identity.id());
             });
             return 1;
         }));
