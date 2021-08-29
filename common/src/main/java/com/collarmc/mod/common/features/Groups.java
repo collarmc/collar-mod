@@ -1,57 +1,58 @@
 package com.collarmc.mod.common.features;
 
-import com.collarmc.api.groups.Group;
 import com.collarmc.api.groups.GroupType;
-import com.collarmc.api.session.Player;
-import com.collarmc.client.Collar;
-import com.collarmc.client.api.groups.GroupInvitation;
-import com.collarmc.client.api.groups.GroupsApi;
-import com.collarmc.client.api.groups.GroupsListener;
+import com.collarmc.client.api.groups.events.GroupCreatedEvent;
+import com.collarmc.client.api.groups.events.GroupInvitationEvent;
+import com.collarmc.client.api.groups.events.GroupJoinedEvent;
+import com.collarmc.client.api.groups.events.GroupLeftEvent;
 import com.collarmc.plastic.Plastic;
+import com.collarmc.pounce.EventBus;
+import com.collarmc.pounce.Subscribe;
 
-public class Groups implements GroupsListener {
+public class Groups {
 
     private final Plastic plastic;
 
-    public Groups(Plastic plastic) {
+    public Groups(Plastic plastic, EventBus eventBus) {
         this.plastic = plastic;
+        eventBus.subscribe(this);
     }
 
-    @Override
-    public void onGroupCreated(Collar collar, GroupsApi groupsApi, Group group) {
-        if (group.type == GroupType.NEARBY) {
+    @Subscribe
+    public void onGroupCreated(GroupCreatedEvent event) {
+        if (event.group.type == GroupType.NEARBY) {
             return;
         }
-        this.plastic.display.displayMessage(String.format("Created %s %s", group.type.name, group.name));
+        this.plastic.display.displayMessage(String.format("Created %s %s", event.group.type.name, event.group.name));
     }
 
-    @Override
-    public void onGroupJoined(Collar collar, GroupsApi groupsApi, Group group, Player player) {
-        if (group.type == GroupType.NEARBY) {
+    @Subscribe
+    public void onGroupJoined(GroupJoinedEvent event) {
+        if (event.group.type == GroupType.NEARBY) {
             return;
         }
-        this.plastic.display.displayMessage(String.format("Joined %s %s", group.type.name, group.name));
+        this.plastic.display.displayMessage(String.format("Joined %s %s", event.group.type.name, event.group.name));
     }
 
-    @Override
-    public void onGroupLeft(Collar collar, GroupsApi groupsApi, Group group, Player player) {
-        if (group.type == GroupType.NEARBY) {
+    @Subscribe
+    public void onGroupLeft(GroupLeftEvent event) {
+        if (event.group.type == GroupType.NEARBY) {
             return;
         }
-        this.plastic.display.displayMessage(String.format("Left %s %s", group.type.name, group.name));
+        this.plastic.display.displayMessage(String.format("Left %s %s", event.group.type.name, event.group.name));
     }
 
-    @Override
-    public void onGroupInvited(Collar collar, GroupsApi groupsApi, GroupInvitation invitation) {
+    @Subscribe
+    public void onGroupInvited(GroupInvitationEvent event) {
         // Don't print out in console if the invitation was from a nearby group
         // Or if sender == null, the server is just resending invitiation state
-        if (invitation.type == GroupType.NEARBY || invitation.sender == null) {
+        if (event.invitation.type == GroupType.NEARBY || event.invitation.sender == null) {
             return;
         }
         com.collarmc.plastic.player.Player player = plastic.world.allPlayers()
-                .stream().filter(player1 -> player1.id().equals(invitation.sender.minecraftPlayer.id))
-                .findFirst().orElseThrow(() -> new IllegalStateException("cannot find player " + invitation.sender.minecraftPlayer.id));
-        String message = String.format("You are invited to %s %s by %s", invitation.type.name, invitation.name, player.name());
+                .stream().filter(player1 -> player1.id().equals(event.invitation.sender.minecraftPlayer.id))
+                .findFirst().orElseThrow(() -> new IllegalStateException("cannot find player " + event.invitation.sender.minecraftPlayer.id));
+        String message = String.format("You are invited to %s %s by %s", event.invitation.type.name, event.invitation.name, player.name());
         this.plastic.display.displayStatusMessage(message);
         this.plastic.display.displayInfoMessage(message);
     }

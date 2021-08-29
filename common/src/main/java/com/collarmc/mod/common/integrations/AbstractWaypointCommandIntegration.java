@@ -2,8 +2,8 @@ package com.collarmc.mod.common.integrations;
 
 import com.collarmc.api.groups.Group;
 import com.collarmc.api.waypoints.Waypoint;
-import com.collarmc.mod.common.features.events.WaypointCreatedEvent;
-import com.collarmc.mod.common.features.events.WaypointRemovedEvent;
+import com.collarmc.client.api.location.events.WaypointCreatedEvent;
+import com.collarmc.client.api.location.events.WaypointRemovedEvent;
 import com.collarmc.plastic.Plastic;
 import com.collarmc.pounce.EventBus;
 import com.collarmc.pounce.Preference;

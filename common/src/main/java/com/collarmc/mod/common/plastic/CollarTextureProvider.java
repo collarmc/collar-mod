@@ -1,10 +1,10 @@
 package com.collarmc.mod.common.plastic;
 
+import com.collarmc.client.events.CollarStateChangedEvent;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.collarmc.client.Collar;
 import com.collarmc.client.api.textures.Texture;
-import com.collarmc.mod.common.events.CollarConnectedEvent;
 import com.collarmc.plastic.player.Player;
 import com.collarmc.plastic.ui.TextureProvider;
 import com.collarmc.plastic.ui.TextureType;
@@ -71,9 +71,11 @@ public class CollarTextureProvider implements TextureProvider {
     }
 
     @Subscribe
-    public void onConnected(CollarConnectedEvent event) {
+    public void onConnected(CollarStateChangedEvent event) {
         collar = event.collar;
-        TEXTURE_CACHE.invalidateAll();
+        if (event.state == Collar.State.CONNECTED) {
+            TEXTURE_CACHE.invalidateAll();
+        }
     }
 
     private static final class TextureKey {

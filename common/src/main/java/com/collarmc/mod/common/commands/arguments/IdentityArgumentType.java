@@ -60,7 +60,7 @@ public final class IdentityArgumentType implements ArgumentType<IdentityArgument
         }
         return ImmutableSet.<IdentityArgument>builder()
                 .addAll(plastic.world.allPlayers().stream().map(player -> new IdentityArgument(player, null)).collect(Collectors.toList()))
-                .addAll(collar.friends().list().stream().map(friend -> new IdentityArgument(null, friend.friend)).collect(Collectors.toList()))
+                .addAll(collar.friends().list().stream().map(friend -> new IdentityArgument(null, friend.profile)).collect(Collectors.toList()))
                 .addAll(collar.groups().all().stream().flatMap(group -> group.members.stream()).map(member -> new IdentityArgument(null, member.profile)).collect(Collectors.toList()))
                 .build();
     }
