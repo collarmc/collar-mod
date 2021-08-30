@@ -98,7 +98,10 @@ public final class Commands<S> {
         // collar me
         dispatcher.register(prefixed("me", context -> {
             collarService.with(collar -> {
-                plastic.display.displayInfoMessage("You are connected as " + collar.player().profile);
+                collar.identities().resolveProfile(collar.player()).thenAccept(publicProfile -> {
+                    Player player = plastic.world.findPlayerById(collar.player().minecraftPlayer.id).orElseThrow(() -> new IllegalStateException("should have been able to find self"));
+                    publicProfile.ifPresent(profile -> plastic.display.displayInfoMessage("You are connected as " + profile.name + " on minecraft account " + player.name()));
+                });
             });
             return 1;
         }));
@@ -147,7 +150,7 @@ public final class Commands<S> {
                         } else {
                             friends.stream().sorted(Comparator.comparing(o -> o.status)).forEach(friend -> {
                                 TextColor color = friend.status.equals(Status.ONLINE) ? TextColor.GREEN : TextColor.GRAY;
-                                plastic.display.displayMessage(plastic.display.newTextBuilder().add(friend.friend.name, color));
+                                plastic.display.displayMessage(plastic.display.newTextBuilder().add(friend.profile.name, color));
                             });
                         }
                     });
@@ -186,7 +189,7 @@ public final class Commands<S> {
                                     return 1;
                                 }))));
 
-        // collar party invites
+        // collar par/**/ty invites
         dispatcher.register(prefixed(type.name, literal("invites")
                         .executes(context -> {
                             collarService.with(collar -> {

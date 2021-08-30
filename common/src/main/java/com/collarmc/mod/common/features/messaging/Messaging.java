@@ -1,45 +1,43 @@
 package com.collarmc.mod.common.features.messaging;
 
 import com.collarmc.api.groups.Group;
-import com.collarmc.api.messaging.Message;
 import com.collarmc.api.messaging.TextMessage;
 import com.collarmc.api.profiles.PublicProfile;
-import com.collarmc.api.session.Player;
-import com.collarmc.client.Collar;
-import com.collarmc.client.api.messaging.MessagingApi;
-import com.collarmc.client.api.messaging.MessagingListener;
+import com.collarmc.client.api.messaging.events.*;
 import com.collarmc.plastic.Plastic;
-import com.collarmc.security.mojang.MinecraftPlayer;
 import com.collarmc.plastic.ui.TextColor;
 import com.collarmc.plastic.ui.TextStyle;
+import com.collarmc.pounce.EventBus;
+import com.collarmc.pounce.Subscribe;
 
 import java.util.Optional;
 
-public class MessagingListenerImpl implements MessagingListener {
+public class Messaging {
 
     private final Plastic plastic;
 
-    public MessagingListenerImpl(Plastic plastic) {
+    public Messaging(Plastic plastic, EventBus eventBus) {
         this.plastic = plastic;
+        eventBus.subscribe(this);
     }
 
     /**
      *  When we know the message was delivered securely we should echo it in the senders chat
      */
-    @Override
-    public void onPrivateMessageSent(Collar collar, MessagingApi messagingApi, Player player, Message message) {
-        if (message instanceof TextMessage) {
-            TextMessage textMessage = (TextMessage) message;
-            collar.identities().resolveProfile(player).thenAccept(profileOptional -> {
+    @Subscribe
+    public void onPrivateMessageSent(PrivateMessageSentEvent event) {
+        if (event.message instanceof TextMessage) {
+            TextMessage textMessage = (TextMessage) event.message;
+            event.collar.identities().resolveProfile(event.player).thenAccept(profileOptional -> {
                 if (profileOptional.isPresent()) {
                     PublicProfile profile = profileOptional.get();
                     displaySecurePrivateMessage(profile.name, textMessage.content);
                 } else {
-                    Optional<com.collarmc.plastic.player.Player> collarPlayer = plastic.world.findPlayerById(player.minecraftPlayer.id);
+                    Optional<com.collarmc.plastic.player.Player> collarPlayer = plastic.world.findPlayerById(event.player.minecraftPlayer.id);
                     if (collarPlayer.isPresent()) {
                         displaySecurePrivateMessage(collarPlayer.get().name(), textMessage.content);
                     } else {
-                        displaySecurePrivateMessage(player.profile.toString(), textMessage.content);
+                        displaySecurePrivateMessage(event.player.identity.id().toString(), textMessage.content);
                     }
                 }
             });
@@ -49,15 +47,15 @@ public class MessagingListenerImpl implements MessagingListener {
     /**
      * If the message couldn't be sent through collar, then we should just send it directly to the user
      */
-    @Override
-    public void onPrivateMessageRecipientIsUntrusted(Collar collar, MessagingApi messagingApi, MinecraftPlayer player, Message message) {
-        if (message instanceof TextMessage) {
-            TextMessage textMessage = (TextMessage) message;
-            Optional<com.collarmc.plastic.player.Player> foundPlayer = plastic.world.findPlayerById(player.id);
+    @Subscribe
+    public void onPrivateMessageRecipientIsUntrusted(UntrustedPrivateMessageReceivedEvent event) {
+        if (event.message instanceof TextMessage) {
+            TextMessage textMessage = (TextMessage) event.message;
+            Optional<com.collarmc.plastic.player.Player> foundPlayer = plastic.world.findPlayerById(event.player.id);
             if (foundPlayer.isPresent()) {
                 displayInsecurePrivateMessage(foundPlayer.get().name(), textMessage.content);
             } else {
-                displayInsecurePrivateMessage(player.id.toString(), textMessage.content);
+                displayInsecurePrivateMessage(event.player.id.toString(), textMessage.content);
             }
         }
     }
@@ -65,10 +63,10 @@ public class MessagingListenerImpl implements MessagingListener {
     /**
      * When we receive a private message then we should print it
      */
-    @Override
-    public void onPrivateMessageReceived(Collar collar, MessagingApi messagingApi, Player sender, Message message) {
-        if (message instanceof TextMessage) {
-            TextMessage textMessage = (TextMessage) message;
+    @Subscribe
+    public void onPrivateMessageReceived(PrivateMessageReceivedEvent event) {
+        if (event.message instanceof TextMessage) {
+            TextMessage textMessage = (TextMessage) event.message;
             plastic.display.displayMessage(plastic.display.newTextBuilder()
                     .add(plastic.world.currentPlayer().name(), TextColor.GRAY)
                     .add(" securely whispers to you: ", TextColor.GRAY)
@@ -77,32 +75,32 @@ public class MessagingListenerImpl implements MessagingListener {
         }
     }
 
-    @Override
-    public void onGroupMessageSent(Collar collar, MessagingApi messagingApi, Group group, Message message) {
-        if (message instanceof TextMessage) {
-            TextMessage textMessage = (TextMessage) message;
+    @Subscribe
+    public void onGroupMessageSent(GroupMessageSentEvent event) {
+        if (event.message instanceof TextMessage) {
+            TextMessage textMessage = (TextMessage) event.message;
             plastic.display.displayMessage(plastic.display.newTextBuilder()
-                    .add("[" + group.name + "] ", TextColor.LIGHT_PURPLE)
+                    .add("[" + event.group.name + "] ", TextColor.LIGHT_PURPLE)
                     .add("<" + plastic.world.currentPlayer().name() + "> ", TextColor.GREEN)
                     .add(textMessage.content, TextColor.GREEN)
             );
         }
     }
 
-    @Override
-    public void onGroupMessageReceived(Collar collar, MessagingApi messagingApi, Group group, Player sender, Message message) {
-        if (message instanceof TextMessage) {
-            TextMessage textMessage = (TextMessage) message;
-            collar.identities().resolveProfile(sender).thenAccept(profileOptional -> {
+    @Subscribe
+    public void onGroupMessageReceived(GroupMessageReceivedEvent event) {
+        if (event.message instanceof TextMessage) {
+            TextMessage textMessage = (TextMessage) event.message;
+            event.collar.identities().resolveProfile(event.sender).thenAccept(profileOptional -> {
                 if (profileOptional.isPresent()) {
                     PublicProfile profile = profileOptional.get();
-                    displayReceivedGroupMessage(profile.name, group, textMessage.content);
+                    displayReceivedGroupMessage(profile.name, event.group, textMessage.content);
                 } else {
-                    Optional<com.collarmc.plastic.player.Player> collarPlayer = plastic.world.findPlayerById(sender.minecraftPlayer.id);
+                    Optional<com.collarmc.plastic.player.Player> collarPlayer = plastic.world.findPlayerById(event.sender.minecraftPlayer.id);
                     if (collarPlayer.isPresent()) {
-                        displayReceivedGroupMessage(collarPlayer.get().name(), group, textMessage.content);
+                        displayReceivedGroupMessage(collarPlayer.get().name(), event.group, textMessage.content);
                     } else {
-                        displayReceivedGroupMessage(sender.profile.toString(), group, textMessage.content);
+                        displayReceivedGroupMessage(event.sender.identity.id().toString(), event.group, textMessage.content);
                     }
                 }
             });

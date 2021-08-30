@@ -6,6 +6,11 @@ pluginManagement {
             url = 'https://maven.fabricmc.net/'
         }
         maven {
+            name = 'Collar'
+            url = 'https://raw.githubusercontent.com/collarmc/maven/main/'
+        }
+        jcenter()
+        gradlePluginPortal()
             name = 'Architectury maven'
             url = 'https://maven.architectury.dev/'
         }

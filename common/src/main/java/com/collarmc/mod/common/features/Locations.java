@@ -1,77 +1,53 @@
 package com.collarmc.mod.common.features;
 
-import com.collarmc.mod.common.features.events.PlayerLocationUpdatedEvent;
-import com.collarmc.mod.common.features.events.WaypointCreatedEvent;
-import com.collarmc.mod.common.features.events.WaypointRemovedEvent;
-import com.collarmc.api.groups.Group;
-import com.collarmc.api.location.Location;
-import com.collarmc.api.session.Player;
-import com.collarmc.api.waypoints.Waypoint;
-import com.collarmc.client.Collar;
-import com.collarmc.client.api.location.LocationApi;
-import com.collarmc.client.api.location.LocationListener;
+import com.collarmc.client.api.location.events.LocationSharingStartedEvent;
+import com.collarmc.client.api.location.events.LocationSharingStoppedEvent;
+import com.collarmc.client.api.location.events.WaypointCreatedEvent;
+import com.collarmc.client.api.location.events.WaypointRemovedEvent;
 import com.collarmc.plastic.Plastic;
 import com.collarmc.pounce.EventBus;
+import com.collarmc.pounce.Subscribe;
 
-import java.util.Set;
-
-public class Locations implements LocationListener {
+public class Locations {
 
     private final Plastic plastic;
-    private final EventBus events;
 
     public Locations(Plastic plastic, EventBus events) {
         this.plastic = plastic;
-        this.events = events;
+        events.subscribe(this);
     }
 
-    @Override
-    public void onLocationUpdated(Collar collar, LocationApi locationApi, Player player, Location location) {
-        plastic.world.findPlayerById(player.minecraftPlayer.id)
-                .ifPresent(thePlayer -> {
-                    System.out.println("Found player " + player + " at + " + location);
-                    events.dispatch(new PlayerLocationUpdatedEvent(thePlayer, location));
-                });
-    }
-
-    @Override
-    public void onWaypointCreated(Collar collar, LocationApi locationApi, Group group, Waypoint waypoint) {
+    @Subscribe
+    public void onWaypointCreated(WaypointCreatedEvent event) {
         String message;
-        if (group == null) {
-            message = String.format("Waypoint %s created", waypoint.name);
+        if (event.group == null) {
+            message = String.format("Waypoint %s created", event.waypoint.name);
         } else {
-            message = String.format("Waypoint %s created in %s %s", waypoint.name, group.type.name, group.name);
+            message = String.format("Waypoint %s created in %s %s", event.waypoint.name, event.group.type.name, event.group.name);
         }
         plastic.display.displayStatusMessage(message);
         plastic.display.displayInfoMessage(message);
-        events.dispatch(new WaypointCreatedEvent(waypoint, group));
     }
 
-    @Override
-    public void onWaypointRemoved(Collar collar, LocationApi locationApi, Group group, Waypoint waypoint) {
+    @Subscribe
+    public void onWaypointRemoved(WaypointRemovedEvent event) {
         String message;
-        if (group == null) {
-            message = String.format("Waypoint %s removed", waypoint.name);
+        if (event.group == null) {
+            message = String.format("Waypoint %s removed", event.waypoint.name);
         } else {
-            message = String.format("Waypoint %s removed from %s %s", waypoint.name, group.type.name, group.name);
+            message = String.format("Waypoint %s removed from %s %s", event.waypoint.name, event.group.type.name, event.group.name);
         }
         plastic.display.displayStatusMessage(message);
         plastic.display.displayInfoMessage(message);
-        events.dispatch(new WaypointRemovedEvent(waypoint, group));
     }
 
-    @Override
-    public void onPrivateWaypointsReceived(Collar collar, LocationApi locationApi, Set<Waypoint> privateWaypoints) {
-        privateWaypoints.forEach(waypoint -> events.dispatch(new WaypointCreatedEvent(waypoint, null)));
+    @Subscribe
+    public void onStartedSharingLocation(LocationSharingStartedEvent event) {
+        plastic.display.displayInfoMessage(String.format("Started sharing location with %s", event.group.name));
     }
 
-    @Override
-    public void onStartedSharingLocation(Collar collar, LocationApi locationApi, Group group) {
-        plastic.display.displayInfoMessage(String.format("Started sharing location with %s", group.name));
-    }
-
-    @Override
-    public void onStoppedSharingLocation(Collar collar, LocationApi locationApi, Group group) {
-        plastic.display.displayInfoMessage(String.format("Stopped sharing location with %s", group.name));
+    @Subscribe
+    public void onStoppedSharingLocation(LocationSharingStoppedEvent event) {
+        plastic.display.displayInfoMessage(String.format("Stopped sharing location with %s", event.group.name));
     }
 }

@@ -1,9 +1,9 @@
 package com.collarmc.mod.common;
 
+import com.collarmc.client.events.*;
 import com.collarmc.mod.common.features.Friends;
 import com.collarmc.mod.common.features.Groups;
 import com.collarmc.mod.common.features.Locations;
-import com.collarmc.mod.common.features.Textures;
 import com.collarmc.mod.common.integrations.Integrations;
 import com.collarmc.mod.common.plugins.Plugins;
 import org.apache.logging.log4j.LogManager;
@@ -12,11 +12,7 @@ import com.collarmc.api.entities.Entity;
 import com.collarmc.api.entities.EntityType;
 import com.collarmc.client.*;
 import com.collarmc.client.minecraft.Ticks;
-import com.collarmc.client.security.ClientIdentityStore;
-import com.collarmc.mod.common.features.*;
-import com.collarmc.mod.common.events.CollarConnectedEvent;
-import com.collarmc.mod.common.events.CollarDisconnectedEvent;
-import com.collarmc.mod.common.features.messaging.MessagingListenerImpl;
+import com.collarmc.mod.common.features.messaging.Messaging;
 import com.collarmc.plastic.Plastic;
 import com.collarmc.plastic.events.client.ClientConnectedEvent;
 import com.collarmc.plastic.events.client.ClientDisconnectedEvent;
@@ -43,7 +39,7 @@ import java.util.stream.Collectors;
 
 import static com.collarmc.client.Collar.State.*;
 
-public class CollarService implements CollarListener {
+public class CollarService {
 
     private static final Logger LOGGER = LogManager.getLogger(CollarService.class.getName());
 
@@ -58,8 +54,7 @@ public class CollarService implements CollarListener {
 
     public final Locations locations;
     public final Friends friends;
-    public final MessagingListenerImpl messagingListenerImpl;
-    public final Textures textures;
+    public final Messaging messaging;
     public final Groups groups;
     public final Integrations integrations;
 
@@ -70,10 +65,9 @@ public class CollarService implements CollarListener {
         this.ticks = new Ticks();
         this.plugins = plugins;
         this.locations = new Locations(plastic, eventBus);
-        this.friends = new Friends(plastic);
-        this.messagingListenerImpl = new MessagingListenerImpl(plastic);
-        this.textures = new Textures(plastic);
-        this.groups = new Groups(plastic);
+        this.friends = new Friends(plastic, eventBus);
+        this.messaging = new Messaging(plastic, eventBus);
+        this.groups = new Groups(plastic, eventBus);
         this.backgroundJobs = Executors.newCachedThreadPool(r -> {
             Thread thread = new Thread(r);
             thread.setName("Collar Worker");
@@ -142,30 +136,23 @@ public class CollarService implements CollarListener {
         });
     }
 
-    @Override
-    public void onStateChanged(Collar collar, Collar.State state) {
+    @Subscribe
+    public void onStateChanged(CollarStateChangedEvent event) {
         backgroundJobs.submit(() -> {
-            switch (state) {
+            switch (event.state) {
                 case CONNECTING:
                     plastic.display.displayInfoMessage("Collar connecting...");
-                    eventBus.dispatch(new CollarConnectedEvent(collar));
                     break;
                 case CONNECTED:
                     plastic.display.displayMessage(rainbowText("Collar connected"));
-                    collar.location().subscribe(locations);
-                    collar.groups().subscribe(groups);
-                    collar.friends().subscribe(friends);
-                    collar.messaging().subscribe(messagingListenerImpl);
-                    collar.textures().subscribe(textures);
                     break;
                 case DISCONNECTED:
                     connectionState.setAttempted(false);
                     plastic.display.displayWarningMessage("Collar disconnected");
-                    eventBus.dispatch(new CollarDisconnectedEvent());
                     break;
             }
             plugins.find().forEach(plugin -> {
-                switch (state) {
+                switch (event.state) {
                     case CONNECTING:
                         plugin.onConnecting(collar);
                         break;
@@ -180,7 +167,7 @@ public class CollarService implements CollarListener {
         });
     }
 
-    @Override
+    @Subscribe
     public void onConfirmDeviceRegistration(Collar collar, String token, String approvalUrl) {
         plastic.display.displayStatusMessage("Collar registration required");
         plastic.display.displayMessage(rainbowText("Welcome to Collar!"));
@@ -190,43 +177,38 @@ public class CollarService implements CollarListener {
         plastic.display.displayMessage(text);
     }
 
-    @Override
-    public void onClientUntrusted(Collar collar, ClientIdentityStore store) {
+    @Subscribe
+    public void onClientUntrusted(ClientUntrustedEvent event) {
         try {
-            store.reset();
+            event.identityStore.reset();
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
     }
 
-    @Override
-    public void onMinecraftAccountVerificationFailed(Collar collar, MinecraftSession session) {
+    @Subscribe
+    public void onMinecraftAccountVerificationFailed(MinecraftAccountVerificationFailedEvent event) {
         plastic.display.displayStatusMessage("Account verification failed");
         plastic.display.displayErrorMessage("Collar failed to verify your Minecraft account");
     }
 
-    @Override
-    public void onPrivateIdentityMismatch(Collar collar, String url) {
+    @Subscribe
+    public void onPrivateIdentityMismatch(PrivateIdentityMismatchEvent event) {
         plastic.display.displayStatusMessage("Collar encountered a problem");
         TextBuilder builder = plastic.display.newTextBuilder().add("Your private identity did not match. We cannot decrypt your private data. To resolve please visit ")
-                .add(url, TextColor.RED, null, new OpenLinkAction(url));
+                .add(event.url, TextColor.RED, null, new OpenLinkAction(event.url));
         plastic.display.displayMessage(builder);
     }
 
-    @Override
-    public void onError(Collar collar, Throwable throwable) {
-        plastic.display.displayErrorMessage(throwable.getMessage());
-    }
-
-    @Override
-    public void onError(Collar collar, String reason) {
-        plastic.display.displayErrorMessage(reason);
+    @Subscribe
+    public void onError(CollarErrorEvent event) {
+        plastic.display.displayErrorMessage(event.message);
     }
 
     private Collar createCollar() throws IOException {
         CollarConfiguration configuration = new CollarConfiguration.Builder()
                 .withCollarServer()
-                .withListener(this)
+                .withEventBus(eventBus)
                 .withTicks(ticks)
                 .withHomeDirectory(collarHome())
                 .withPlayerLocation(() -> plastic.world.currentPlayer().location())

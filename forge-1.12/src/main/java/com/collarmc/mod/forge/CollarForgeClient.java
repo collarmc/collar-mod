@@ -1,6 +1,5 @@
 package com.collarmc.mod.forge;
 
-import com.collarmc.client.CollarListener;
 import com.collarmc.mod.common.events.CollarModInitializedEvent;
 import com.collarmc.mod.forge.journeymap.JourneyMapService;
 import com.mojang.brigadier.CommandDispatcher;
@@ -36,7 +35,7 @@ import org.apache.logging.log4j.Logger;
 
 @SideOnly(Side.CLIENT)
 @Mod(modid = CollarForgeClient.MODID, name = CollarForgeClient.NAME, version = CollarForgeClient.VERSION)
-public class CollarForgeClient implements CollarListener
+public class CollarForgeClient
 {
     private static final Logger LOGGER = LogManager.getLogger(CollarForgeClient.class);
 

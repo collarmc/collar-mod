@@ -1,12 +1,12 @@
 package com.collarmc.mod.forge.journeymap;
 
 import com.collarmc.api.location.Location;
+import com.collarmc.client.Collar;
+import com.collarmc.client.api.location.events.LocationUpdatedEvent;
+import com.collarmc.client.api.location.events.WaypointCreatedEvent;
+import com.collarmc.client.api.location.events.WaypointRemovedEvent;
+import com.collarmc.client.events.CollarStateChangedEvent;
 import com.collarmc.mod.common.CollarService;
-import com.collarmc.mod.common.events.CollarConnectedEvent;
-import com.collarmc.mod.common.events.CollarDisconnectedEvent;
-import com.collarmc.mod.common.features.events.PlayerLocationUpdatedEvent;
-import com.collarmc.mod.common.features.events.WaypointCreatedEvent;
-import com.collarmc.mod.common.features.events.WaypointRemovedEvent;
 import com.collarmc.mod.forge.CollarForgeClient;
 import com.collarmc.mod.forge.Utils;
 import com.collarmc.plastic.Plastic;
@@ -15,24 +15,19 @@ import com.collarmc.pounce.Preference;
 import com.collarmc.pounce.Subscribe;
 import com.mojang.authlib.GameProfile;
 import journeymap.client.api.IClientAPI;
-import journeymap.client.api.display.Context;
 import journeymap.client.api.display.MarkerOverlay;
 import journeymap.client.api.display.Waypoint;
 import journeymap.client.api.display.WaypointGroup;
 import journeymap.client.api.model.MapImage;
-import journeymap.common.Journeymap;
 import journeymap.common.feature.PlayerRadarManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import scala.Int;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.EnumSet;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -54,8 +49,8 @@ public final class JourneyMapService {
     }
 
     @Subscribe(Preference.CALLER)
-    public void disconnected(CollarDisconnectedEvent e) {
-        if (api == null) {
+    public void disconnected(CollarStateChangedEvent event) {
+        if (event.state != Collar.State.DISCONNECTED || api == null) {
             return;
         }
         reset();
@@ -65,24 +60,6 @@ public final class JourneyMapService {
     public void setClientAPI(JourneyMapEvent event) {
         this.api = event.api;
         reset();
-//        Journeymap.getClient().setPlayerTrackingEnabled(true);
-//        Journeymap.getClient().setJourneyMapServerConnection(true);
-    }
-
-    @Subscribe
-    public void update(CollarConnectedEvent event) {
-        BufferedImage bi = createMarker();
-
-        MapImage icon = new MapImage(bi);
-        MarkerOverlay overlay = new MarkerOverlay(CollarForgeClient.MODID, "test", Minecraft.getMinecraft().player.getPosition(), icon);
-        overlay.setDimension(Minecraft.getMinecraft().player.dimension);
-        overlay.setTitle("Spawn Point");
-        overlay.setActiveMapTypes(EnumSet.of(Context.MapType.Any));
-        try {
-            api.show(overlay);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     private BufferedImage createMarker() {
@@ -129,12 +106,14 @@ public final class JourneyMapService {
     }
 
     @Subscribe(Preference.POOL)
-    public void playerLocationUpdated(PlayerLocationUpdatedEvent event) {
+    public void locationUpdated(LocationUpdatedEvent event) {
         if (api == null) {
             return;
         }
 
-        PlayerRadarManager.getInstance().addPlayer(createEntityPlayer(event.player, event.location));
+        UUID playerId = event.player.minecraftPlayer.id;
+        Player player = plastic.world.findPlayerById(playerId).orElseThrow(() -> new IllegalStateException("cannot find player " + playerId));
+        PlayerRadarManager.getInstance().addPlayer(createEntityPlayer(player, event.location));
 
 //        if (event.location.equals(Location.UNKNOWN)) {
 //            MarkerOverlay marker = playerMarkers.remove(event.player.id());
