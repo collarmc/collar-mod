@@ -4,6 +4,10 @@ buildscript {
             name = 'Fabric'
             url = 'https://maven.fabricmc.net/'
         }
+        maven {
+            name = 'Collar'
+            url = 'https://raw.githubusercontent.com/collarmc/maven/main/'
+        }
         mavenLocal()
         maven { url = 'https://files.minecraftforge.net/maven' }
         jcenter()

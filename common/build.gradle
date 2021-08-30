@@ -11,6 +11,10 @@ repositories {
     maven {
         url "https://libraries.minecraft.net"
     }
+    maven {
+        name = 'Collar'
+        url = 'https://raw.githubusercontent.com/collarmc/maven/main/'
+    }
 }
 
 

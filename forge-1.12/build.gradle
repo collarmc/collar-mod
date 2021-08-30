@@ -5,6 +5,10 @@ buildscript {
         maven {
             url "https://www.cursemaven.com"
         }
+        maven {
+            name = 'Collar'
+            url = 'https://raw.githubusercontent.com/collarmc/maven/main/'
+        }
         jcenter()
         mavenCentral()
     }
