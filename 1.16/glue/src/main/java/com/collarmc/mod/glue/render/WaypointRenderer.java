@@ -73,6 +73,6 @@ public class WaypointRenderer {
     }
 
     private static void renderBeacon(MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, float f, long l, int i, int j, float[] color) {
-        BeaconBlockEntityRenderer.renderLightBeam(matrixStack, vertexConsumerProvider, BEAM_TEXTURE, f, 1.0F, l, i, j, color, 0.2F, 0.25F);
+        BeaconBlockEntityRenderer.renderBeam(matrixStack, vertexConsumerProvider, BEAM_TEXTURE, f, 1.0F, l, i, j, color, 0.2F, 0.25F);
     }
 }
