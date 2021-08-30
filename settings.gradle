@@ -9,15 +9,14 @@ pluginManagement {
             name = 'Collar'
             url = 'https://raw.githubusercontent.com/collarmc/maven/main/'
         }
-        jcenter()
-        gradlePluginPortal()
+        maven {
             name = 'Architectury maven'
             url = 'https://maven.architectury.dev/'
         }
         maven {
             name = 'Forge maven'
             url = 'https://maven.minecraftforge.net/'
-            content{
+            content {
                 excludeGroupByRegex "org\\.eclipse\\.?.*"
             }
         }

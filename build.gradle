@@ -12,10 +12,14 @@ version "${project.collar_mod_version}-${getCheckedOutGitCommitHash()}"
 
 allprojects {
     repositories {
-        mavenLocal()
+        mavenLocal() //TODO not use this as soon as Collar will be in the maven
         mavenCentral()
         maven {
             url "https://libraries.minecraft.net"
+        }
+        maven {
+            name = 'Collar'
+            url = 'https://raw.githubusercontent.com/collarmc/maven/main/'
         }
     }
     tasks.withType(JavaCompile).configureEach {
