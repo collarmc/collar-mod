@@ -3,7 +3,7 @@ package com.collarmc.plastic.world;
 import com.collarmc.api.location.Location;
 
 /**
- * TODO: replace with {@link team.catgirl.collar.api.entities.Entity}
+ * TODO: replace with {@link com.collarmc.api.entities.Entity}
  */
 @Deprecated
 public interface Entity {

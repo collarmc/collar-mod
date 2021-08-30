@@ -1,15 +1,15 @@
 [
 {
-  "modid": "team.catgirl.collar.mod",
+  "modid": "com.collarmc.mod",
   "name": "Collar",
-  "description": "Do you want to play a block game?",
+  "description": "${description}",
   "version": "${version}",
   "mcversion": "${mcversion}",
   "url": "http://www.collarmc.com/",
   "updateUrl": "",
   "authorList": ["orsond","sakuya","HermeticLock"],
-  "credits": "Team Catgirl 2021",
-  "logoFile": "",
+  "credits": "com.collarmc 2021",
+  "logoFile": "assets/collar/icon.png",
   "screenshots": [],
   "dependencies": []
 }
