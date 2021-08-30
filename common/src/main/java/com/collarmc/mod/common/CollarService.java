@@ -5,6 +5,7 @@ import com.collarmc.mod.common.features.Friends;
 import com.collarmc.mod.common.features.Groups;
 import com.collarmc.mod.common.features.Locations;
 import com.collarmc.mod.common.integrations.Integrations;
+import com.collarmc.mod.common.plugins.MemoizingPlugins;
 import com.collarmc.mod.common.plugins.Plugins;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -63,7 +64,7 @@ public class CollarService {
         this.plastic = plastic;
         this.eventBus = eventBus;
         this.ticks = new Ticks();
-        this.plugins = plugins;
+        this.plugins = new MemoizingPlugins(eventBus, plugins);
         this.locations = new Locations(plastic, eventBus);
         this.friends = new Friends(plastic, eventBus);
         this.messaging = new Messaging(plastic, eventBus);
@@ -151,19 +152,6 @@ public class CollarService {
                     plastic.display.displayWarningMessage("Collar disconnected");
                     break;
             }
-            plugins.find().forEach(plugin -> {
-                switch (event.state) {
-                    case CONNECTING:
-                        plugin.onConnecting(collar);
-                        break;
-                    case CONNECTED:
-                        plugin.onConnected(collar);
-                        break;
-                    case DISCONNECTED:
-                        plugin.onDisconnected(collar);
-                        break;
-                }
-            });
         });
     }
 
