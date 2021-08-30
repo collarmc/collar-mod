@@ -25,14 +25,6 @@ jobs:
         with:
           java-version: '16'
           distribution: 'adopt'
-      - name: Checkout Pounce
-        uses: actions/checkout@v2
-        with:
-          repository: collarmc/pounce
-          path: pounce
-      - name: Build Pounce
-        working-directory: pounce
-        run: mvn -B install --file pom.xml -Dmaven.test.skip=true
       - name: Checkout Collar API
         uses: actions/checkout@v2
         with:
