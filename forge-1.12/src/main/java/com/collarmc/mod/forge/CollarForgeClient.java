@@ -1,7 +1,17 @@
 package com.collarmc.mod.forge;
 
+import com.collarmc.client.plugin.Plugins;
+import com.collarmc.mod.common.CollarService;
+import com.collarmc.mod.common.commands.Commands;
 import com.collarmc.mod.common.events.CollarModInitializedEvent;
+import com.collarmc.mod.common.features.messaging.Messages;
+import com.collarmc.mod.common.plastic.CollarTextureProvider;
 import com.collarmc.mod.forge.journeymap.JourneyMapService;
+import com.collarmc.plastic.Plastic;
+import com.collarmc.plastic.chat.ChatService;
+import com.collarmc.plastic.forge.ForgeCommand;
+import com.collarmc.plastic.forge.ForgePlastic;
+import com.collarmc.pounce.EventBus;
 import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.client.ClientCommandHandler;
@@ -19,19 +29,10 @@ import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientConnectedToSe
 import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientDisconnectionFromServerEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import com.collarmc.mod.common.CollarService;
-import com.collarmc.mod.common.features.messaging.Messages;
-import com.collarmc.mod.common.commands.Commands;
-import com.collarmc.mod.common.plastic.CollarTextureProvider;
-import com.collarmc.mod.common.plugins.Plugins;
-import com.collarmc.mod.forge.client.ForgePlugins;
-import com.collarmc.plastic.Plastic;
-import com.collarmc.plastic.chat.ChatService;
-import com.collarmc.plastic.forge.ForgeCommand;
-import com.collarmc.plastic.forge.ForgePlastic;
-import com.collarmc.pounce.EventBus;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.io.IOException;
 
 @SideOnly(Side.CLIENT)
 @Mod(modid = CollarForgeClient.MODID, name = CollarForgeClient.NAME, version = CollarForgeClient.VERSION)
@@ -43,7 +44,7 @@ public class CollarForgeClient
     public static final String NAME = "Collar";
     public static final String VERSION = "0.1";
 
-    private static final Plugins PLUGINS = new ForgePlugins();
+    private static final Plugins PLUGINS = new Plugins();
     private static Plastic PLASTIC;
     public static final EventBus EVENT_BUS = new EventBus(Runnable::run);
 
@@ -71,6 +72,11 @@ public class CollarForgeClient
     @EventHandler
     public void init(FMLInitializationEvent event) {
         EVENT_BUS.dispatch(new CollarModInitializedEvent());
+        try {
+            PLUGINS.loadPlugins(CollarForgeClient.class.getClassLoader(), EVENT_BUS);
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
     }
 
     @SubscribeEvent

@@ -1,5 +1,7 @@
 package com.collarmc.mod.forge.client;
 
+import com.collarmc.client.plugin.Plugins;
+import com.collarmc.mod.common.events.CollarModInitializedEvent;
 import com.collarmc.mod.glue.render.TracerRenderer;
 import com.collarmc.mod.glue.render.WaypointRenderer;
 import com.collarmc.plastic.GluePlastic;
@@ -10,11 +12,12 @@ import com.collarmc.mod.common.CollarService;
 import com.collarmc.mod.common.commands.Commands;
 import com.collarmc.mod.common.features.messaging.Messages;
 import com.collarmc.mod.common.plastic.CollarTextureProvider;
-import com.collarmc.mod.common.plugins.Plugins;
 import com.collarmc.mod.forge.client.commands.ClientCommands;
 import com.collarmc.mod.forge.client.commands.ICommandSource;
 import com.collarmc.plastic.Plastic;
 import com.collarmc.pounce.EventBus;
+
+import java.io.IOException;
 import java.util.logging.Logger;
 
 @OnlyIn(Dist.CLIENT)
@@ -23,8 +26,8 @@ public class CollarForge {
 
     public static final Logger LOGGER = Logger.getLogger("Collar");
 
-    private static final Plugins PLUGINS = new ForgePlugins();
     private static final EventBus EVENT_BUS = new EventBus(Runnable::run);
+    private static final Plugins PLUGINS = new Plugins();
     private static final Plastic PLASTIC = new GluePlastic(new CollarTextureProvider(), EVENT_BUS);
     private static final CollarService COLLAR_SERVICE = new CollarService(PLASTIC, EVENT_BUS, PLUGINS);
     private static final WaypointRenderer WAYPOINT_RENDERER = new WaypointRenderer(PLASTIC, COLLAR_SERVICE);
@@ -47,6 +50,12 @@ public class CollarForge {
         //TODO Commands idk, somehow
         EVENT_BUS.subscribe(WAYPOINT_RENDERER);
         EVENT_BUS.subscribe(TRACER_RENDERER);
+        EVENT_BUS.dispatch(new CollarModInitializedEvent());
+        try {
+            PLUGINS.loadPlugins(CollarForge.class.getClassLoader(), EVENT_BUS);
+        }catch (IOException e){
+            throw new IllegalStateException(e);
+        }
     }
 
 
