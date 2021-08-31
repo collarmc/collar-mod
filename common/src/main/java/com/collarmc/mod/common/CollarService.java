@@ -1,19 +1,18 @@
 package com.collarmc.mod.common;
 
+import com.collarmc.api.entities.Entity;
+import com.collarmc.api.entities.EntityType;
+import com.collarmc.client.Collar;
+import com.collarmc.client.CollarConfiguration;
+import com.collarmc.client.CollarException;
 import com.collarmc.client.events.*;
+import com.collarmc.client.minecraft.Ticks;
+import com.collarmc.client.plugin.Plugins;
 import com.collarmc.mod.common.features.Friends;
 import com.collarmc.mod.common.features.Groups;
 import com.collarmc.mod.common.features.Locations;
-import com.collarmc.mod.common.integrations.Integrations;
-import com.collarmc.mod.common.plugins.MemoizingPlugins;
-import com.collarmc.mod.common.plugins.Plugins;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import com.collarmc.api.entities.Entity;
-import com.collarmc.api.entities.EntityType;
-import com.collarmc.client.*;
-import com.collarmc.client.minecraft.Ticks;
 import com.collarmc.mod.common.features.messaging.Messaging;
+import com.collarmc.mod.common.integrations.Integrations;
 import com.collarmc.plastic.Plastic;
 import com.collarmc.plastic.events.client.ClientConnectedEvent;
 import com.collarmc.plastic.events.client.ClientDisconnectedEvent;
@@ -23,10 +22,12 @@ import com.collarmc.plastic.player.Player;
 import com.collarmc.plastic.ui.TextAction.OpenLinkAction;
 import com.collarmc.plastic.ui.TextBuilder;
 import com.collarmc.plastic.ui.TextColor;
-import com.collarmc.security.mojang.MinecraftSession;
 import com.collarmc.pounce.EventBus;
 import com.collarmc.pounce.Preference;
 import com.collarmc.pounce.Subscribe;
+import com.collarmc.security.mojang.MinecraftSession;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,7 +39,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-import static com.collarmc.client.Collar.State.*;
+import static com.collarmc.client.Collar.State.CONNECTED;
 
 public class CollarService {
 
@@ -64,7 +65,7 @@ public class CollarService {
         this.plastic = plastic;
         this.eventBus = eventBus;
         this.ticks = new Ticks();
-        this.plugins = new MemoizingPlugins(eventBus, plugins);
+        this.plugins = plugins;
         this.locations = new Locations(plastic, eventBus);
         this.friends = new Friends(plastic, eventBus);
         this.messaging = new Messaging(plastic, eventBus);

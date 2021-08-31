@@ -23,7 +23,6 @@ dependencies {
     implementation group: 'com.collarmc', name: 'pounce', version: "${project.property('pounce.version')}"
     implementation project(':plastic-api')
     compile group: 'com.collarmc', name: 'client', version: "${project.property('collar.version')}", classifier: 'full'
-    compile group: 'com.collarmc', name: 'plugin', version: "${project.property('collar.version')}"
 }
 
 test {
