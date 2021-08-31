@@ -157,12 +157,12 @@ public class CollarService {
     }
 
     @Subscribe
-    public void onConfirmDeviceRegistration(Collar collar, String token, String approvalUrl) {
+    public void onConfirmDeviceRegistration(ConfirmClientRegistrationEvent event) {
         plastic.display.displayStatusMessage("Collar registration required");
         plastic.display.displayMessage(rainbowText("Welcome to Collar!"));
         TextBuilder text = plastic.display.newTextBuilder()
                 .add("You'll need to associate this computer with your Collar account at ")
-                .add(approvalUrl, TextColor.GOLD, null, new OpenLinkAction(approvalUrl));
+                .add(event.approvalUrl, TextColor.GOLD, null, new OpenLinkAction(event.approvalUrl));
         plastic.display.displayMessage(text);
     }
 
