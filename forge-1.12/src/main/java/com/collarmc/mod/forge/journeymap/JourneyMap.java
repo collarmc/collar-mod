@@ -1,6 +1,5 @@
 package com.collarmc.mod.forge.journeymap;
 
-import com.collarmc.api.CollarPlugin;
 import com.collarmc.mod.common.events.CollarModInitializedEvent;
 import com.collarmc.mod.forge.CollarForgeClient;
 import com.collarmc.pounce.Preference;
@@ -16,7 +15,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 @journeymap.client.api.ClientPlugin
-public class JourneyMap implements IClientPlugin, CollarPlugin {
+public class JourneyMap implements IClientPlugin {
 
     public JourneyMap() {
         CollarForgeClient.EVENT_BUS.subscribe(this);
