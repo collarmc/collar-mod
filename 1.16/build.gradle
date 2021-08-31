@@ -1,0 +1,42 @@
+plugins {
+    id 'java'
+}
+
+group project.maven_group
+version rootProject.version
+
+subprojects {
+    apply plugin: 'dev.architectury.loom'
+    dependencies {
+        minecraft "com.mojang:minecraft:${project.minecraft_version}"
+        mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+    }
+}
+allprojects {
+    apply plugin: 'architectury-plugin'
+
+}
+
+architectury{
+    minecraft = project.minecraft_version
+}
+
+task buildAll{
+    dependsOn(":${project.module_name}:fabric:build")
+    dependsOn(":${project.module_name}:forge:build")
+}
+
+task copyArtifacts{
+    dependsOn("buildAll")
+    doLast {
+        copy{
+            from "${project.projectDir}/fabric/build/libs/${project.archives_base_name}-${project.minecraft_version}-${project.version}-fabric.jar"
+            into "${rootProject.projectDir}/artifacts"
+        }
+
+        copy{
+            from "${project.projectDir}/forge/build/libs/${project.archives_base_name}-${project.minecraft_version}-${project.version}-forge.jar"
+            into "${rootProject.projectDir}/artifacts"
+        }
+    }
+}
