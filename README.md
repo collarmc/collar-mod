@@ -1,3 +1,4 @@
+[![CI](https://github.com/CaptainRexPL/collar-mod/actions/workflows/ci.yaml/badge.svg)](https://github.com/CaptainRexPL/collar-mod/actions/workflows/ci.yaml)
 # Collar mod  
 //TODO general description about collar-mod  
 maybe put the current stuff into a `BUILD.md` and use README as a user-manual
