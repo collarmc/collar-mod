@@ -3,16 +3,12 @@
 
 name: CI
 
-on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+on: [push]
 
 jobs:
   build:
 
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
 
     steps:
       - name: Set up MongoDB
@@ -20,16 +16,23 @@ jobs:
         with:
           image-version: latest
           port: 27017
-      - name: Set up JDK 16 for Collar API
+      - name: Set up JDK 17 for Collar API
         uses: actions/setup-java@v2
         with:
-          java-version: '16'
+          java-version: '17'
           distribution: 'adopt'
       - name: Checkout Collar API
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: collarmc/collar
           path: collar
+      - name: Checkout Collar molib
+        uses: actions/checkout@v3
+        with:
+          repository: collarmc/molib
+          path: collar/molib
+      - name: Maven version check
+        run: mvn -X -version 
       - name: Build Collar API
         working-directory: collar
         run: mvn install -DskipTests
