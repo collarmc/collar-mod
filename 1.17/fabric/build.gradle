@@ -7,8 +7,8 @@ version = rootProject.version
 group = project.maven_group
 
 architectury{
-    platformSetupLoomIde() //setup a run client button for IntelliJ and VSCode
-    fabric() //No, this is not a forge mod
+    //platformSetupLoomIde() //setup a run client button for IntelliJ and VSCode
+    //fabric() //No, this is not a forge mod
 }
 
 configurations {
@@ -20,7 +20,7 @@ dependencies {
     implementation project(':common')
     implementation (project(path: ":${project.module_name}:glue"))
 
-    developmentFabric(project(path: ":${project.module_name}:glue")) { transitive = false }
+    //developmentFabric(project(path: ":${project.module_name}:glue")) { transitive = false }
     //developmentFabric(project(path: ":something")) { transitive = false } //Use this is a module contains ANY mod resources.
 
     compileModule project(path: ":common", configuration: 'shadow')

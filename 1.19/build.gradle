@@ -23,7 +23,8 @@ architectury{
 
 task buildAll{
     dependsOn(":${project.module_name}:fabric:build")
-    }
+    //dependsOn(":${project.module_name}:forge:build")
+}
 
 task copyArtifacts{
     dependsOn("buildAll")
@@ -32,6 +33,11 @@ task copyArtifacts{
             from "${project.projectDir}/fabric/build/libs/${project.archives_base_name}-${project.minecraft_version}-${project.version}-fabric.jar"
             into "${rootProject.projectDir}/artifacts"
         }
-
-            }
+        /*
+        copy{
+            from "${project.projectDir}/forge/build/libs/${project.archives_base_name}-${project.minecraft_version}-${project.version}-forge.jar"
+            into "${rootProject.projectDir}/artifacts"
+        }
+         */
+    }
 }
