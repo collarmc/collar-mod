@@ -1,4 +1,4 @@
-package com.collarmc.mod.fabric.render;
+package com.collarmc.mod.glue.render;
 
 import com.collarmc.api.location.Location;
 import com.collarmc.client.Collar;

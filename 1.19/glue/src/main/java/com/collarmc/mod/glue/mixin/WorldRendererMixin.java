@@ -1,5 +1,6 @@
 package com.collarmc.mod.glue.mixin;
 
+import com.collarmc.mod.glue.render.WorldRenderEvent;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.LightmapTextureManager;
@@ -10,7 +11,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import com.collarmc.mod.fabric.render.WorldRenderEvent;
+import com.collarmc.mod.glue.render.WorldRenderEvent;
 import com.collarmc.plastic.Plastic;
 
 @Mixin(WorldRenderer.class)

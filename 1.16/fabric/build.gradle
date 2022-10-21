@@ -25,9 +25,9 @@ dependencies {
 
     compileModule project(path: ":common", configuration: 'shadow')
 
-    compileModule (project(path: ":${project.module_name}:glue", configuration: "transformProductionFabric")){
-        transitive = false;
-    }
+    //compileModule (project(path: ":${project.module_name}:glue", configuration: "transformProductionFabric")){
+    //    transitive = false;
+    //}
 
     compileModule group: 'org.joml', name: 'joml', version: '1.10.1'
 

@@ -1,4 +1,4 @@
-package com.collarmc.plastic.fabric;
+package com.collarmc.plastic;
 
 import net.minecraft.text.*;
 import net.minecraft.util.Formatting;

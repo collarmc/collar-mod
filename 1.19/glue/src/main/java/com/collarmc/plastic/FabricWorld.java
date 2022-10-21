@@ -1,5 +1,6 @@
-package com.collarmc.plastic.fabric;
+package com.collarmc.plastic;
 
+import com.collarmc.plastic.FabricPlayer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.world.ClientWorld;

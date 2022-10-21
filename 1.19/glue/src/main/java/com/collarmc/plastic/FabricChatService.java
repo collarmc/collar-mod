@@ -1,4 +1,4 @@
-package com.collarmc.plastic.fabric;
+package com.collarmc.plastic;
 
 import com.collarmc.plastic.chat.ChatService;
 import com.collarmc.plastic.ui.Display;

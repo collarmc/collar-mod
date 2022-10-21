@@ -1,8 +1,8 @@
-package com.collarmc.plastic.fabric;
+package com.collarmc.plastic;
 
 import com.collarmc.api.location.Dimension;
 import com.collarmc.api.location.Location;
-import com.collarmc.mod.fabric.mixin.PlayerListEntryMixin;
+import com.collarmc.mod.glue.mixin.PlayerListEntryMixin;
 import com.collarmc.plastic.player.Player;
 import com.collarmc.plastic.ui.TextureProvider;
 import com.collarmc.plastic.ui.TextureType;

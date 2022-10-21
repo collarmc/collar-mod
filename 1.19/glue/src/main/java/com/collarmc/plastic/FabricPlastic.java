@@ -1,5 +1,7 @@
-package com.collarmc.plastic.fabric;
+package com.collarmc.plastic;
 
+import com.collarmc.plastic.FabricChatService;
+import com.collarmc.plastic.FabricDisplay;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ServerInfo;
 import com.collarmc.plastic.Plastic;
@@ -11,7 +13,7 @@ import java.io.File;
 public final class FabricPlastic extends Plastic {
 
     public FabricPlastic(TextureProvider textureProvider, EventBus eventBus) {
-        super(new FabricDisplay(), new FabricWorld(textureProvider, new FabricChatService(new FabricDisplay()), eventBus), eventBus);
+        super(new FabricDisplay(), new com.collarmc.plastic.FabricWorld(textureProvider, new FabricChatService(new FabricDisplay()), eventBus), eventBus);
     }
 
     @Override

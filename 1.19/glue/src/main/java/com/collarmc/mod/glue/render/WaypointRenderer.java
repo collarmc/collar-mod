@@ -1,19 +1,19 @@
-package com.collarmc.mod.fabric.render;
+package com.collarmc.mod.glue.render;
 
+import com.collarmc.api.waypoints.Waypoint;
+import com.collarmc.client.Collar;
+import com.collarmc.mod.common.CollarService;
+import com.collarmc.mod.glue.mixin.MinecraftClientFieldMixin;
+import com.collarmc.plastic.Plastic;
+import com.collarmc.plastic.player.Player;
+import com.collarmc.pounce.Preference;
+import com.collarmc.pounce.Subscribe;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BeaconBlockEntityRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.Vec3d;
-import com.collarmc.api.waypoints.Waypoint;
-import com.collarmc.client.Collar;
-import com.collarmc.mod.common.CollarService;
-import com.collarmc.mod.fabric.mixin.MinecraftClientFieldMixin;
-import com.collarmc.plastic.Plastic;
-import com.collarmc.plastic.player.Player;
-import com.collarmc.pounce.Preference;
-import com.collarmc.pounce.Subscribe;
 
 import static net.minecraft.client.render.block.entity.BeaconBlockEntityRenderer.BEAM_TEXTURE;
 
@@ -44,7 +44,7 @@ public class WaypointRenderer {
     @Subscribe(Preference.CALLER)
     public void renderWaypointBeacon(WorldRenderEvent event) {
         collarService.getCollar().ifPresent(collar -> {
-            if (collar.getState() != Collar.State.CONNECTED && !collar.configuration.debugConfiguration.waypoints) {
+            if (collar.getState() != Collar.State.CONNECTED) {
                 return;
             }
             collar.location().privateWaypoints().stream()

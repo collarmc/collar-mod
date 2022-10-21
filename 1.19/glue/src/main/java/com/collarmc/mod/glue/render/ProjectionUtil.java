@@ -1,5 +1,6 @@
-package com.collarmc.mod.fabric.render;
+package com.collarmc.mod.glue.render;
 
+import com.collarmc.mod.glue.render.Projection;
 import net.minecraft.util.math.Vec3d;
 
 import org.joml.Matrix4f;
