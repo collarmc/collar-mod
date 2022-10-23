@@ -11,11 +11,15 @@ import com.collarmc.mod.glue.render.WaypointRenderer;
 import com.collarmc.plastic.Plastic;
 import com.collarmc.plastic.FabricPlastic;
 import com.collarmc.pounce.EventBus;
+import com.mojang.brigadier.CommandDispatcher;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.fabricmc.fabric.impl.command.client.ClientCommandInternals;
+import net.minecraft.command.CommandRegistryAccess;
 
 import java.io.IOException;
 
@@ -32,8 +36,8 @@ public class CollarFabricClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        Commands<FabricClientCommandSource> commands = new Commands<>(COLLAR_SERVICE, GROUP_CHAT_SERVICE, PLASTIC, true);
-        commands.register(ClientCommandManager.getActiveDispatcher());
+        ClientCommandRegistrationCallback.EVENT.register(CollarFabricClient::registerCommands);
+
         EVENT_BUS.subscribe(WAYPOINT_RENDERER);
         EVENT_BUS.subscribe(TRACER_RENDERER);
         EVENT_BUS.dispatch(new CollarModInitializedEvent());
@@ -42,5 +46,14 @@ public class CollarFabricClient implements ClientModInitializer {
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
+    }
+
+    private static void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
+        Commands<FabricClientCommandSource> commands = new Commands<>(COLLAR_SERVICE, GROUP_CHAT_SERVICE, PLASTIC, true);
+        commands.register(dispatcher);
+    }
+
+    public static void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher){
+
     }
 }

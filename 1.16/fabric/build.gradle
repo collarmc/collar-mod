@@ -7,12 +7,17 @@ version = rootProject.version
 group = project.maven_group
 
 architectury{
-    //platformSetupLoomIde() //setup a run client button for IntelliJ and VSCode
-    //fabric() //No, this is not a forge mod
+    platformSetupLoomIde() //setup a run client button for IntelliJ and VSCode
+    fabric() //No, this is not a forge mod
 }
 
 configurations {
     compileModule //We'll need to shadow the whole stuff together
+    common
+    shadowCommon // Don't use shadow from the shadow plugin because we don't want IDEA to index this.
+    compileClasspath.extendsFrom common
+    runtimeClasspath.extendsFrom common
+    developmentFabric.extendsFrom common
 }
 
 dependencies {
@@ -28,10 +33,7 @@ dependencies {
     //compileModule (project(path: ":${project.module_name}:glue", configuration: "transformProductionFabric")){
     //    transitive = false;
     //}
-
     compileModule group: 'org.joml', name: 'joml', version: '1.10.1'
-
-
     modImplementation "net.fabricmc:fabric-loader:${project.fabric_loader_version}"
 
     // Fabric API. This is technically optional, but you probably want it anyway.
@@ -40,6 +42,11 @@ dependencies {
     // PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
     // You may need to force-disable transitiveness on them.
     implementation group: 'org.joml', name: 'joml', version: '1.10.1'
+    common(project(path: ":${project.module_name}:glue", configuration: "namedElements")) { transitive false }
+    //shadowCommon(project(path: ":${project.module_name}:glue", configuration: "transformProductionFabric")) { transitive false }
+    compileModule (project(path: ":${project.module_name}:glue", configuration: "transformProductionFabric")) {
+        transitive = false;
+    }
 
 }
 

@@ -9,6 +9,7 @@ version rootProject.version
 architectury{
     injectInjectables = false
     common()
+    //common(rootProject.enabled_platforms.split(","))
 }
 
 dependencies {

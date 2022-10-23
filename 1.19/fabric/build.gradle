@@ -7,12 +7,19 @@ version = rootProject.version
 group = project.maven_group
 
 architectury{
-    //platformSetupLoomIde() //setup a run client button for IntelliJ and VSCode
-    //fabric() //No, this is not a forge mod
+    platformSetupLoomIde() //setup a run client button for IntelliJ and VSCode
+    fabric() //No, this is not a forge mod
 }
+
+
 
 configurations {
     compileModule //We'll need to shadow the whole stuff together
+    common
+    shadowCommon // Don't use shadow from the shadow plugin because we don't want IDEA to index this.
+    compileClasspath.extendsFrom common
+    runtimeClasspath.extendsFrom common
+    developmentFabric.extendsFrom common
 }
 
 dependencies {
@@ -20,16 +27,17 @@ dependencies {
     implementation project(':common')
     implementation (project(path: ":${project.module_name}:glue"))
 
-    //developmentFabric(project(path: ":${project.module_name}:glue")) { transitive = false }
+    developmentFabric(project(path: ":${project.module_name}:glue")) { transitive = false }
     //developmentFabric(project(path: ":something")) { transitive = false } //Use this is a module contains ANY mod resources.
 
     compileModule project(path: ":common", configuration: 'shadow')
+    modApi "dev.architectury:architectury-fabric:${rootProject.architectury_version}"
 
-    //compileModule (project(path: ":${project.module_name}:glue", configuration: "transformProductionFabric")){
-    //    transitive = false;
-    //}
 
     compileModule group: 'org.joml', name: 'joml', version: '1.10.1'
+    common(project(path: ":${project.module_name}:glue", configuration: "namedElements")) { transitive false }
+    //shadowCommon(project(path: ":${project.module_name}:glue", configuration: "transformProductionFabric")) { transitive false }
+
 
 
     modImplementation "net.fabricmc:fabric-loader:${project.fabric_loader_version}"
@@ -40,6 +48,9 @@ dependencies {
     // PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
     // You may need to force-disable transitiveness on them.
     implementation group: 'org.joml', name: 'joml', version: '1.10.1'
+    compileModule (project(path: ":${project.module_name}:glue", configuration: "transformProductionFabric")) {
+        transitive = false;
+    }
 
 }
 
