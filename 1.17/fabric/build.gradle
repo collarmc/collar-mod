@@ -34,7 +34,7 @@ dependencies {
     //    transitive = false;
     //}
 
-    compileModule group: 'org.joml', name: 'joml', version: '1.10.1'
+    compileModule group: 'org.joml', name: 'joml', version: '1.10.5'
     common(project(path: ":${project.module_name}:glue", configuration: "namedElements")) { transitive false }
     //shadowCommon(project(path: ":${project.module_name}:glue", configuration: "transformProductionFabric")) { transitive false }
     compileModule (project(path: ":${project.module_name}:glue", configuration: "transformProductionFabric")) {
