@@ -24,7 +24,7 @@ jobs:
       - name: Checkout Collar API
         uses: actions/checkout@v3
         with:
-          repository: collarmc/collar
+          repository: CaptainRexPL/collar
           path: collar
       - name: Checkout Collar molib
         uses: actions/checkout@v3
