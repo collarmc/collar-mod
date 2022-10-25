@@ -4,7 +4,7 @@ plugins {
     id "architectury-plugin" version "3.4-SNAPSHOT" apply false //Need for common module management.
     id "com.github.johnrengelman.shadow" version "7.1.2" apply false
 
-    id "com.github.breadmoirai.github-release" version "2.2.12" //TODO automate GitHub releases
+    id "com.github.breadmoirai.github-release" version "2.4.1" //TODO automate GitHub releases
 }
 
 group project.maven_group
