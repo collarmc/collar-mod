@@ -79,13 +79,13 @@ public final class Commands<S> {
     private void registerServiceCommands(CommandDispatcher<S> dispatcher) {
         // collar connect
         dispatcher.register(prefixed("connect", context -> {
-            collarService.connect();
+            collarService.attemptToConnect();
             return 1;
         }));
 
         // collar disconnect
         dispatcher.register(prefixed("disconnect", context -> {
-            collarService.disconnect();
+            collarService.attemptToDisconnect();
             return 1;
         }));
 

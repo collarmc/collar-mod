@@ -1,11 +1,14 @@
 package com.collarmc.plastic;
 
+import com.collarmc.client.Collar;
 import com.collarmc.plastic.events.client.ClientConnectedEvent;
 import com.collarmc.plastic.events.client.ClientDisconnectedEvent;
 import com.collarmc.plastic.events.client.OnTickEvent;
 import com.collarmc.plastic.ui.Display;
 import com.collarmc.plastic.world.World;
 import com.collarmc.pounce.EventBus;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 
@@ -13,7 +16,7 @@ import java.io.File;
  * Minecraft mod api abstraction
  */
 public abstract class Plastic {
-
+    protected abstract Logger getLogger();
     private static Plastic INSTANCE;
 
     /**

@@ -1,19 +1,30 @@
 package com.collarmc.plastic;
 
-import com.collarmc.plastic.FabricChatService;
-import com.collarmc.plastic.FabricDisplay;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ServerInfo;
-import com.collarmc.plastic.Plastic;
+import com.collarmc.client.Collar;
 import com.collarmc.plastic.ui.TextureProvider;
 import com.collarmc.pounce.EventBus;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ServerInfo;
+import net.minecraft.client.network.ServerAddress;
+import net.minecraft.server.integrated.IntegratedServer;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 
 public final class FabricPlastic extends Plastic {
 
+    private static final Logger LOGGER = LogManager.getLogger(Collar.class.getName());
+    public static MinecraftClient mc;
+
     public FabricPlastic(TextureProvider textureProvider, EventBus eventBus) {
         super(new FabricDisplay(), new com.collarmc.plastic.FabricWorld(textureProvider, new FabricChatService(new FabricDisplay()), eventBus), eventBus);
+        LOGGER.info("FabricPlastic 1.19 constructor");
+    }
+
+    @Override
+    protected Logger getLogger() {
+        return LOGGER;
     }
 
     @Override

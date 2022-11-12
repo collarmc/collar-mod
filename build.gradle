@@ -2,9 +2,9 @@ plugins {
     id 'java'
     id 'dev.architectury.loom' version '0.12.0-SNAPSHOT' apply false //For forge 1.16, 1.17. It can be used to build Fabric too, we won't use both, only arch
     id "architectury-plugin" version "3.4-SNAPSHOT" apply false //Need for common module management.
-    id "com.github.johnrengelman.shadow" version "7.1.2" apply false
+    id "com.github.johnrengelman.shadow" version "7.0.0" apply false
 
-    id "com.github.breadmoirai.github-release" version "2.4.1" //TODO automate GitHub releases
+    id "com.github.breadmoirai.github-release" version "2.2.12" //TODO automate GitHub releases
 }
 
 group project.maven_group
@@ -76,7 +76,7 @@ if(System.getenv("GITHUB_TOKEN") != null) {
     githubRelease {
         token System.getenv("GITHUB_TOKEN") // This is your personal access token with Repo permissions
         // You get this from your user settings > developer settings > Personal Access Tokens
-        owner "KosmX"
+        owner "CaptainRexPL"
         // default is the last part of your group. Eg group: "com.github.breadmoirai" => owner: "breadmoirai"
         repo "collar-mod" // by default this is set to your project name
         tagName "${project.version}" // by default this is set to "v${project.version}"
