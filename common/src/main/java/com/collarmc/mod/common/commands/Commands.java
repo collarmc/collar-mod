@@ -24,6 +24,8 @@ import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Comparator;
 import java.util.List;
@@ -41,7 +43,7 @@ import static com.mojang.brigadier.arguments.StringArgumentType.getString;
 import static com.mojang.brigadier.arguments.StringArgumentType.string;
 
 public final class Commands<S> {
-
+    private static final Logger LOGGER = LogManager.getLogger(Commands.class.getName());
     private final CollarService collarService;
     private final Messages messages;
     private final Plastic plastic;
@@ -238,11 +240,11 @@ public final class Commands<S> {
 
         // collar party add [name] [player]
         dispatcher.register(prefixed(type.name, literal("add")
-                .then(argument("groupName", group(type))
+                .then(argument("group", group(type))
                         .then(argument("playerName", player())
                                 .executes(context -> {
                                     collarService.with(collar -> {
-                                        Group group = getGroup(context, "groupName");
+                                        Group group = getGroup(context, "group");
                                         Player player = getPlayer(context, "playerName");
                                         collar.groups().invite(group, ImmutableList.of(player.id()));
                                     });
@@ -266,10 +268,10 @@ public final class Commands<S> {
 
         // collar party members [name]
         dispatcher.register(prefixed(type.name, literal("members")
-                .then(argument("groupName", group(type)))
+                .then(argument("name", group(type))
                 .executes(context -> {
-                    collarService.with(collar -> {
-                        Group group = getGroup(context, "groupName");
+                   collarService.with(collar -> {
+                        Group group = getGroup(context, "name");
                         plastic.display.displayMessage("Members:");
                         group.members.forEach(member -> {
                             Optional<Player> thePlayer = plastic.world.allPlayers().stream().filter(player -> member.player.minecraftPlayer.id.equals(player.id())).findFirst();
@@ -283,7 +285,7 @@ public final class Commands<S> {
                         });
                     });
                     return 1;
-                })));
+                }))));
     }
 
     private void registerLocationCommands(CommandDispatcher<S> dispatcher) {
