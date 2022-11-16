@@ -3,33 +3,6 @@
 //TODO general description about collar-mod  
 maybe put the current stuff into a `BUILD.md` and use README as a user-manual
 
-## Compiling submodules with Java 1.8
-### Set it up in IntelliJ:
-
-**Set the project SDK to Java 16 in `Project Structure`**
-
-*Then*  
-if you want to compile Forge 1.12 with J1.8:  
-Set `forge-1.12`, `forge-1.12.main` and `forge-1.12.test` JDK to Java 1.8.  
-
-Apparently every module can be compiled with `JDK 16`, including `forge-1.12`  
-
-## Debug
-
-**1.16**  
-Forge 1.16 debug won't launch, even if it can compile with JDK16
-
-Fix it by adding this to the launch arguments:  
-`--add-exports=java.base/sun.security.util=ALL-UNNAMED --add-opens=java.base/java.util.jar=ALL-UNNAMED`  
-~~Or you can just make it to debug with old jdk.~~
-
-**1.12**  
-~~Well, that is a bit complicated. Hope *[The Forge God, LexManos](https://github.com/LexManos)* will fix it.~~  
-~~now: [forge-1.12/README](/forge-1.12/README.md)~~   
-
-It has been fixed.  
-Just set the debug Java version to Java 1.8 and the module to `collar-mod.forge-1.12.main`  
-And press run/debug
 
 
 ### Warning:
