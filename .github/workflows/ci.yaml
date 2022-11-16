@@ -61,4 +61,4 @@ jobs:
           prerelease: true
           title: Build
           files: |
-            collarmod/artifacts
+            collarmod/artifacts/*.jar
