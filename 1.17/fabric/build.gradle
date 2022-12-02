@@ -25,7 +25,7 @@ dependencies {
     implementation project(':common')
     implementation (project(path: ":${project.module_name}:glue"))
 
-    //developmentFabric(project(path: ":${project.module_name}:glue")) { transitive = false }
+    developmentFabric(project(path: ":${project.module_name}:glue")) { transitive = false }
     //developmentFabric(project(path: ":something")) { transitive = false } //Use this is a module contains ANY mod resources.
 
     compileModule project(path: ":common", configuration: 'shadow')
