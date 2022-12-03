@@ -25,13 +25,18 @@ pluginManagement {
 rootProject.name = 'collar-mod'
 include 'plastic-api'
 include 'common'
-include '1.19'
-include '1.19:glue'
-include '1.19:fabric'
+include 'forge-1.12'
+//1.16 stuff
 include '1.16'
 include '1.16:glue'
 include '1.16:fabric'
+include '1.16:forge'
+
+//1.17 stuff
 include '1.17'
 include '1.17:glue'
 include '1.17:fabric'
 //include '1.17:forge' //No forge for 1.17
+include '1.19'
+include '1.19:glue'
+include '1.19:fabric'

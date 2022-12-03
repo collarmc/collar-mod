@@ -1,0 +1,108 @@
+buildscript {
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:5.+'
+    }
+}
+plugins{
+    id 'java'
+    id 'idea'
+}
+apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'com.github.johnrengelman.shadow'
+
+version = rootProject.version
+group = project.maven_group
+archivesBaseName = 'collar-forge-' + project.property('collar.mc.version')
+sourceCompatibility = targetCompatibility = '1.8'
+configurations {
+    compileModule //We'll need to shadow the whole stuff together
+}
+minecraft {
+    mappings channel: project.property('collar.mcp.channel'), version: "${project.property('collar.mcp.mapping')}-${project.property('collar.mcp.version')}"
+    //makeObfSourceJar = false
+    runs {
+        client {
+            workingDirectory project.file('run')
+
+            // Recommended logging data for a userdev environment
+            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+
+            // Recommended logging level for the console
+            property 'forge.logging.console.level', 'debug'
+        }
+
+        server {
+
+            // Recommended logging data for a userdev environment
+            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+
+            // Recommended logging level for the console
+            property 'forge.logging.console.level', 'debug'
+        }
+    }
+}
+
+jar {
+    manifest {
+        attributes([
+                "Specification-Title": "examplemod",
+                "Specification-Vendor": "examplemodsareus",
+                "Specification-Version": "1", // We are version 1 of ourselves
+                "Implementation-Title": project.name,
+                "Implementation-Version": "${project.version}",
+                "Implementation-Vendor" :"examplemodsareus",
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+        ])
+    }
+}
+
+repositories {
+    maven {
+        url "https://www.cursemaven.com"
+    }
+}
+
+dependencies {
+    minecraft "net.minecraftforge:forge:${project.property('collar.forge.version')}"
+    implementation project(':plastic-api')
+    implementation project(':common')
+    compileModule project(path: ":common", configuration: 'shadow')
+
+    //implementation group: 'info.journeymap', name: 'journeymap-api', version: project.journey_version
+    implementation 'curse.maven:journeymap-32274:2916002'
+    //TODO compileModule group: 'info.journeymap', name: 'journeymap-api', version: project.journey_version
+    //Do we want to include it in the mod?
+}
+
+processResources {
+    inputs.property "version", project.version
+    inputs.property "mcversion", project.property('collar.mc.version')
+    inputs.property "description", project.collar_description
+
+    filesMatching("mcmod.info") {
+        expand "version": project.version, "mcversion": project.property('collar.mc.version'), "description": project.collar_description
+    }
+}
+
+shadowJar {
+    configurations = [project.configurations.compileModule]
+
+    relocate 'com.mojang.brigadier', 'com.collarmc.libs.com.mojang.brigadier'
+    relocate 'com.collarmc.shared', 'com.collarmc.libs.com.collarmc.shared'
+    relocate 'com.collarmc.client', 'com.collarmc.libs.com.collarmc.client'
+    relocate 'com.collarmc.pounce', 'com.collarmc.libs.com.collarmc.pounce'
+    classifier ''
+}
+
+jar.finalizedBy('shadowJar','reobfJar')
+
+
+task copyArtifacts{
+    dependsOn("build")
+    doLast {
+        copy{
+            from "${project.projectDir}/build/libs/${project.archives_base_name}-forge-1.12.2-${project.version}.jar"
+            into "${rootProject.projectDir}/artifacts"
+        }
+    }
+}
