@@ -31,7 +31,7 @@ dependencies {
     //developmentFabric(project(path: ":something")) { transitive = false } //Use this is a module contains ANY mod resources.
 
     compileModule project(path: ":common", configuration: 'shadow')
-    modApi "dev.architectury:architectury-fabric:${rootProject.architectury_version}"
+    //modApi "dev.architectury:architectury-fabric:${rootProject.architectury_version}"
 
 
     compileModule group: 'org.joml', name: 'joml', version: '1.10.5'
