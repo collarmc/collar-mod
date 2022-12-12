@@ -41,7 +41,7 @@ dependencies {
 
     // PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
     // You may need to force-disable transitiveness on them.
-    implementation group: 'org.joml', name: 'joml', version: '1.10.1'
+    implementation group: 'org.joml', name: 'joml', version: '1.10.5'
     common(project(path: ":${project.module_name}:glue", configuration: "namedElements")) { transitive false }
     //shadowCommon(project(path: ":${project.module_name}:glue", configuration: "transformProductionFabric")) { transitive false }
     compileModule (project(path: ":${project.module_name}:glue", configuration: "transformProductionFabric")) {
