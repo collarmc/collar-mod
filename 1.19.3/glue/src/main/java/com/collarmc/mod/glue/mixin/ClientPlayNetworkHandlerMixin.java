@@ -12,13 +12,13 @@ import com.collarmc.plastic.chat.ChatService;
 @Mixin(ClientPlayNetworkHandler.class)
 public abstract class ClientPlayNetworkHandlerMixin {
     @Inject(method = "sendChatMessage", at = @At(value = "HEAD"), cancellable = true)
-    public void sendChatMessage(String message, Text preview, CallbackInfo ci) {
+    public void sendChatMessage(String content, CallbackInfo ci) {
         // if it looks like a command, don't intercept it
-        if (message.startsWith("/")) {
+        if (content.startsWith("/")) {
             return;
         }
         ChatService chatService = Plastic.getPlastic().world.chatService;
-        if (chatService.onChatMessageSent(message)) {
+        if (chatService.onChatMessageSent(content)) {
             ci.cancel();
         }
     }
