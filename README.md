@@ -1,7 +1,7 @@
 [![CI](https://github.com/CaptainRexPL/collar-mod/actions/workflows/ci.yaml/badge.svg)](https://github.com/CaptainRexPL/collar-mod/actions/workflows/ci.yaml)
 # Collar mod  
 About Collar
-Online services for Minecraft mods, including waypoint & location sharing, support for groups & parties, and encrypted messaging. Supports fabric 1.17.1 and 1.19.2
+Online services for Minecraft mods, including waypoint & location sharing, support for groups & parties, and encrypted messaging. Supports fabric 1.17.1, 1.19.2 and 1.19.3
 
 # Features
 Create long running groups or short lived parties of players to share coordinates, waypoints and chat securely
