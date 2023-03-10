@@ -1,12 +1,11 @@
 package com.collarmc.mod.fabric.client;
 
-import com.collarmc.client.Collar;
 import com.collarmc.client.plugin.Plugins;
 import com.collarmc.mod.common.CollarService;
 import com.collarmc.mod.common.commands.Commands;
 import com.collarmc.mod.common.events.CollarModInitializedEvent;
 import com.collarmc.mod.common.features.messaging.Messages;
-import com.collarmc.mod.common.plastic.CollarTextureProvider;
+import com.collarmc.mod.common.plastic.*;
 import com.collarmc.mod.glue.render.TracerRenderer;
 import com.collarmc.mod.glue.render.WaypointRenderer;
 import com.collarmc.plastic.Plastic;
@@ -16,10 +15,8 @@ import com.mojang.brigadier.CommandDispatcher;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.fabricmc.fabric.impl.command.client.ClientCommandInternals;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.command.CommandRegistryAccess;
 import org.apache.logging.log4j.LogManager;
@@ -32,7 +29,7 @@ public class CollarFabricClient implements ClientModInitializer {
     private static final Logger LOGGER = LogManager.getLogger(CollarFabricClient.class.getName());
     private static final EventBus EVENT_BUS = new EventBus(Runnable::run);
     private static final Plugins PLUGINS = new Plugins();
-    private static final Plastic PLASTIC = new FabricPlastic(new CollarTextureProvider(), EVENT_BUS);
+    private static final Plastic PLASTIC = new FabricPlastic(new CollarTextureProvider(EVENT_BUS), EVENT_BUS);
     private static final CollarService COLLAR_SERVICE = new CollarService(PLASTIC, EVENT_BUS, PLUGINS);
     private static final WaypointRenderer WAYPOINT_RENDERER = new WaypointRenderer(PLASTIC, COLLAR_SERVICE);
     private static final TracerRenderer TRACER_RENDERER = new TracerRenderer(PLASTIC, COLLAR_SERVICE);

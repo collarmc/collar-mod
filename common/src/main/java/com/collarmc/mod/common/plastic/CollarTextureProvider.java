@@ -1,14 +1,17 @@
 package com.collarmc.mod.common.plastic;
 
 import com.collarmc.client.events.CollarStateChangedEvent;
+import com.collarmc.pounce.EventBus;
+import com.collarmc.pounce.Preference;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.collarmc.client.Collar;
-import com.collarmc.client.api.textures.Texture;
 import com.collarmc.plastic.player.Player;
 import com.collarmc.plastic.ui.TextureProvider;
 import com.collarmc.plastic.ui.TextureType;
 import com.collarmc.pounce.Subscribe;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.awt.image.BufferedImage;
 import java.util.Objects;
@@ -19,18 +22,38 @@ import java.util.concurrent.TimeUnit;
 
 public class CollarTextureProvider implements TextureProvider {
 
-    private static final Cache<TextureKey, CompletableFuture<Texture>> TEXTURE_CACHE = CacheBuilder.newBuilder()
+    private static final Logger LOGGER = LogManager.getLogger(CollarTextureProvider.class);
+
+    private final EventBus eventBus;
+
+    private static final Cache<TextureKey, CompletableFuture<Optional<BufferedImage>>> TEXTURE_CACHE = CacheBuilder.newBuilder()
             .expireAfterAccess(5, TimeUnit.MINUTES)
             .initialCapacity(100)
             .build();
 
     private Collar collar;
 
+    public CollarTextureProvider(EventBus eventBus) {
+        this.eventBus = eventBus;
+        eventBus.subscribe(this);
+    }
+
     @Override
     public CompletableFuture<Optional<BufferedImage>> getTexture(Player player, TextureType type, BufferedImage defaultTexture) {
-        if (collar == null || !collar.getState().equals(Collar.State.CONNECTED)) {
+        if (this.collar != null && this.collar.getState().equals(Collar.State.CONNECTED)) {
+            TextureKey textureKey = new TextureKey(player.id(), type);
+            CompletableFuture<Optional<BufferedImage>> theImage = (CompletableFuture)TEXTURE_CACHE.getIfPresent(textureKey);
+            if (theImage == null) {
+                theImage = this.getTextureFromApi(player, type, defaultTexture);
+                TEXTURE_CACHE.put(textureKey, theImage);
+            }
+            return theImage;
+        } else {
             return CompletableFuture.completedFuture(Optional.empty());
         }
+    }
+
+    private CompletableFuture<Optional<BufferedImage>> getTextureFromApi(Player player, TextureType type, BufferedImage defaultTexture) {
         com.collarmc.api.textures.TextureType textureType;
         switch (type) {
             case CAPE:
@@ -43,39 +66,35 @@ public class CollarTextureProvider implements TextureProvider {
                 throw new IllegalStateException("unknown type " + type);
         }
 
-        return collar.identities().resolvePlayer(player.id())
-                .thenComposeAsync(thePlayer -> {
-                    if (thePlayer.isPresent()) {
-                        return collar.textures().playerTextureFuture(thePlayer.get(), textureType)
-                                .thenComposeAsync(textureOptional -> {
-                                    if (textureOptional.isPresent()) {
-                                        CompletableFuture<Optional<BufferedImage>> result = new CompletableFuture<>();
-                                        textureOptional.ifPresent(texture -> {
-                                            texture.loadImage(bufferedImageOptional -> {
-                                                if (bufferedImageOptional.isPresent()) {
-                                                    result.complete(bufferedImageOptional);
-                                                } else {
-                                                    result.complete(Optional.ofNullable(defaultTexture));
-                                                }
-                                            });
-                                        });
-                                        return result;
-                                    } else {
-                                        return CompletableFuture.completedFuture(Optional.ofNullable(defaultTexture));
-                                    }
-                                });
-                    } else {
-                        return CompletableFuture.completedFuture(Optional.ofNullable(defaultTexture));
-                    }
-                });
+        return this.collar.identities().resolvePlayer(player.id()).thenComposeAsync((thePlayer) -> {
+            return thePlayer.isPresent() ? this.collar.textures().playerTextureFuture((com.collarmc.api.session.Player)thePlayer.get(), textureType).thenComposeAsync((textureOptional) -> {
+                if (textureOptional.isPresent()) {
+                    CompletableFuture<Optional<BufferedImage>> result = new CompletableFuture();
+                    textureOptional.ifPresent((texture) -> {
+                        texture.loadImage((bufferedImageOptional) -> {
+                            if (bufferedImageOptional.isPresent()) {
+                                result.complete(bufferedImageOptional);
+                            } else {
+                               result.complete(Optional.ofNullable(defaultTexture));
+                            }
+
+                        });
+                    });
+                    return result;
+                } else {
+                    return CompletableFuture.completedFuture(Optional.ofNullable(defaultTexture));
+                }
+            }) : CompletableFuture.completedFuture(Optional.ofNullable(defaultTexture));
+        });
     }
 
-    @Subscribe
+    @Subscribe(Preference.CALLER)
     public void onConnected(CollarStateChangedEvent event) {
-        collar = event.collar;
+        this.collar = event.collar;
         if (event.state == Collar.State.CONNECTED) {
             TEXTURE_CACHE.invalidateAll();
         }
+
     }
 
     private static final class TextureKey {
