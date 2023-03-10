@@ -26,10 +26,12 @@ import java.io.IOException;
 
 @Environment(EnvType.CLIENT)
 public class CollarFabricClient implements ClientModInitializer {
+
     private static final Logger LOGGER = LogManager.getLogger(CollarFabricClient.class.getName());
     private static final EventBus EVENT_BUS = new EventBus(Runnable::run);
     private static final Plugins PLUGINS = new Plugins();
-    private static final Plastic PLASTIC = new FabricPlastic(new CollarTextureProvider(EVENT_BUS), EVENT_BUS);
+    private  static final CollarTextureProvider COLLAR_TEXTURE_PROVIDER = new CollarTextureProvider(EVENT_BUS);
+    private static final Plastic PLASTIC = new FabricPlastic(COLLAR_TEXTURE_PROVIDER, EVENT_BUS);
     private static final CollarService COLLAR_SERVICE = new CollarService(PLASTIC, EVENT_BUS, PLUGINS);
     private static final WaypointRenderer WAYPOINT_RENDERER = new WaypointRenderer(PLASTIC, COLLAR_SERVICE);
     private static final TracerRenderer TRACER_RENDERER = new TracerRenderer(PLASTIC, COLLAR_SERVICE);
