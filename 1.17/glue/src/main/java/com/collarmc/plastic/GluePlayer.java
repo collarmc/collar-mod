@@ -40,7 +40,7 @@ public class GluePlayer implements Player {
     private final AbstractClientPlayerEntity playerEntity;
     private final TextureProvider textureProvider;
 
-    public FabricPlayer(AbstractClientPlayerEntity playerEntity, TextureProvider textureProvider) {
+    public GluePlayer(AbstractClientPlayerEntity playerEntity, TextureProvider textureProvider) {
         this.playerEntity = playerEntity;
         this.textureProvider = textureProvider;
     }
