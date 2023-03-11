@@ -4,8 +4,11 @@
   "version": "${version}",
   "name": "Collar Fabric",
   "description": "${description}",
-  "authors": [],
-  "contact": {},
+  "authors": ["orsond","sakuya","HermeticLock","KosmX"],
+  "contact": {
+    "homepage": "https://www.collarmc.com/",
+    "sources": "https://github.com/CaptainRexPL/collar-mod"
+  },
   "license": "MIT",
   "icon": "assets/collar/icon.png",
   "environment": "*",
