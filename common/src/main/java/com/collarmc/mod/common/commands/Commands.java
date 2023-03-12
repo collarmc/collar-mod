@@ -418,8 +418,8 @@ public final class Commands<S> {
                                         .executes(context -> {
                                             collarService.with(collar -> {
                                                 Group group = getGroup(context, "group");
-                                                WaypointArgument argument = context.getArgument("waypoint", WaypointArgument.class);
-                                                if (!group.id.equals(argument.group.id)) {
+                                                WaypointArgument argument = context.getArgument("name", WaypointArgument.class);
+                                                if (group.id.equals(argument.group.id)) {
                                                     collar.location().removeWaypoint(argument.group, argument.waypoint);
                                                 } else {
                                                     plastic.display.displayInfoMessage("Waypoint " + argument.waypoint + " does not belong to group " + group.name);
