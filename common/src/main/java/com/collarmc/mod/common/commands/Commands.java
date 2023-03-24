@@ -412,14 +412,14 @@ public final class Commands<S> {
 
         // collar location waypoint remove [name] from [group]
         dispatcher.register(prefixed("waypoint", literal("remove")
-                .then(argument("name", groupWaypoint())
+                .then(argument("group waypoint's name", groupWaypoint())
                         .then(literal("from")
                                 .then(argument("group", groups())
                                         .executes(context -> {
                                             collarService.with(collar -> {
                                                 Group group = getGroup(context, "group");
-                                                WaypointArgument argument = context.getArgument("name", WaypointArgument.class);
-                                                if (group.name.equals(argument.group.name)) {
+                                                WaypointArgument argument = context.getArgument("group waypoint's name", WaypointArgument.class);
+                                                if (group.id.equals(argument.group.id)) {
                                                     collar.location().removeWaypoint(argument.group, argument.waypoint);
                                                 } else {
                                                     plastic.display.displayInfoMessage("Waypoint " + argument.waypoint + " does not belong to group " + group.name);
