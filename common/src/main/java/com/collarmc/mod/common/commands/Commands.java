@@ -277,7 +277,7 @@ public final class Commands<S> {
                             Optional<Player> thePlayer = plastic.world.allPlayers().stream().filter(player -> member.player.minecraftPlayer.id.equals(player.id())).findFirst();
                             String message;
                             if (thePlayer.isPresent()) {
-                                message = member.profile.name + " playing as " + member.player.minecraftPlayer.id + " (" + member.membershipRole.name() + ")";
+                                message = member.profile.name + " playing as " + member.player.minecraftPlayer.id;
                             } else {
                                 message = member.profile.name;
                             }
@@ -412,13 +412,13 @@ public final class Commands<S> {
 
         // collar location waypoint remove [name] from [group]
         dispatcher.register(prefixed("waypoint", literal("remove")
-                .then(argument("name", groupWaypoint())
+                .then(argument("group waypoint's name", groupWaypoint())
                         .then(literal("from")
                                 .then(argument("group", groups())
                                         .executes(context -> {
                                             collarService.with(collar -> {
                                                 Group group = getGroup(context, "group");
-                                                WaypointArgument argument = context.getArgument("name", WaypointArgument.class);
+                                                WaypointArgument argument = context.getArgument("group waypoint's name", WaypointArgument.class);
                                                 if (group.id.equals(argument.group.id)) {
                                                     collar.location().removeWaypoint(argument.group, argument.waypoint);
                                                 } else {
