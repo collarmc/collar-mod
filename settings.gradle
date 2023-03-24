@@ -39,3 +39,7 @@ include '1.19:fabric'
 include '1.19.3'
 include '1.19.3:glue'
 include '1.19.3:fabric'
+
+include '1.19.4'
+include '1.19.4:glue'
+include '1.19.4:fabric'

@@ -277,7 +277,7 @@ public final class Commands<S> {
                             Optional<Player> thePlayer = plastic.world.allPlayers().stream().filter(player -> member.player.minecraftPlayer.id.equals(player.id())).findFirst();
                             String message;
                             if (thePlayer.isPresent()) {
-                                message = member.profile.name + " playing as " + member.player.minecraftPlayer.id + " (" + member.membershipRole.name() + ")";
+                                message = member.profile.name + " playing as " + member.player.minecraftPlayer.id;
                             } else {
                                 message = member.profile.name;
                             }
