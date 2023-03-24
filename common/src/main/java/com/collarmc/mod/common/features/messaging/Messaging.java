@@ -115,19 +115,21 @@ public class Messaging {
         );
     }
 
-    private void displaySecurePrivateMessage(String sender, String content) {
+    private void displaySecurePrivateMessage(String recipient, String content) {
         plastic.display.displayMessage(plastic.display.newTextBuilder()
-                .add(sender, TextColor.GRAY, TextStyle.ITALIC)
-                .add(" securely whispers to you: ", TextColor.GRAY, TextStyle.ITALIC)
+                .add("You securely whisper to ", TextColor.GRAY, TextStyle.ITALIC)
+                .add(recipient, TextColor.GRAY, TextStyle.ITALIC)
+                .add(": ", TextColor.GRAY, TextStyle.ITALIC)
                 .add(content, TextColor.GRAY, TextStyle.ITALIC)
         );
     }
 
-    private void displayInsecurePrivateMessage(String sender, String content) {
+    private void displayInsecurePrivateMessage(String recipient, String content) {
         plastic.display.displayMessage(plastic.display.newTextBuilder()
-                .add(sender, TextColor.DARK_RED, TextStyle.ITALIC)
-                .add(" insecurely whispers to you: ", TextColor.DARK_RED, TextStyle.ITALIC)
-                .add(content, TextColor.DARK_RED, TextStyle.ITALIC)
+                .add("You insecurely whisper to ", TextColor.GRAY, TextStyle.ITALIC)
+                .add(recipient, TextColor.RED, TextStyle.ITALIC)
+                .add(": ", TextColor.DARK_RED, TextStyle.ITALIC)
+                .add(content, TextColor.RED, TextStyle.ITALIC)
         );
     }
 }
