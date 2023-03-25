@@ -274,10 +274,14 @@ public final class Commands<S> {
                         Group group = getGroup(context, "name");
                         plastic.display.displayMessage("Members:");
                         group.members.forEach(member -> {
-                            Optional<Player> thePlayer = plastic.world.allPlayers().stream().filter(player -> member.player.minecraftPlayer.id.equals(player.id())).findFirst();
                             String message;
-                            if (thePlayer.isPresent()) {
-                                message = member.profile.name + " playing as " + member.player.minecraftPlayer.id;
+                            if (member.player.minecraftPlayer != null) {
+                                Optional<Player> thePlayer = plastic.world.allPlayers().stream().filter(player -> member.player.minecraftPlayer.id.equals(player.id())).findFirst();
+                                if (thePlayer.isPresent()) {
+                                    message = member.profile.name + " playing as " + member.player.minecraftPlayer.id;
+                                } else {
+                                    message = member.profile.name;
+                                }
                             } else {
                                 message = member.profile.name;
                             }
