@@ -73,12 +73,12 @@ tasks.withType(JavaCompile) {
 // if it is present.
 // If you remove this task, sources will not be generated.
 task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier "sources"
+    archiveClassifier.set "sources"
     from sourceSets.main.allSource
 }
 shadowJar{
     configurations = [project.configurations.compileModule]
-    classifier "dev"
+    archiveClassifier.set "dev"
     //relocate 'com.mojang.brigadier', 'com.collarmc.libs.com.mojang.brigadier'
     relocate 'com.collarmc.shared', 'com.collarmc.libs.com.collarmc.shared'
     relocate 'com.collarmc.client', 'com.collarmc.libs.com.collarmc.client'
@@ -88,7 +88,7 @@ shadowJar{
 remapJar{
     dependsOn shadowJar
     input.set shadowJar.archiveFile
-    classifier "fabric"
+    archiveClassifier.set "fabric"
 }
 jar {
     from "LICENSE"

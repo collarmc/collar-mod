@@ -27,5 +27,5 @@ shadowJar{
         include(dependency('com.collarmc:client:.*'))
         include(dependency('com.collarmc:plugin:.*'))
     }
-    classifier 'shadow'
+    archiveClassifier.set 'shadow'
 }
