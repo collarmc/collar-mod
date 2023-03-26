@@ -35,7 +35,7 @@ public class CollarTextureProvider implements TextureProvider {
 
     public CollarTextureProvider(EventBus eventBus) {
         this.eventBus = eventBus;
-        eventBus.subscribe(this);
+        this.eventBus.subscribe(this);
     }
 
     @Override

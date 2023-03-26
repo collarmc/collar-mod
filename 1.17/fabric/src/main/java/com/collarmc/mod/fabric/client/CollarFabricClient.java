@@ -27,8 +27,8 @@ public class CollarFabricClient implements ClientModInitializer {
     private  static final CollarTextureProvider COLLAR_TEXTURE_PROVIDER = new CollarTextureProvider(EVENT_BUS);
     private static final Plastic PLASTIC = new GluePlastic(COLLAR_TEXTURE_PROVIDER, EVENT_BUS);
     private static final CollarService COLLAR_SERVICE = new CollarService(PLASTIC, EVENT_BUS, PLUGINS);
-    private static final WaypointRenderer WAYPOINT_RENDERER = new WaypointRenderer(PLASTIC, COLLAR_SERVICE);
-    private static final TracerRenderer TRACER_RENDERER = new TracerRenderer(PLASTIC, COLLAR_SERVICE);
+    private static final WaypointRenderer WAYPOINT_RENDERER = new WaypointRenderer(PLASTIC, EVENT_BUS, COLLAR_SERVICE);
+    private static final TracerRenderer TRACER_RENDERER = new TracerRenderer(PLASTIC, EVENT_BUS, COLLAR_SERVICE);
     private static final Messages GROUP_CHAT_SERVICE = new Messages(PLASTIC, COLLAR_SERVICE);
 
     @Override

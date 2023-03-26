@@ -6,6 +6,7 @@ import com.collarmc.mod.common.CollarService;
 import com.collarmc.mod.glue.mixin.MinecraftClientFieldMixin;
 import com.collarmc.plastic.Plastic;
 import com.collarmc.plastic.player.Player;
+import com.collarmc.pounce.EventBus;
 import com.collarmc.pounce.Preference;
 import com.collarmc.pounce.Subscribe;
 import net.minecraft.client.MinecraftClient;
@@ -21,10 +22,14 @@ public class WaypointRenderer {
 
     private final Plastic plastic;
     private final CollarService collarService;
+    private final EventBus eventBus;
 
-    public WaypointRenderer(Plastic plastic, CollarService collarService) {
+
+    public WaypointRenderer(Plastic plastic, EventBus eventBus, CollarService collarService) {
         this.plastic = plastic;
         this.collarService = collarService;
+        this.eventBus = eventBus;
+        this.eventBus.subscribe(this);
     }
 
     @Subscribe(Preference.CALLER)
