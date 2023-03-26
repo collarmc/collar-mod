@@ -1,6 +1,7 @@
 package com.collarmc.mod.glue.render;
 
 import com.collarmc.mod.glue.mixin.MinecraftClientFieldMixin;
+import com.collarmc.pounce.EventBus;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BeaconBlockEntityRenderer;
@@ -22,9 +23,13 @@ public class WaypointRenderer {
     private final Plastic plastic;
     private final CollarService collarService;
 
-    public WaypointRenderer(Plastic plastic, CollarService collarService) {
+    private final EventBus eventBus;
+
+    public WaypointRenderer(Plastic plastic, EventBus eventBus, CollarService collarService) {
         this.plastic = plastic;
         this.collarService = collarService;
+        this.eventBus = eventBus;
+        this.eventBus.subscribe(this);
     }
 
     @Subscribe(Preference.CALLER)

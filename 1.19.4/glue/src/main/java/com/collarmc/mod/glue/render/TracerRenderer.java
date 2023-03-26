@@ -4,6 +4,7 @@ import com.collarmc.api.location.Location;
 import com.collarmc.client.Collar;
 import com.collarmc.mod.common.CollarService;
 import com.collarmc.plastic.Plastic;
+import com.collarmc.pounce.EventBus;
 import com.collarmc.pounce.Preference;
 import com.collarmc.pounce.Subscribe;
 import net.minecraft.client.MinecraftClient;
@@ -19,16 +20,19 @@ public final class TracerRenderer {
 
     private final Plastic plastic;
     private final CollarService service;
+    private final EventBus eventBus;
 
-    public TracerRenderer(Plastic plastic, CollarService service) {
+    public TracerRenderer(Plastic plastic, EventBus eventBus, CollarService service) {
         this.plastic = plastic;
         this.service = service;
+        this.eventBus = eventBus;
+        this.eventBus.subscribe(this);
     }
 
     @Subscribe(Preference.CALLER)
     public void onRender(WorldRenderEvent event) {
         service.getCollar().ifPresent(collar -> {
-            if (collar.getState() != Collar.State.CONNECTED || !collar.configuration.debugConfiguration.tracers) {
+            if (collar.getState() != Collar.State.CONNECTED) {
                 return;
             }
             collar.location().playerLocations().forEach((player, location) -> {
@@ -78,7 +82,7 @@ public final class TracerRenderer {
     }
 
     private static Vector3d lerpPos(Location location, final float alpha) {
-        Location lastRenderLocation = location; // TODO: figuree out how to handle this
+        Location lastRenderLocation = location; // TODO: figure out how to handle this
         float x = MathHelper.lerp(alpha, lastRenderLocation.x.floatValue(), location.x.floatValue());
         float y = MathHelper.lerp(alpha, lastRenderLocation.y.floatValue(), location.y.floatValue());
         float z = MathHelper.lerp(alpha, lastRenderLocation.z.floatValue(), location.z.floatValue());

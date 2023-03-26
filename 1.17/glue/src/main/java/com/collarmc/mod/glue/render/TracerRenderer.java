@@ -1,7 +1,9 @@
 package com.collarmc.mod.glue.render;
 
+import com.collarmc.pounce.EventBus;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.*;
+import com.collarmc.pounce.EventBus;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import org.joml.Vector3d;
@@ -20,9 +22,13 @@ public final class TracerRenderer {
     private final Plastic plastic;
     private final CollarService service;
 
-    public TracerRenderer(Plastic plastic, CollarService service) {
+    private final EventBus eventBus;
+
+    public TracerRenderer(Plastic plastic, EventBus eventBus, CollarService service) {
         this.plastic = plastic;
         this.service = service;
+        this.eventBus = eventBus;
+        this.eventBus.subscribe(this);
     }
 
     @Subscribe(Preference.CALLER)
@@ -31,7 +37,7 @@ public final class TracerRenderer {
 
 
         service.getCollar().ifPresent(collar -> {
-            if (collar.getState() != Collar.State.CONNECTED || !collar.configuration.debugMode) {
+            if (collar.getState() != Collar.State.CONNECTED) {
                 return;
             }
             collar.location().playerLocations().forEach((player, location) -> {
