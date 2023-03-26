@@ -67,11 +67,19 @@ public class Messaging {
     public void onPrivateMessageReceived(PrivateMessageReceivedEvent event) {
         if (event.message instanceof TextMessage) {
             TextMessage textMessage = (TextMessage) event.message;
-            plastic.display.displayMessage(plastic.display.newTextBuilder()
-                    .add(plastic.world.currentPlayer().name(), TextColor.GRAY)
-                    .add(" securely whispers to you: ", TextColor.GRAY)
-                    .add(textMessage.content, TextColor.GRAY)
-            );
+            event.collar.identities().resolveProfile(event.player).thenAccept(profileOptional -> {
+                if (profileOptional.isPresent()) {
+                    PublicProfile profile = profileOptional.get();
+                    displaySecurePrivateMessage(profile.name, textMessage.content);
+                } else {
+                    Optional<com.collarmc.plastic.player.Player> collarPlayer = plastic.world.findPlayerById(event.player.minecraftPlayer.id);
+                    if (collarPlayer.isPresent()) {
+                        displaySecurePrivateMessageReceived(collarPlayer.get().name(), textMessage.content);
+                    } else {
+                        displaySecurePrivateMessageReceived(event.player.identity.id().toString(), textMessage.content);
+                    }
+                }
+            });
         }
     }
 
@@ -132,4 +140,13 @@ public class Messaging {
                 .add(content, TextColor.RED, TextStyle.ITALIC)
         );
     }
+
+    private void displaySecurePrivateMessageReceived(String sender, String content) {
+        plastic.display.displayMessage(plastic.display.newTextBuilder()
+                .add(sender, TextColor.GRAY, TextStyle.ITALIC)
+                .add(" securely whispers to you: ", TextColor.GRAY, TextStyle.ITALIC)
+                .add(content, TextColor.GRAY, TextStyle.ITALIC)
+        );
+    }
+
 }
