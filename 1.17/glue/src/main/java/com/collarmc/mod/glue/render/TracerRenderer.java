@@ -85,7 +85,7 @@ public final class TracerRenderer {
     }
 
     private static Vector3d lerpPos(Location location, final float alpha) {
-        Location lastRenderLocation = location; // TODO: figuree out how to handle this
+        Location lastRenderLocation = location; // TODO: figure out how to handle this
         float x = MathHelper.lerp(alpha, lastRenderLocation.x.floatValue(), location.x.floatValue());
         float y = MathHelper.lerp(alpha, lastRenderLocation.y.floatValue(), location.y.floatValue());
         float z = MathHelper.lerp(alpha, lastRenderLocation.z.floatValue(), location.z.floatValue());

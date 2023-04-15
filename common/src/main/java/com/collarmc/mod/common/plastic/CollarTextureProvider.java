@@ -5,6 +5,7 @@ import com.collarmc.pounce.EventBus;
 import com.collarmc.pounce.Preference;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
 import com.collarmc.client.Collar;
 import com.collarmc.plastic.player.Player;
 import com.collarmc.plastic.ui.TextureProvider;
@@ -14,11 +15,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class CollarTextureProvider implements TextureProvider {
 
@@ -26,9 +29,10 @@ public class CollarTextureProvider implements TextureProvider {
 
     private final EventBus eventBus;
 
-    private static final Cache<TextureKey, CompletableFuture<Optional<BufferedImage>>> TEXTURE_CACHE = CacheBuilder.newBuilder()
-            .expireAfterAccess(5, TimeUnit.MINUTES)
+    private static final Cache<TextureKey, Optional<BufferedImage>> TEXTURE_CACHE = CacheBuilder.newBuilder()
+            .expireAfterAccess(15, TimeUnit.MINUTES)
             .initialCapacity(100)
+            .recordStats()
             .build();
 
     private Collar collar;
@@ -42,18 +46,36 @@ public class CollarTextureProvider implements TextureProvider {
     public CompletableFuture<Optional<BufferedImage>> getTexture(Player player, TextureType type, BufferedImage defaultTexture) {
         if (this.collar != null && this.collar.getState().equals(Collar.State.CONNECTED)) {
             TextureKey textureKey = new TextureKey(player.id(), type);
-            CompletableFuture<Optional<BufferedImage>> theImage = (CompletableFuture)TEXTURE_CACHE.getIfPresent(textureKey);
-            if (theImage == null) {
-                theImage = this.getTextureFromApi(player, type, defaultTexture);
-                TEXTURE_CACHE.put(textureKey, theImage);
+
+            Optional<BufferedImage> cachedImage = TEXTURE_CACHE.getIfPresent(textureKey);
+
+            if (cachedImage != null) {
+                if (cachedImage.isPresent())
+                    LOGGER.info("Getting texture image from cache { playerName: " + player.name() + ", playerId" + player.id() + ", textureType: " + type + " }");
+                else
+                    LOGGER.info("Getting NULL for texture image from cache { playerName: " + player.name() + ", playerId" + player.id() + ", textureType: " + type + " }");
+                return CompletableFuture.completedFuture(cachedImage);
+            } else {
+                CompletableFuture<Optional<BufferedImage>> theImage = this.getTextureFromApi(player, type, defaultTexture).thenApply(value->{
+                    //Optional<BufferedImage> retVal = Optional.empty();
+                    if (value.isPresent()){
+                        LOGGER.info("Getting texture image from api { playerName: " + player.name() + ", playerId" + player.id() + ", textureType: " + type + " }");
+                        //retVal = value;
+                    } else {
+                        LOGGER.info("Getting NULL for texture image from api { playerName: " + player.name() + ", playerId" + player.id() + ", textureType: " + type + " }");
+                    }
+                    TEXTURE_CACHE.put(textureKey, value);
+                    return value;
+                });
+                return theImage;
             }
-            return theImage;
         } else {
+            LOGGER.info("Cannot get texture image because of collar state { playerName: " + player.name() + ", playerId" + player.id() + ", textureType: " + type + " }");
             return CompletableFuture.completedFuture(Optional.empty());
         }
     }
 
-    private CompletableFuture<Optional<BufferedImage>> getTextureFromApi(Player player, TextureType type, BufferedImage defaultTexture) {
+    private  CompletableFuture<Optional<BufferedImage>> getTextureFromApi(Player player, TextureType type, BufferedImage defaultTexture) {
         com.collarmc.api.textures.TextureType textureType;
         switch (type) {
             case CAPE:
@@ -75,7 +97,7 @@ public class CollarTextureProvider implements TextureProvider {
                             if (bufferedImageOptional.isPresent()) {
                                 result.complete(bufferedImageOptional);
                             } else {
-                               result.complete(Optional.ofNullable(defaultTexture));
+                                result.complete(Optional.ofNullable(defaultTexture));
                             }
 
                         });
