@@ -60,19 +60,6 @@ public class FabricPlayer implements Player {
     }
 
     @Override
-    public void avatar(Consumer<BufferedImage> consumer) {
-        textureProvider.getTexture(this, TextureType.AVATAR, defaultAvatar()).thenAccept(bufferedImageOptional -> {
-            bufferedImageOptional.ifPresent(consumer);
-            if (!bufferedImageOptional.isPresent()) {
-                LOGGER.error("Avatar for " + this.name() + " is missing");
-            } else {
-                LOGGER.info("FabricPlayer avatar for player named " + this.name() + " {" + this.id() + "} collar textureOptional is present");
-
-            }
-        });
-    }
-
-    @Override
     public void onRender() {
         MinecraftClient minecraftClient = MinecraftClient.getInstance();
         if (minecraftClient.player.getEntityName().equals(this.name())) {
@@ -103,11 +90,11 @@ public class FabricPlayer implements Player {
             String textureName = String.format("plastic-capes/%s.png", playerEntity.getGameProfile().getId());
             LOGGER.info("Collar FabricPlayer onRender textureName: " + textureName);
             textureProvider.getTexture(this, TextureType.CAPE, null).thenAccept(textureOptional -> {
-                if (!textureOptional.isPresent()){
+                /*if (!textureOptional.isPresent()){
                     LOGGER.info("FabricPlayer onRender method for player named " + this.name() + " {" + this.id() + "} collar textureOptional is NOT present");
                 } else {
                     LOGGER.info("FabricPlayer onRender method for player named " + this.name() + " {" + this.id() + "} collar textureOptional is present");
-                }
+                }*/
 
                 textureOptional.ifPresent(texture -> {
                     NativeImage image = nativeImageFrom(texture);
@@ -119,6 +106,26 @@ public class FabricPlayer implements Player {
 
                     textures.put(MinecraftProfileTexture.Type.CAPE, identifier);
                     textures.put(MinecraftProfileTexture.Type.ELYTRA, identifier);
+
+                    //LOGGER.info("FabricPlayer onRender method for player named " + this.name() + " {" + this.id() + "} collar texture after add " + textures.keySet().stream().map(key -> key.name()).collect(Collectors.joining(",")));
+                });
+            });
+            textureProvider.getTexture(this, TextureType.AVATAR, null).thenAccept(textureOptional -> {
+                /*if (!textureOptional.isPresent()){
+                    LOGGER.info("FabricPlayer onRender method for player named " + this.name() + " {" + this.id() + "} collar avatartextureOptional is NOT present");
+                } else {
+                    LOGGER.info("FabricPlayer onRender method for player named " + this.name() + " {" + this.id() + "} collar avatartextureOptional is present");
+                }*/
+
+                textureOptional.ifPresent(texture -> {
+                    NativeImage image = nativeImageFrom(texture);
+                    NativeImageBackedTexture nativeImageTexture = new NativeImageBackedTexture(image);
+
+                    //LOGGER.info("FabricPlayer onRender method for player named " + this.name() + " {" + this.id() + "} collar texture before add " + textures.keySet().stream().map(key -> key.name()).collect(Collectors.joining(",")));
+
+                    Identifier identifier = minecraftClient.getTextureManager().registerDynamicTexture(textureName, nativeImageTexture);
+
+                    textures.put(MinecraftProfileTexture.Type.SKIN, identifier);
 
                     //LOGGER.info("FabricPlayer onRender method for player named " + this.name() + " {" + this.id() + "} collar texture after add " + textures.keySet().stream().map(key -> key.name()).collect(Collectors.joining(",")));
                 });
@@ -152,7 +159,7 @@ public class FabricPlayer implements Player {
         return new Location((double)blockPos.getX(), (double)blockPos.getY(), (double)blockPos.getZ(), dimension);
     }
 
-    private BufferedImage defaultAvatar() {
+    /*private BufferedImage defaultAvatar() {
         MinecraftClient minecraftClient = MinecraftClient.getInstance();
         if (minecraftClient == null) {
             throw new IllegalStateException("minecraftClient");
@@ -165,13 +172,19 @@ public class FabricPlayer implements Player {
         } catch (IOException e) {
             throw new IllegalStateException("could not load skin for " + this);
         }
-    }
+    }*/
 
     private static NativeImage nativeImageFrom(BufferedImage img) {
         NativeImage nativeImage = new NativeImage(img.getWidth(), img.getHeight(), true);
         for (int width = 0; width < img.getWidth(); width++) {
             for (int height = 0; height < img.getHeight(); height++) {
-                nativeImage.setColor(width, height, img.getRGB(width, height));
+                int color = img.getRGB(width, height);
+                int a = (color >> 24) & 0xff;
+                int r = (color >> 16) & 0xff;
+                int g = (color >> 8) & 0xff;
+                int b = color & 0xff;
+                int rgba = (a << 24) | (b << 16) | (g << 8) | r;
+                nativeImage.setColor(width, height, rgba);
             }
         }
         return nativeImage;

@@ -51,18 +51,18 @@ public class CollarTextureProvider implements TextureProvider {
 
             if (cachedImage != null) {
                 if (cachedImage.isPresent())
-                    LOGGER.info("Getting texture image from cache { playerName: " + player.name() + ", playerId" + player.id() + ", textureType: " + type + " }");
+                    LOGGER.info("Getting texture image from cache { playerName: " + player.name() + ", playerId: " + player.id() + ", textureType: " + type + " }");
                 else
-                    LOGGER.info("Getting NULL for texture image from cache { playerName: " + player.name() + ", playerId" + player.id() + ", textureType: " + type + " }");
+                    LOGGER.info("Getting NULL for texture image from cache { playerName: " + player.name() + ", playerId: " + player.id() + ", textureType: " + type + " }");
                 return CompletableFuture.completedFuture(cachedImage);
             } else {
                 CompletableFuture<Optional<BufferedImage>> theImage = this.getTextureFromApi(player, type, defaultTexture).thenApply(value->{
                     //Optional<BufferedImage> retVal = Optional.empty();
                     if (value.isPresent()){
-                        LOGGER.info("Getting texture image from api { playerName: " + player.name() + ", playerId" + player.id() + ", textureType: " + type + " }");
+                        LOGGER.info("Getting texture image from api { playerName: " + player.name() + ", playerId: " + player.id() + ", textureType: " + type + " }");
                         //retVal = value;
                     } else {
-                        LOGGER.info("Getting NULL for texture image from api { playerName: " + player.name() + ", playerId" + player.id() + ", textureType: " + type + " }");
+                        LOGGER.info("Getting NULL for texture image from api { playerName: " + player.name() + ", playerId: "  + player.id() + ", textureType: " + type + " }");
                     }
                     TEXTURE_CACHE.put(textureKey, value);
                     return value;
@@ -70,7 +70,7 @@ public class CollarTextureProvider implements TextureProvider {
                 return theImage;
             }
         } else {
-            LOGGER.info("Cannot get texture image because of collar state { playerName: " + player.name() + ", playerId" + player.id() + ", textureType: " + type + " }");
+            LOGGER.info("Cannot get texture image because of collar state { playerName: " + player.name() + ", playerId: " + player.id() + ", textureType: " + type + " }");
             return CompletableFuture.completedFuture(Optional.empty());
         }
     }

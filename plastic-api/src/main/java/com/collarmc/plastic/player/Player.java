@@ -26,7 +26,7 @@ public interface Player extends Entity {
 
     float yaw();
 
-    void avatar(Consumer<BufferedImage> consumer);
+
 
     /**
      * Run when {@link PlayerRenderEvent} fired
