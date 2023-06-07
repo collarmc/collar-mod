@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "id": "collar-fabric",
+  "version": "${version}",
+  "name": "Collar Fabric",
+  "description": "${description}",
+  "authors": ["orsond","sakuya","HermeticLock","KosmX"],
+  "contact": {
+    "homepage": "https://www.collarmc.com/",
+    "sources": "https://github.com/CaptainRexPL/collar-mod"
+  },
+  "license": "MIT",
+  "icon": "assets/collar/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "com.collarmc.mod.fabric.client.CollarFabricClient"
+    ]
+  },
+  "mixins": [
+    "collar.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.14.9",
+    "fabric": "*",
+    "minecraft": "1.20"
+  }
+}
