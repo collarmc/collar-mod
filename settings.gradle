@@ -26,7 +26,9 @@ rootProject.name = 'collar-mod'
 include 'plastic-api'
 include 'common'
 
-
+include '1.19.4'
+include '1.19.4:glue'
+include '1.19.4:fabric'
 //1.17 stuff
 include '1.17'
 include '1.17:glue'
@@ -40,6 +42,8 @@ include '1.19.3'
 include '1.19.3:glue'
 include '1.19.3:fabric'
 
-include '1.19.4'
-include '1.19.4:glue'
-include '1.19.4:fabric'
+include '1.20'
+include '1.20:glue'
+include '1.20:fabric'
+
+

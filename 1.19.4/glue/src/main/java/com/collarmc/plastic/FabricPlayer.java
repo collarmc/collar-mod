@@ -2,6 +2,7 @@ package com.collarmc.plastic;
 
 import com.collarmc.api.location.Dimension;
 import com.collarmc.api.location.Location;
+import com.collarmc.client.Collar;
 import com.collarmc.mod.glue.mixin.PlayerListEntryMixin;
 import com.collarmc.plastic.player.Player;
 import com.collarmc.plastic.ui.TextureProvider;
@@ -67,7 +68,7 @@ public class FabricPlayer implements Player {
         } else
             LOGGER.info("FabricPlayer onRender method for player named " + this.name() + " {" + this.id() + "}");
         Identifier capeTexture = playerEntity.getCapeTexture();
-        if (capeTexture == null || minecraftClient == null || minecraftClient.player.getEntityName().equals(this.name())) {
+        if (minecraftClient == null || minecraftClient.player.getEntityName().equals(this.name())) {
             if (minecraftClient == null) {
                 throw new IllegalStateException("minecraftClient");
             }
@@ -81,7 +82,7 @@ public class FabricPlayer implements Player {
             if (entryMixin == null) {
                 //throw new IllegalStateException("entryMixin");
                 //it shouldn't crash, there are dummy entities on multiple servers. like Hypixel
-                LOGGER.info("Collar FabricPlayer onRender entryMixin is null");
+                //LOGGER.info("Collar FabricPlayer onRender entryMixin is null");
                 return;
             }
 
@@ -90,49 +91,32 @@ public class FabricPlayer implements Player {
             String textureName = String.format("plastic-capes/%s.png", playerEntity.getGameProfile().getId());
             LOGGER.info("Collar FabricPlayer onRender textureName: " + textureName);
             textureProvider.getTexture(this, TextureType.CAPE, null).thenAccept(textureOptional -> {
-                /*if (!textureOptional.isPresent()){
-                    LOGGER.info("FabricPlayer onRender method for player named " + this.name() + " {" + this.id() + "} collar textureOptional is NOT present");
-                } else {
-                    LOGGER.info("FabricPlayer onRender method for player named " + this.name() + " {" + this.id() + "} collar textureOptional is present");
-                }*/
 
                 textureOptional.ifPresent(texture -> {
                     NativeImage image = nativeImageFrom(texture);
                     NativeImageBackedTexture nativeImageTexture = new NativeImageBackedTexture(image);
-
-                    //LOGGER.info("FabricPlayer onRender method for player named " + this.name() + " {" + this.id() + "} collar texture before add " + textures.keySet().stream().map(key -> key.name()).collect(Collectors.joining(",")));
 
                     Identifier identifier = minecraftClient.getTextureManager().registerDynamicTexture(textureName, nativeImageTexture);
 
                     textures.put(MinecraftProfileTexture.Type.CAPE, identifier);
                     textures.put(MinecraftProfileTexture.Type.ELYTRA, identifier);
-
-                    //LOGGER.info("FabricPlayer onRender method for player named " + this.name() + " {" + this.id() + "} collar texture after add " + textures.keySet().stream().map(key -> key.name()).collect(Collectors.joining(",")));
                 });
             });
             textureProvider.getTexture(this, TextureType.AVATAR, null).thenAccept(textureOptional -> {
-                /*if (!textureOptional.isPresent()){
+                if (!textureOptional.isPresent()){
                     LOGGER.info("FabricPlayer onRender method for player named " + this.name() + " {" + this.id() + "} collar avatartextureOptional is NOT present");
                 } else {
                     LOGGER.info("FabricPlayer onRender method for player named " + this.name() + " {" + this.id() + "} collar avatartextureOptional is present");
-                }*/
+                }
 
                 textureOptional.ifPresent(texture -> {
                     NativeImage image = nativeImageFrom(texture);
                     NativeImageBackedTexture nativeImageTexture = new NativeImageBackedTexture(image);
-
-                    //LOGGER.info("FabricPlayer onRender method for player named " + this.name() + " {" + this.id() + "} collar texture before add " + textures.keySet().stream().map(key -> key.name()).collect(Collectors.joining(",")));
-
                     Identifier identifier = minecraftClient.getTextureManager().registerDynamicTexture(textureName, nativeImageTexture);
 
                     textures.put(MinecraftProfileTexture.Type.SKIN, identifier);
-
-                    //LOGGER.info("FabricPlayer onRender method for player named " + this.name() + " {" + this.id() + "} collar texture after add " + textures.keySet().stream().map(key -> key.name()).collect(Collectors.joining(",")));
                 });
             });
-        }
-        else if (capeTexture != null){
-            LOGGER.info("FabricPlayer onRender method for player named " + this.name() + " {" + this.id() + "} "+ capeTexture);
         }
     }
 

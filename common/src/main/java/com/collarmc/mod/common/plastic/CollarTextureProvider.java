@@ -50,9 +50,9 @@ public class CollarTextureProvider implements TextureProvider {
             Optional<BufferedImage> cachedImage = TEXTURE_CACHE.getIfPresent(textureKey);
 
             if (cachedImage != null) {
-                if (cachedImage.isPresent())
+                if (cachedImage.isPresent()) {
                     LOGGER.info("Getting texture image from cache { playerName: " + player.name() + ", playerId: " + player.id() + ", textureType: " + type + " }");
-                else
+                } else
                     LOGGER.info("Getting NULL for texture image from cache { playerName: " + player.name() + ", playerId: " + player.id() + ", textureType: " + type + " }");
                 return CompletableFuture.completedFuture(cachedImage);
             } else {
