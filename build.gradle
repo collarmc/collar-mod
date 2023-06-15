@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'dev.architectury.loom' version '1.1.+' apply false //For forge 1.16, 1.17. It can be used to build Fabric too, we won't use both, only arch
+    id 'dev.architectury.loom' version '1.2.+' apply false //For forge 1.16, 1.17. It can be used to build Fabric too, we won't use both, only arch
     id "architectury-plugin" version "3.4-SNAPSHOT" apply false //Need for common module management.
     id "com.github.johnrengelman.shadow" version "8.1.1" apply false
 
@@ -14,6 +14,10 @@ allprojects {
     repositories {
         mavenLocal() //TODO not use this as soon as Collar will be in the maven
         mavenCentral()
+        maven{
+            name = "TerraformersMC maven"
+            url = 'https://maven.terraformersmc.com/'
+        }
         maven {
             url "https://libraries.minecraft.net"
         }
@@ -59,6 +63,7 @@ task cleanupArtifacts{
 //Can be VERY useful :D
 task collectArtifacts{
     dependsOn('cleanupArtifacts')
+    dependsOn('1.20:copyArtifacts')
     dependsOn('1.20:copyArtifacts')
     dependsOn(':1.19.4:copyArtifacts')
     dependsOn(':1.19.3:copyArtifacts')

@@ -1,4 +1,4 @@
-# Glue 1.20 without Forge  
+# Glue 1.20.1 without Forge  
 
 To make it work, I had to change glue to be a fabric mod, not an arch common module  
 

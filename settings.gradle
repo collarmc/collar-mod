@@ -46,4 +46,8 @@ include '1.20'
 include '1.20:glue'
 include '1.20:fabric'
 
+include '1.20.1'
+include '1.20.1:glue'
+include '1.20.1:fabric'
+
 
