@@ -35,11 +35,47 @@ public class CollarTextureProvider implements TextureProvider {
             .recordStats()
             .build();
 
+    private static final Cache<UUID, Optional<com.collarmc.api.session.Player>> PLAYER_CACHE = CacheBuilder.newBuilder()
+            .expireAfterAccess(5, TimeUnit.MINUTES)
+            .initialCapacity(100)
+            .recordStats()
+            .build();
+
     private Collar collar;
 
     public CollarTextureProvider(EventBus eventBus) {
         this.eventBus = eventBus;
         this.eventBus.subscribe(this);
+    }
+
+    private CompletableFuture<Optional<com.collarmc.api.session.Player>> resolveSessionPlayer(Player player) {
+        if (this.collar != null && this.collar.getState().equals(Collar.State.CONNECTED)) {
+            Optional<com.collarmc.api.session.Player> cachedPlayer = PLAYER_CACHE.getIfPresent(player.id());
+
+            if (cachedPlayer != null) {
+                if (cachedPlayer.isPresent()) {
+                    LOGGER.info("Getting session player from cache { playerName: " + player.name() + ", playerId: " + player.id() + " }");
+                } else
+                    LOGGER.info("Getting NULL for session player from cache { playerName: " + player.name() + ", playerId: " + player.id() + " }");
+                return CompletableFuture.completedFuture(cachedPlayer);
+            } else {
+                CompletableFuture<Optional<com.collarmc.api.session.Player>> theSessionPlayer = this.collar.identities().resolvePlayer(player.id()).thenApply(value->{
+                    //Optional<BufferedImage> retVal = Optional.empty();
+                    if (value.isPresent()){
+                        LOGGER.info("Getting session player from api { playerName: " + player.name() + ", playerId: " + player.id() + " }");
+                        //retVal = value;
+                    } else {
+                        LOGGER.info("Getting NULL for session player from api { playerName: " + player.name() + ", playerId: "  + player.id() + " }");
+                    }
+                    PLAYER_CACHE.put(player.id(), value);
+                    return value;
+                });
+                return theSessionPlayer;
+            }
+        } else {
+            LOGGER.info("Cannot get session player because of collar state { playerName: " + player.name() + ", playerId: " + player.id() + " }");
+            return CompletableFuture.completedFuture(Optional.empty());
+        }
     }
 
     @Override
@@ -88,7 +124,8 @@ public class CollarTextureProvider implements TextureProvider {
                 throw new IllegalStateException("unknown type " + type);
         }
 
-        return this.collar.identities().resolvePlayer(player.id()).thenComposeAsync((thePlayer) -> {
+
+        return this.resolveSessionPlayer(player).thenComposeAsync((thePlayer) -> {
             return thePlayer.isPresent() ? this.collar.textures().playerTextureFuture((com.collarmc.api.session.Player)thePlayer.get(), textureType).thenComposeAsync((textureOptional) -> {
                 if (textureOptional.isPresent()) {
                     CompletableFuture<Optional<BufferedImage>> result = new CompletableFuture();
