@@ -9,12 +9,15 @@ import com.collarmc.plastic.ui.TextColor;
 import com.collarmc.plastic.ui.TextStyle;
 import com.collarmc.pounce.EventBus;
 import com.collarmc.pounce.Subscribe;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Optional;
 
 public class Messaging {
 
     private final Plastic plastic;
+    private static final Logger LOGGER = LogManager.getLogger(Messaging.class.getName());
 
     public Messaging(Plastic plastic, EventBus eventBus) {
         this.plastic = plastic;
@@ -31,12 +34,15 @@ public class Messaging {
             event.collar.identities().resolveProfile(event.player).thenAccept(profileOptional -> {
                 if (profileOptional.isPresent()) {
                     PublicProfile profile = profileOptional.get();
+                    //LOGGER.info("[MSG SENDER] Resolved profile is present, player identity id: " + event.player.identity.id() + ", profile name: " + profile.name);
                     displaySecurePrivateMessage(profile.name, textMessage.content);
                 } else {
                     Optional<com.collarmc.plastic.player.Player> collarPlayer = plastic.world.findPlayerById(event.player.minecraftPlayer.id);
                     if (collarPlayer.isPresent()) {
+                        //LOGGER.info("[MSG SENDER] Resolved profile is not present, player identity id: " + event.player.identity.id() + "minecraftPlayer id: " + event.player.minecraftPlayer.id + ", collar player name: " + collarPlayer.get().name());
                         displaySecurePrivateMessage(collarPlayer.get().name(), textMessage.content);
                     } else {
+                        //LOGGER.info("[MSG SENDER] Resolved profile is not present, player identity id: " + event.player.identity.id() + "minecraftPlayer id: " + event.player.minecraftPlayer.id + ", collar player is not present" );
                         displaySecurePrivateMessage(event.player.identity.id().toString(), textMessage.content);
                     }
                 }
@@ -70,12 +76,15 @@ public class Messaging {
             event.collar.identities().resolveProfile(event.player).thenAccept(profileOptional -> {
                 if (profileOptional.isPresent()) {
                     PublicProfile profile = profileOptional.get();
-                    displaySecurePrivateMessage(profile.name, textMessage.content);
+                    //LOGGER.info("[MSG RECEIVER] Resolved profile is present, player identity id: " + event.player.identity.id() + ", profile name: " + profile.name);
+                    displaySecurePrivateMessageReceived(profile.name, textMessage.content);
                 } else {
                     Optional<com.collarmc.plastic.player.Player> collarPlayer = plastic.world.findPlayerById(event.player.minecraftPlayer.id);
                     if (collarPlayer.isPresent()) {
+                       //LOGGER.info("[MSG RECEIVER] Resolved profile is not present, player identity id: " + event.player.identity.id() + "minecraftPlayer id: " + event.player.minecraftPlayer.id + ", collar player name: " + collarPlayer.get().name());
                         displaySecurePrivateMessageReceived(collarPlayer.get().name(), textMessage.content);
                     } else {
+                        //LOGGER.info("[MSG RECEIVER] Resolved profile is not present, player identity id: " + event.player.identity.id() + "minecraftPlayer id: " + event.player.minecraftPlayer.id + ", collar player is not present" );
                         displaySecurePrivateMessageReceived(event.player.identity.id().toString(), textMessage.content);
                     }
                 }
@@ -102,12 +111,15 @@ public class Messaging {
             event.collar.identities().resolveProfile(event.sender).thenAccept(profileOptional -> {
                 if (profileOptional.isPresent()) {
                     PublicProfile profile = profileOptional.get();
+                    //LOGGER.info("[GROUP MSG RECEIVER] Resolved profile is present, player identity id: " + event.sender.identity.id() + ", profile name: " + profile.name);
                     displayReceivedGroupMessage(profile.name, event.group, textMessage.content);
                 } else {
                     Optional<com.collarmc.plastic.player.Player> collarPlayer = plastic.world.findPlayerById(event.sender.minecraftPlayer.id);
                     if (collarPlayer.isPresent()) {
+                        //LOGGER.info("[GROUP MSG RECEIVER] Resolved profile is not present, player identity id: " + event.sender.identity.id() + "minecraftPlayer id: " + event.sender.minecraftPlayer.id + ", collar player name: " + collarPlayer.get().name());
                         displayReceivedGroupMessage(collarPlayer.get().name(), event.group, textMessage.content);
                     } else {
+                        //LOGGER.info("[GROUP MSG RECEIVER] Resolved profile is not present, player identity id: " + event.sender.identity.id() + "minecraftPlayer id: " + event.sender.minecraftPlayer.id + ", collar player is not present" );
                         displayReceivedGroupMessage(event.sender.identity.id().toString(), event.group, textMessage.content);
                     }
                 }
@@ -135,9 +147,9 @@ public class Messaging {
     private void displayInsecurePrivateMessage(String recipient, String content) {
         plastic.display.displayMessage(plastic.display.newTextBuilder()
                 .add("You insecurely whisper to ", TextColor.GRAY, TextStyle.ITALIC)
-                .add(recipient, TextColor.RED, TextStyle.ITALIC)
-                .add(": ", TextColor.DARK_RED, TextStyle.ITALIC)
-                .add(content, TextColor.RED, TextStyle.ITALIC)
+                .add(recipient, TextColor.DARK_RED, TextStyle.ITALIC)
+                .add(": ", TextColor.GRAY, TextStyle.ITALIC)
+                .add(content, TextColor.DARK_RED, TextStyle.ITALIC)
         );
     }
 
