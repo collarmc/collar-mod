@@ -29,6 +29,7 @@ include 'common'
 include '1.19.4'
 include '1.19.4:glue'
 include '1.19.4:fabric'
+
 //1.17 stuff
 include '1.17'
 include '1.17:glue'
@@ -49,5 +50,9 @@ include '1.20:fabric'
 include '1.20.1'
 include '1.20.1:glue'
 include '1.20.1:fabric'
+
+include '1.20.2'
+include '1.20.2:glue'
+include '1.20.2:fabric'
 
 

@@ -253,6 +253,7 @@ public class CollarService {
     @Subscribe(Preference.POOL)
     private void onTick(OnTickEvent event) {
         with(i -> ticks.onTick(), null);
+        //LOGGER.info("OnTickEvent event triggered by CollarService");
     }
 
     private TextBuilder rainbowText(String text) {
