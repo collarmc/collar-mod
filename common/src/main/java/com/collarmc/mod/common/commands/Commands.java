@@ -39,8 +39,9 @@ import static com.collarmc.mod.common.commands.arguments.InvitationArgumentType.
 import static com.collarmc.mod.common.commands.arguments.PlayerArgumentType.getPlayer;
 import static com.mojang.brigadier.arguments.DoubleArgumentType.doubleArg;
 import static com.mojang.brigadier.arguments.DoubleArgumentType.getDouble;
-import static com.mojang.brigadier.arguments.StringArgumentType.getString;
+import static com.mojang.brigadier.arguments.StringArgumentType.greedyString;
 import static com.mojang.brigadier.arguments.StringArgumentType.string;
+import static com.mojang.brigadier.arguments.StringArgumentType.getString;
 
 public final class Commands<S> {
     private static final Logger LOGGER = LogManager.getLogger(Commands.class.getName());
@@ -458,7 +459,7 @@ public final class Commands<S> {
         // /msg player2 OwO
         dispatcher.register(literal("msg")
                 .then(argument("recipient", player())
-                        .then(argument("rawMessage", string())
+                        .then(argument("rawMessage", greedyString())
                                 .executes(context -> {
                                     Player recipient = getPlayer(context, "recipient");
                                     String message = getString(context, "rawMessage");
