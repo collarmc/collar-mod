@@ -62,6 +62,7 @@ task cleanupArtifacts{
 //Can be VERY useful :D
 task collectArtifacts{
     dependsOn('cleanupArtifacts')
+    dependsOn('1.20.3:copyArtifacts')
     dependsOn('1.20.2:copyArtifacts')
     dependsOn('1.20.1:copyArtifacts')
     dependsOn('1.20:copyArtifacts')
