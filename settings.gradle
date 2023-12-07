@@ -59,4 +59,7 @@ include '1.20.3'
 include '1.20.3:glue'
 include '1.20.3:fabric'
 
+include '1.20.4'
+include '1.20.4:glue'
+include '1.20.4:fabric'
 
