@@ -63,12 +63,7 @@ public class FabricPlayer implements Player {
     @Override
     public void onRender() {
         MinecraftClient minecraftClient = MinecraftClient.getInstance();
-        if (minecraftClient.player.getEntityName().equals(this.name())) {
-            LOGGER.info("FabricPlayer onRender SELF RENDER of " + this.name());
-        } else
-            LOGGER.info("FabricPlayer onRender method for player named " + this.name() + " {" + this.id() + "}");
         Identifier capeTexture = playerEntity.getCapeTexture();
-        if (minecraftClient == null || minecraftClient.player.getEntityName().equals(this.name())) {
             if (minecraftClient == null) {
                 throw new IllegalStateException("minecraftClient");
             }
@@ -117,7 +112,6 @@ public class FabricPlayer implements Player {
                     textures.put(MinecraftProfileTexture.Type.SKIN, identifier);
                 });
             });
-        }
     }
 
 
@@ -142,21 +136,6 @@ public class FabricPlayer implements Player {
         BlockPos blockPos = playerEntity.getBlockPos();
         return new Location((double)blockPos.getX(), (double)blockPos.getY(), (double)blockPos.getZ(), dimension);
     }
-
-    /*private BufferedImage defaultAvatar() {
-        MinecraftClient minecraftClient = MinecraftClient.getInstance();
-        if (minecraftClient == null) {
-            throw new IllegalStateException("minecraftClient");
-        }
-        Identifier skinTexture = this.playerEntity.getSkinTexture();
-        try {
-            Resource resource = minecraftClient.getResourceManager().getResource(skinTexture).orElse(null);
-            BufferedImage skin = ImageIO.read(resource.getInputStream());
-            return skin.getSubimage(8, 8, 15, 15);
-        } catch (IOException e) {
-            throw new IllegalStateException("could not load skin for " + this);
-        }
-    }*/
 
     private static NativeImage nativeImageFrom(BufferedImage img) {
         NativeImage nativeImage = new NativeImage(img.getWidth(), img.getHeight(), true);

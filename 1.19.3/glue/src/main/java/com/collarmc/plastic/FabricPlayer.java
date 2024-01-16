@@ -2,6 +2,7 @@ package com.collarmc.plastic;
 
 import com.collarmc.api.location.Dimension;
 import com.collarmc.api.location.Location;
+import com.collarmc.client.Collar;
 import com.collarmc.mod.glue.mixin.PlayerListEntryMixin;
 import com.collarmc.plastic.player.Player;
 import com.collarmc.plastic.ui.TextureProvider;
@@ -62,78 +63,55 @@ public class FabricPlayer implements Player {
     @Override
     public void onRender() {
         MinecraftClient minecraftClient = MinecraftClient.getInstance();
-        if (minecraftClient.player.getEntityName().equals(this.name())) {
-            LOGGER.info("FabricPlayer onRender SELF RENDER of " + this.name());
-        } else
-            LOGGER.info("FabricPlayer onRender method for player named " + this.name() + " {" + this.id() + "}");
         Identifier capeTexture = playerEntity.getCapeTexture();
-        if (capeTexture == null || minecraftClient == null || minecraftClient.player.getEntityName().equals(this.name())) {
-            if (minecraftClient == null) {
-                throw new IllegalStateException("minecraftClient");
-            }
-            ClientPlayNetworkHandler networkHandler = minecraftClient.getNetworkHandler();
-            if (networkHandler == null) {
-                LOGGER.info("Collar FabricPlayer onRender networkHandler is null");
-                throw new IllegalStateException("networkHandler");
-            }
-            PlayerListEntry entry = networkHandler.getPlayerListEntry(playerEntity.getGameProfile().getId());
-            PlayerListEntryMixin entryMixin = (PlayerListEntryMixin)entry;
-            if (entryMixin == null) {
-                //throw new IllegalStateException("entryMixin");
-                //it shouldn't crash, there are dummy entities on multiple servers. like Hypixel
-                LOGGER.info("Collar FabricPlayer onRender entryMixin is null");
-                return;
-            }
-
-
-            Map<MinecraftProfileTexture.Type, Identifier> textures = entryMixin.textures();
-            String textureName = String.format("plastic-capes/%s.png", playerEntity.getGameProfile().getId());
-            LOGGER.info("Collar FabricPlayer onRender textureName: " + textureName);
-            textureProvider.getTexture(this, TextureType.CAPE, null).thenAccept(textureOptional -> {
-                /*if (!textureOptional.isPresent()){
-                    LOGGER.info("FabricPlayer onRender method for player named " + this.name() + " {" + this.id() + "} collar textureOptional is NOT present");
-                } else {
-                    LOGGER.info("FabricPlayer onRender method for player named " + this.name() + " {" + this.id() + "} collar textureOptional is present");
-                }*/
-
-                textureOptional.ifPresent(texture -> {
-                    NativeImage image = nativeImageFrom(texture);
-                    NativeImageBackedTexture nativeImageTexture = new NativeImageBackedTexture(image);
-
-                    //LOGGER.info("FabricPlayer onRender method for player named " + this.name() + " {" + this.id() + "} collar texture before add " + textures.keySet().stream().map(key -> key.name()).collect(Collectors.joining(",")));
-
-                    Identifier identifier = minecraftClient.getTextureManager().registerDynamicTexture(textureName, nativeImageTexture);
-
-                    textures.put(MinecraftProfileTexture.Type.CAPE, identifier);
-                    textures.put(MinecraftProfileTexture.Type.ELYTRA, identifier);
-
-                    //LOGGER.info("FabricPlayer onRender method for player named " + this.name() + " {" + this.id() + "} collar texture after add " + textures.keySet().stream().map(key -> key.name()).collect(Collectors.joining(",")));
-                });
-            });
-            textureProvider.getTexture(this, TextureType.AVATAR, null).thenAccept(textureOptional -> {
-                /*if (!textureOptional.isPresent()){
-                    LOGGER.info("FabricPlayer onRender method for player named " + this.name() + " {" + this.id() + "} collar avatartextureOptional is NOT present");
-                } else {
-                    LOGGER.info("FabricPlayer onRender method for player named " + this.name() + " {" + this.id() + "} collar avatartextureOptional is present");
-                }*/
-
-                textureOptional.ifPresent(texture -> {
-                    NativeImage image = nativeImageFrom(texture);
-                    NativeImageBackedTexture nativeImageTexture = new NativeImageBackedTexture(image);
-
-                    //LOGGER.info("FabricPlayer onRender method for player named " + this.name() + " {" + this.id() + "} collar texture before add " + textures.keySet().stream().map(key -> key.name()).collect(Collectors.joining(",")));
-
-                    Identifier identifier = minecraftClient.getTextureManager().registerDynamicTexture(textureName, nativeImageTexture);
-
-                    textures.put(MinecraftProfileTexture.Type.SKIN, identifier);
-
-                    //LOGGER.info("FabricPlayer onRender method for player named " + this.name() + " {" + this.id() + "} collar texture after add " + textures.keySet().stream().map(key -> key.name()).collect(Collectors.joining(",")));
-                });
-            });
+        if (minecraftClient == null) {
+            throw new IllegalStateException("minecraftClient");
         }
-        else if (capeTexture != null){
-            LOGGER.info("FabricPlayer onRender method for player named " + this.name() + " {" + this.id() + "} "+ capeTexture);
+        ClientPlayNetworkHandler networkHandler = minecraftClient.getNetworkHandler();
+        if (networkHandler == null) {
+            LOGGER.info("Collar FabricPlayer onRender networkHandler is null");
+            throw new IllegalStateException("networkHandler");
         }
+        PlayerListEntry entry = networkHandler.getPlayerListEntry(playerEntity.getGameProfile().getId());
+        PlayerListEntryMixin entryMixin = (PlayerListEntryMixin)entry;
+        if (entryMixin == null) {
+            //throw new IllegalStateException("entryMixin");
+            //it shouldn't crash, there are dummy entities on multiple servers. like Hypixel
+            //LOGGER.info("Collar FabricPlayer onRender entryMixin is null");
+            return;
+        }
+
+
+        Map<MinecraftProfileTexture.Type, Identifier> textures = entryMixin.textures();
+        String textureName = String.format("plastic-capes/%s.png", playerEntity.getGameProfile().getId());
+        LOGGER.info("Collar FabricPlayer onRender textureName: " + textureName);
+        textureProvider.getTexture(this, TextureType.CAPE, null).thenAccept(textureOptional -> {
+
+            textureOptional.ifPresent(texture -> {
+                NativeImage image = nativeImageFrom(texture);
+                NativeImageBackedTexture nativeImageTexture = new NativeImageBackedTexture(image);
+
+                Identifier identifier = minecraftClient.getTextureManager().registerDynamicTexture(textureName, nativeImageTexture);
+
+                textures.put(MinecraftProfileTexture.Type.CAPE, identifier);
+                textures.put(MinecraftProfileTexture.Type.ELYTRA, identifier);
+            });
+        });
+        textureProvider.getTexture(this, TextureType.AVATAR, null).thenAccept(textureOptional -> {
+            if (!textureOptional.isPresent()){
+                LOGGER.info("FabricPlayer onRender method for player named " + this.name() + " {" + this.id() + "} collar avatartextureOptional is NOT present");
+            } else {
+                LOGGER.info("FabricPlayer onRender method for player named " + this.name() + " {" + this.id() + "} collar avatartextureOptional is present");
+            }
+
+            textureOptional.ifPresent(texture -> {
+                NativeImage image = nativeImageFrom(texture);
+                NativeImageBackedTexture nativeImageTexture = new NativeImageBackedTexture(image);
+                Identifier identifier = minecraftClient.getTextureManager().registerDynamicTexture(textureName, nativeImageTexture);
+
+                textures.put(MinecraftProfileTexture.Type.SKIN, identifier);
+            });
+        });
     }
 
 
@@ -158,21 +136,6 @@ public class FabricPlayer implements Player {
         BlockPos blockPos = playerEntity.getBlockPos();
         return new Location((double)blockPos.getX(), (double)blockPos.getY(), (double)blockPos.getZ(), dimension);
     }
-
-    /*private BufferedImage defaultAvatar() {
-        MinecraftClient minecraftClient = MinecraftClient.getInstance();
-        if (minecraftClient == null) {
-            throw new IllegalStateException("minecraftClient");
-        }
-        Identifier skinTexture = this.playerEntity.getSkinTexture();
-        try {
-            Resource resource = minecraftClient.getResourceManager().getResource(skinTexture).orElse(null);
-            BufferedImage skin = ImageIO.read(resource.getInputStream());
-            return skin.getSubimage(8, 8, 15, 15);
-        } catch (IOException e) {
-            throw new IllegalStateException("could not load skin for " + this);
-        }
-    }*/
 
     private static NativeImage nativeImageFrom(BufferedImage img) {
         NativeImage nativeImage = new NativeImage(img.getWidth(), img.getHeight(), true);

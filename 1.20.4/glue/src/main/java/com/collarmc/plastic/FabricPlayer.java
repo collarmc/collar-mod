@@ -59,7 +59,6 @@ public class FabricPlayer implements Player {
         } else
             LOGGER.info("FabricPlayer onRender method for player named " + this.name() + " {" + this.id() + "}");
         Identifier capeTexture = playerEntity.getSkinTextures().capeTexture();
-        if (minecraftClient == null || minecraftClient.player.getName().getString().equals(this.name())) {
             if (minecraftClient == null) {
                 throw new IllegalStateException("minecraftClient");
             }
@@ -80,9 +79,9 @@ public class FabricPlayer implements Player {
 
             Map<MinecraftProfileTexture.Type, Identifier> textures = entryMixin.getTextures();
             String textureName = String.format("plastic-capes/%s.png", playerEntity.getGameProfile().getId());
-            LOGGER.info("Collar FabricPlayer onRender textureName: " + textureName);
+            //LOGGER.info("Collar FabricPlayer onRender textureName: " + textureName);
             textureProvider.getTexture(this, TextureType.CAPE, null).thenAccept(textureOptional -> {
-
+                LOGGER.info("onRender getting the Cape Texture for player " + this.name());
                 textureOptional.ifPresent(texture -> {
                     NativeImage image = nativeImageFrom(texture);
                     NativeImageBackedTexture nativeImageTexture = new NativeImageBackedTexture(image);
@@ -91,22 +90,18 @@ public class FabricPlayer implements Player {
 
                     textures.put(MinecraftProfileTexture.Type.CAPE, identifier);
                     textures.put(MinecraftProfileTexture.Type.ELYTRA, identifier);
-                    LOGGER.info("Put CapeTexture with identifier:" + identifier + " ; " + textures);
                 });
             });
             textureProvider.getTexture(this, TextureType.AVATAR, null).thenAccept(textureOptional -> {
-
+                LOGGER.info("onRender getting the Avatar Texture for player " + this.name());
                 textureOptional.ifPresent(texture -> {
                     NativeImage image = nativeImageFrom(texture);
                     NativeImageBackedTexture nativeImageTexture = new NativeImageBackedTexture(image);
                     Identifier identifier = minecraftClient.getTextureManager().registerDynamicTexture(textureName, nativeImageTexture);
 
                     textures.put(MinecraftProfileTexture.Type.SKIN, identifier);
-                    LOGGER.info("Put SkinTexture with identifier:" + identifier);
-                    LOGGER.info("Put CapeTexture with identifier:" + identifier + " ; " + textures);
                 });
             });
-        }
     }
 
 
@@ -131,21 +126,6 @@ public class FabricPlayer implements Player {
         BlockPos blockPos = playerEntity.getBlockPos();
         return new Location((double)blockPos.getX(), (double)blockPos.getY(), (double)blockPos.getZ(), dimension);
     }
-
-    /*private BufferedImage defaultAvatar() {
-        MinecraftClient minecraftClient = MinecraftClient.getInstance();
-        if (minecraftClient == null) {
-            throw new IllegalStateException("minecraftClient");
-        }
-        Identifier skinTexture = this.playerEntity.getSkinTexture();
-        try {
-            Resource resource = minecraftClient.getResourceManager().getResource(skinTexture).orElse(null);
-            BufferedImage skin = ImageIO.read(resource.getInputStream());
-            return skin.getSubimage(8, 8, 15, 15);
-        } catch (IOException e) {
-            throw new IllegalStateException("could not load skin for " + this);
-        }
-    }*/
 
     private static NativeImage nativeImageFrom(BufferedImage img) {
         NativeImage nativeImage = new NativeImage(img.getWidth(), img.getHeight(), true);
