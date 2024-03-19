@@ -99,7 +99,16 @@ public class CollarService {
         with(action, () -> plastic.display.displayInfoMessage("Collar not connected"));
     }
 
-    public void connect() {
+    public void attemptToConnect() {
+        connectionState.connected(null);
+        connectionState.worldLoaded(null);
+    }
+
+    public void attemptToDisconnect() {
+        connectionState.disconnected(null);
+    }
+
+    protected void connect() {
         LOGGER.info("Attempting to connect...");
         if (!connectionLock.tryLock()) {
             LOGGER.info("Connection already in progress.");
@@ -111,7 +120,7 @@ public class CollarService {
                 collar = createCollar();
                 collar.connect();
                 LOGGER.info("Connected to Collar");
-            } catch (CollarException|IOException e) {
+            } catch (Exception e) {
                 String msg = "Connection failed " + e.getMessage();
                 plastic.display.displayErrorMessage(msg);
                 LOGGER.error(msg, e);
@@ -121,8 +130,10 @@ public class CollarService {
         });
     }
 
-    public void disconnect() {
+    protected void disconnect() {
+        LOGGER.info("Attempting to disconnect...");
         if (!connectionLock.tryLock()) {
+            LOGGER.info("Disconnection already in progress.");
             return;
         }
         connectionState.setAttempted(false);
@@ -131,7 +142,13 @@ public class CollarService {
                 if (collar != null) {
                     collar.disconnect();
                     collar = null;
+
+                    LOGGER.info("Disconnected from Collar");
                 }
+            } catch (Exception e) {
+                String msg = "Disconnection failed " + e.getMessage();
+                plastic.display.displayErrorMessage(msg);
+                LOGGER.error(msg, e);
             } finally {
                 connectionLock.unlock();
             }
@@ -236,6 +253,7 @@ public class CollarService {
     @Subscribe(Preference.POOL)
     private void onTick(OnTickEvent event) {
         with(i -> ticks.onTick(), null);
+        //LOGGER.info("OnTickEvent event triggered by CollarService");
     }
 
     private TextBuilder rainbowText(String text) {
@@ -268,6 +286,8 @@ public class CollarService {
      * Manages connection state of Collar client
      */
     public static final class ConnectionState {
+
+        private static final Logger LOGGER = LogManager.getLogger(ConnectionState.class.getName());
         private final CollarService service;
 
         private boolean connected = false;
@@ -286,6 +306,10 @@ public class CollarService {
 
         @Subscribe(Preference.CALLER)
         public void disconnected(ClientDisconnectedEvent e) {
+            LOGGER.info(String.format("ConnectionState attempt to disconnect attempted: %s, connected: %s, loaded: %s", this.attempted, this.connected, this.loaded));
+            if (!this.connected) {
+                return;
+            }
             this.connected = false;
             this.loaded = false;
             this.attempted = false;
@@ -294,11 +318,13 @@ public class CollarService {
 
         @Subscribe(Preference.CALLER)
         public void worldLoaded(WorldLoadedEvent event) {
+            LOGGER.info(String.format("ConnectionState attempt to worldLoaded attempted: %s, connected: %s, loaded: %s", this.attempted, this.connected, this.loaded));
             this.loaded = true;
             attemptToConnect();
         }
 
         private void attemptToConnect() {
+            LOGGER.info(String.format("ConnectionState attempt to connect attempted: %s, connected: %s, loaded: %s", this.attempted, this.connected, this.loaded));
             if (!attempted && connected && loaded) {
                 service.connect();
             }

@@ -1,0 +1,29 @@
+plugins {
+    id 'java'
+}
+
+archivesBaseName = project.archives_base_name + '-' + project.property('minecraft_version')
+group project.maven_group
+version rootProject.version
+
+repositories {
+    mavenCentral()
+    maven {
+        url "https://oss.sonatype.org/content/repositories/snapshots/"
+    }
+}
+
+architectury{
+    injectInjectables = false
+    common(false)
+    //common(rootProject.enabled_platforms.split(","))
+}
+
+dependencies {
+    implementation project(':plastic-api')
+    implementation project(':common')
+    modImplementation("net.fabricmc:fabric-loader:${project.fabric_loader_version}")
+    //implementation 'org.joml:joml:1.10.5'
+    implementation group: 'org.joml', name: 'joml', version: '1.10.5'
+    //modApi "dev.architectury:architectury:${rootProject.architectury_version}"
+}

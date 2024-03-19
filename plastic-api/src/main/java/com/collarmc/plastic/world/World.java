@@ -6,9 +6,11 @@ import com.collarmc.plastic.player.Player;
 import com.collarmc.plastic.ui.TextureProvider;
 import com.collarmc.pounce.EventBus;
 
+import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 public abstract class World {
 

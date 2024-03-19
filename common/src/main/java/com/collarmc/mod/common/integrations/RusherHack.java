@@ -1,10 +1,11 @@
 package com.collarmc.mod.common.integrations;
 
+import com.collarmc.libs.org.fasterxml.jackson.annotation.JsonProperty;
 import com.collarmc.libs.org.fasterxml.jackson.core.type.TypeReference;
 import com.collarmc.plastic.Plastic;
 import com.collarmc.pounce.EventBus;
 import com.collarmc.utils.Utils;
-import com.fasterxml.jackson.annotation.JsonProperty;
+//import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.File;
 import java.io.IOException;

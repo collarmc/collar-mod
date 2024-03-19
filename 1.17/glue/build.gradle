@@ -1,0 +1,20 @@
+plugins {
+    id 'java'
+}
+
+archivesBaseName = project.archives_base_name + '-' + project.property('minecraft_version')
+group project.maven_group
+version rootProject.version
+
+architectury{
+    injectInjectables = false
+    common(false)
+    //common(rootProject.enabled_platforms.split(","))
+}
+
+dependencies {
+    implementation project(':plastic-api')
+    implementation project(':common')
+    modImplementation("net.fabricmc:fabric-loader:${project.fabric_loader_version}")
+    implementation group: 'org.joml', name: 'joml', version: '1.10.5'
+}

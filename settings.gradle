@@ -1,5 +1,6 @@
 pluginManagement {
     repositories {
+        gradlePluginPortal()
         maven {
             name = 'Fabric'
             url = 'https://maven.fabricmc.net/'
@@ -8,12 +9,57 @@ pluginManagement {
             name = 'Collar'
             url = 'https://raw.githubusercontent.com/collarmc/maven/main/'
         }
-        jcenter()
-        gradlePluginPortal()
+        maven {
+            name = 'Architectury maven'
+            url = 'https://maven.architectury.dev/'
+        }
+        maven {
+            name = 'Forge maven'
+            url = 'https://maven.minecraftforge.net/'
+            content {
+                excludeGroupByRegex "org\\.eclipse\\.?.*"
+            }
+        }
     }
 }
 rootProject.name = 'collar-mod'
 include 'plastic-api'
 include 'common'
-include 'fabric-1.16'
-include 'forge-1.12'
+
+include '1.19.4'
+include '1.19.4:glue'
+include '1.19.4:fabric'
+
+//1.17 stuff
+include '1.17'
+include '1.17:glue'
+include '1.17:fabric'
+//include '1.17:forge' //No forge for 1.17
+include '1.19'
+include '1.19:glue'
+include '1.19:fabric'
+
+include '1.19.3'
+include '1.19.3:glue'
+include '1.19.3:fabric'
+
+include '1.20'
+include '1.20:glue'
+include '1.20:fabric'
+
+include '1.20.1'
+include '1.20.1:glue'
+include '1.20.1:fabric'
+
+include '1.20.2'
+include '1.20.2:glue'
+include '1.20.2:fabric'
+
+include '1.20.3'
+include '1.20.3:glue'
+include '1.20.3:fabric'
+
+include '1.20.4'
+include '1.20.4:glue'
+include '1.20.4:fabric'
+

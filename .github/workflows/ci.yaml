@@ -1,0 +1,64 @@
+# This workflow will build a Java project with Maven
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
+
+name: CI
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set up MongoDB
+        uses: supercharge/mongodb-github-action@1.3.0
+        with:
+          image-version: latest
+          port: 27017
+      - name: Set up JDK 17 for Collar API
+        uses: actions/setup-java@v2
+        with:
+          java-version: '17'
+          distribution: 'zulu'
+      - name: Checkout Collar API
+        uses: actions/checkout@v3
+        with:
+          repository: CaptainRexPL/collar
+          path: collar
+      - name: Checkout Collar molib
+        uses: actions/checkout@v3
+        with:
+          repository: collarmc/molib
+          path: collar/molib
+      - name: Maven version check
+        run: mvn -X -version 
+      - name: Build Collar API
+        working-directory: collar
+        run: mvn install -DskipTests
+        #Start collar
+      - name: Checkout Collar mod
+        uses: actions/checkout@v2
+        with:
+          path: collar-mod
+      - name: Grant execute permission for gradlew
+        working-directory: collar-mod
+        run: chmod +x gradlew
+      - name: Build Collar mod
+        working-directory: collar-mod
+        run: ./gradlew collectArtifacts
+      - name: Capture artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: artifacts
+          path: |
+            collar-mod/artifacts
+      - name: Release
+        uses: marvinpinto/action-automatic-releases@latest
+        with:
+          repo_token: '${{ secrets.GITHUB_TOKEN }}'
+          automatic_release_tag: latest
+          prerelease: true
+          title: Build
+          files: |
+            collarmod/artifacts

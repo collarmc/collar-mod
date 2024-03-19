@@ -2,6 +2,7 @@ package com.collarmc.mod.common.features;
 
 import com.collarmc.client.api.location.events.LocationSharingStartedEvent;
 import com.collarmc.client.api.location.events.LocationSharingStoppedEvent;
+import com.collarmc.client.api.location.events.LocationUpdatedEvent;
 import com.collarmc.client.api.location.events.WaypointCreatedEvent;
 import com.collarmc.client.api.location.events.WaypointRemovedEvent;
 import com.collarmc.plastic.Plastic;
@@ -49,5 +50,13 @@ public class Locations {
     @Subscribe
     public void onStoppedSharingLocation(LocationSharingStoppedEvent event) {
         plastic.display.displayInfoMessage(String.format("Stopped sharing location with %s", event.group.name));
+    }
+
+    @Subscribe
+    private void onLocationUpdated(LocationUpdatedEvent event) {
+        plastic.world.findPlayerById(event.player.minecraftPlayer.id)
+                .ifPresent(thePlayer -> {
+                    System.out.println("Found player " + event.player + " at + " + event.location);
+                });
     }
 }
